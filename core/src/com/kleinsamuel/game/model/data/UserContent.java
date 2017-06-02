@@ -20,8 +20,8 @@ public class UserContent {
     public int id;
     /* users name */
     public String name;
-    public int x;
-    public int y;
+    public float x;
+    public float y;
     /* users level needed for calculation of several values */
     public int level;
     /* users current xp */
@@ -184,8 +184,8 @@ public class UserContent {
     public static UserContent createStandard() {
         UserContent uc = new UserContent();
         uc.id = -1;
-        uc.x = 640;
-        uc.y = 640;
+        uc.x = 10*Utils.TILEWIDTH;
+        uc.y = 10*Utils.TILEHEIGHT;
         uc.health = CharacterFactory.getHealthForLevel(1);
         uc.current_health = CharacterFactory.getHealthForLevel(1);
         uc.mana = 100;
@@ -251,7 +251,7 @@ public class UserContent {
         equippedItems.put(slotId, itemId);
     }
 
-    public void uneauipItemBySlotId(int slotId) {
+    public void unequipItemBySlotId(int slotId) {
         equippedItems.remove(slotId);
     }
 
