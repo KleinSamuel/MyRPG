@@ -184,8 +184,8 @@ public class UserContent {
     public static UserContent createStandard() {
         UserContent uc = new UserContent();
         uc.id = -1;
-        uc.x = 400;
-        uc.y = 400;
+        uc.x = 640;
+        uc.y = 640;
         uc.health = CharacterFactory.getHealthForLevel(1);
         uc.current_health = CharacterFactory.getHealthForLevel(1);
         uc.mana = 100;
