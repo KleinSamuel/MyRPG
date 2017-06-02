@@ -28,11 +28,14 @@ public class Assets {
     public static final String green_bar = "bars/experience_internal_green.png";
 
     /* hud */
+    public static final String money_skull_bar = "hud/money_skull_bar.png";
     public static final String settings_button = "hud/settings_button.png";
     public static final String bag_button = "hud/bag_button.png";
-    public static final String chat_button = "hud/chat_button.png";
     public static final String news_button = "hud/news_button.png";
     public static final String social_button = "hud/social_button.png";
+    public static final String stats_button = "hud/stats_button.png";
+    public static final String lexicon_button = "hud/ency_button.png";
+    public static final String shop_button = "hud/shop_button.png";
 
     /* NPCs */
     public static final String bug_small = "npcs/bug_small.png";
@@ -41,7 +44,7 @@ public class Assets {
     public static final String eloa_war = "npcs/eloa_war.png";
 
     /* bag */
-    public static final String inventory_background = "bag/inventory_background.png";
+    public static final String inventory_background = "bag/uf_inventory_background_2.png";
     public static final String item_selected_background = "bag/item_selected_background.png";
     public static final String bag_close_button = "bag/bag_close_button.png";
     public static final String use_button_1 = "bag/use_button_1.png";
@@ -50,6 +53,12 @@ public class Assets {
     public static final String equip_button_2 = "bag/equip_button_2.png";
     public static final String unequip_button_1 = "bag/unequip_button_1.png";
     public static final String unequip_button_2 = "bag/unequip_button_2.png";
+
+    /* lexicon */
+    public static final String lexicon_background = "lexicon/uf_lexicon_background.png";
+
+    /* stats */
+    public static final String stats_background = "stats/uf_stats_background.png";
 
     /* items */
     public static final String arrows_1 = "items/arrows_1.png";
@@ -75,11 +84,16 @@ public class Assets {
         manager.load(rectangle_gray, Texture.class);
         manager.load(rectangle_blue, Texture.class);
         manager.load(rectangle_light_gray, Texture.class);
+
         manager.load(settings_button, Texture.class);
         manager.load(bag_button, Texture.class);
-        manager.load(chat_button, Texture.class);
+        manager.load(lexicon_button, Texture.class);
         manager.load(news_button, Texture.class);
         manager.load(social_button, Texture.class);
+        manager.load(money_skull_bar, Texture.class);
+        manager.load(shop_button, Texture.class);
+        manager.load(stats_button, Texture.class);
+
         manager.load(inventory_background, Texture.class);
         manager.load(item_selected_background, Texture.class);
         manager.load(bag_close_button, Texture.class);
@@ -89,6 +103,10 @@ public class Assets {
         manager.load(equip_button_2, Texture.class);
         manager.load(unequip_button_1, Texture.class);
         manager.load(unequip_button_2, Texture.class);
+
+        manager.load(lexicon_background, Texture.class);
+
+        manager.load(stats_background, Texture.class);
 
         manager.load(empty_bar, Texture.class);
         manager.load(red_bar, Texture.class);
