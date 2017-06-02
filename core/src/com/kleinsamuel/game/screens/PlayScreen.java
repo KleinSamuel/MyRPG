@@ -14,9 +14,11 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kleinsamuel.game.GameClass;
-import com.kleinsamuel.game.hud.Bag;
+import com.kleinsamuel.game.hud.bag.Bag;
 import com.kleinsamuel.game.hud.HUD;
 import com.kleinsamuel.game.hud.Tilemarker;
+import com.kleinsamuel.game.hud.lexicon.Lexicon;
+import com.kleinsamuel.game.hud.stats.Stats;
 import com.kleinsamuel.game.model.Assets;
 import com.kleinsamuel.game.model.entities.OtherPlayer;
 import com.kleinsamuel.game.model.entities.Player;
@@ -49,6 +51,8 @@ public class PlayScreen implements Screen{
 
     public HUD hud;
     public Bag bag;
+    public Stats stats;
+    public Lexicon lexicon;
 
     private TmxMapLoader mapLoader;
     private TiledMap map;
@@ -82,8 +86,6 @@ public class PlayScreen implements Screen{
         //gamePort = new ScreenViewport(gameCam);
         gamePort = new FitViewport(V_WIDTH, V_HEIGHT, gameCam);
 
-        hud = new HUD();
-
         mapLoader = new TmxMapLoader();
         map = mapLoader.load("map_test/uf_map_1.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(map);
@@ -105,8 +107,13 @@ public class PlayScreen implements Screen{
 
         player = new Player(this, 256, 1280, new SpriteSheet(Assets.manager.get(Assets.playerSprite, Texture.class), 4, 3));
         game.sendInitialInfo(player);
+
         tilemarker = new Tilemarker();
+
         bag = new Bag(this);
+        hud = new HUD();
+        stats = new Stats(this);
+        lexicon = new Lexicon(this);
 
         NPCData data = new NPCData(1, 1, 48, 48, 1, 10, 10);
         NPC npc = new NPC(48, 48, new SpriteSheet(Assets.manager.get(Assets.bug_small, Texture.class), 1, 4), data);
@@ -194,8 +201,12 @@ public class PlayScreen implements Screen{
 
         hud.batch.begin();
         hud.render();
-        if(bag.DRAW_BAG){
+        if(bag.SHOW_BAG){
             bag.render(hud.batch);
+        }else if(stats.SHOW_STATS){
+            stats.render(hud.batch);
+        }else if(lexicon.SHOW_LEXICON){
+            lexicon.render(hud.batch);
         }
         hud.batch.end();
 
@@ -230,21 +241,21 @@ public class PlayScreen implements Screen{
      */
     private void checkIfCameraIsInBounds(){
         /* if cam is out of left side */
-        if(gameCam.position.x < (PlayScreen.V_WIDTH/2)*Utils.ZOOM_FACTOR){
-            gameCam.position.x = (PlayScreen.V_WIDTH/2)*Utils.ZOOM_FACTOR;
+        if(gameCam.position.x < (PlayScreen.V_WIDTH/2)*Utils.ZOOM_FACTOR) {
+            gameCam.position.x = (PlayScreen.V_WIDTH / 2) * Utils.ZOOM_FACTOR;
         }
         /* if cam is out of right side */
-        /*if(gameCam.position.x > mapPixelWidth-(Gdx.graphics.getWidth()/2)){
-            gameCam.position.x = mapPixelWidth-(Gdx.graphics.getWidth()/2);
-        }*/
+        if(gameCam.position.x > (mapRepresentation.map2D.length*Utils.TILEWIDTH)-(PlayScreen.V_WIDTH/2)*Utils.ZOOM_FACTOR){
+            gameCam.position.x = (mapRepresentation.map2D.length*Utils.TILEWIDTH)-(PlayScreen.V_WIDTH/2)*Utils.ZOOM_FACTOR;
+        }
         /* if cam is out of down side */
         if(gameCam.position.y < (PlayScreen.V_HEIGHT/2)*Utils.ZOOM_FACTOR){
             gameCam.position.y = (PlayScreen.V_HEIGHT/2)*Utils.ZOOM_FACTOR;
         }
         /* if cam is out of up side */
-        /*if(gameCam.position.y > mapPixelHeight-(Gdx.graphics.getHeight()/2)){
-            gameCam.position.y = mapPixelHeight-(Gdx.graphics.getHeight()/2);
-        }*/
+        if(gameCam.position.y > (mapRepresentation.map2D[0].length*Utils.TILEHEIGHT)-(PlayScreen.V_HEIGHT/2)*Utils.ZOOM_FACTOR){
+            gameCam.position.y = (mapRepresentation.map2D[0].length*Utils.TILEHEIGHT)-(PlayScreen.V_HEIGHT/2)*Utils.ZOOM_FACTOR;
+        }
     }
 
     public boolean checkIfTileIsClickable(int arrayX, int arrayY){
