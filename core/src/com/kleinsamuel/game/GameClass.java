@@ -20,8 +20,8 @@ import io.socket.emitter.Emitter;
 
 public class GameClass extends Game {
 
-	private String serverName = "87.160.59.32";
-	private String port = "8080";
+	private String serverName = "87.160.48.51";
+	private String port = "61498";
 	private IO.Options socketOptions;
 
 	private final float UPDATE_TIMER = 1/40f;
@@ -30,9 +30,13 @@ public class GameClass extends Game {
     public boolean CONNECTED = false;
 	public boolean signInSuccessfull = false;
 
+	public boolean LOG_IN_ANSWER = false;
+	public boolean LOG_IN_SUCCESS = false;
+
 	private Socket socket;
 	public StartScreen startScreen;
 	public PlayScreen playScreen;
+	public GameClass game;
 
 	public HashMap<String, OtherPlayer> otherPlayers;
 	public HashMap<Integer, NPC> npcs;
@@ -48,14 +52,30 @@ public class GameClass extends Game {
 		otherPlayers = new HashMap<String, OtherPlayer>();
 		npcs = new HashMap<Integer, NPC>();
 
-		startScreen = new StartScreen(this);
+		//startScreen = new StartScreen(this);
+		//setScreen(startScreen);
+		game = this;
 
-		setScreen(startScreen);
+		connect();
+		setScreen(new PlayScreen(this));
 	}
 
 	public void connect(){
 		connectSocket();
 		configSocketEvents();
+	}
+
+	public void logInUser(String username, String password){
+		JSONObject data = new JSONObject();
+
+		try {
+			data.put("username", username);
+			data.put("password", password);
+
+			socket.emit("logInUser", data);
+		} catch (JSONException e){
+			DebugMessageFactory.printErrorMessage("ERROR SENDING LOG IN DATA!");
+		}
 	}
 
 	public void registerPlayer(String username, String password){
@@ -187,6 +207,17 @@ public class GameClass extends Game {
 			@Override
 			public void call(Object... args) {
 				CONNECTED = false;
+				startScreen = new StartScreen(game);
+				setScreen(startScreen);
+				if(playScreen != null){
+					playScreen = null;
+				}
+				if(startScreen.signUpScreen != null){
+					startScreen.signUpScreen = null;
+				}
+				if(startScreen.logInScreen != null){
+					startScreen.logInScreen = null;
+				}
 			}
 		}).on(Socket.EVENT_CONNECT_TIMEOUT, new Emitter.Listener() {
 			@Override
@@ -200,6 +231,19 @@ public class GameClass extends Game {
 				try {
 					String id = data.getString("id");
 					DebugMessageFactory.printInfoMessage("Received ID: ["+id+"]");
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}).on("logInUserAnswer", new Emitter.Listener(){
+			@Override
+			public void call(Object... args) {
+				JSONObject data = (JSONObject) args[0];
+				try {
+					boolean status = data.getBoolean("status");
+					LOG_IN_ANSWER = true;
+					LOG_IN_SUCCESS = status;
+					DebugMessageFactory.printInfoMessage("Received STATUS: ["+status+"]");
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
