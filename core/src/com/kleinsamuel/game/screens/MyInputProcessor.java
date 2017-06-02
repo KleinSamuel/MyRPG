@@ -35,15 +35,19 @@ public class MyInputProcessor implements InputProcessor {
 
     public boolean touchUp (int x, int y, int pointer, int button) {
 
-        DebugMessageFactory.printInfoMessage("CLICKED!");
-
         Vector3 v = playScreen.hud.stage.getCamera().unproject(new Vector3(x,y,0));
 
         int scaledX = (int)v.x;
         int scaledY = (int)v.y;
 
-        if(playScreen.bag.DRAW_BAG){
+        if(playScreen.bag.SHOW_BAG){
             playScreen.bag.handleClick(scaledX, scaledY);
+            return true;
+        }else if(playScreen.stats.SHOW_STATS){
+            playScreen.stats.handleClick(scaledX, scaledY);
+            return true;
+        }else if(playScreen.lexicon.SHOW_LEXICON){
+            playScreen.lexicon.handleClick(scaledX, scaledY);
             return true;
         }
 
@@ -59,13 +63,31 @@ public class MyInputProcessor implements InputProcessor {
             DebugMessageFactory.printNormalMessage("CLICK ON NEWS");
             return true;
         }
-        else if(playScreen.hud.clickOnChat((int)scaledX, (int)scaledY)){
-            DebugMessageFactory.printNormalMessage("CLICK ON CHAT");
+        else if(playScreen.hud.clickOnStat((int)scaledX, (int)scaledY)){
+            DebugMessageFactory.printNormalMessage("CLICK ON STAT");
+            playScreen.bag.SHOW_BAG = false;
+            playScreen.bag.SHOW_ITEM_INFO = false;
+            playScreen.lexicon.SHOW_LEXICON = false;
+            playScreen.stats.SHOW_STATS = true;
+            return true;
+        }
+        else if(playScreen.hud.clickOnLexicon((int)scaledX, (int)scaledY)){
+            DebugMessageFactory.printNormalMessage("CLICK ON LEXICON");
+            playScreen.bag.SHOW_BAG = false;
+            playScreen.bag.SHOW_ITEM_INFO = false;
+            playScreen.stats.SHOW_STATS = false;
+            playScreen.lexicon.SHOW_LEXICON = true;
+            return true;
+        }
+        else if(playScreen.hud.clickOnShop((int)scaledX, (int)scaledY)){
+            DebugMessageFactory.printNormalMessage("CLICK ON SHOP");
             return true;
         }
         else if(playScreen.hud.clickOnBag((int)scaledX, (int)scaledY)){
             DebugMessageFactory.printNormalMessage("CLICK ON BAG");
-            playScreen.bag.DRAW_BAG = true;
+            playScreen.stats.SHOW_STATS = false;
+            playScreen.lexicon.SHOW_LEXICON = false;
+            playScreen.bag.SHOW_BAG = true;
             return true;
         }
 
