@@ -11,8 +11,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class SpriteSheet {
 
-    private int FRAME_COLS;
-    private int FRAME_ROWS;
+    public int FRAME_COLS;
+    public int FRAME_ROWS;
 
     Animation<TextureRegion> animation;
     Texture texture;
