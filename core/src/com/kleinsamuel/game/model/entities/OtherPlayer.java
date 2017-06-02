@@ -1,11 +1,9 @@
 package com.kleinsamuel.game.model.entities;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
-import com.kleinsamuel.game.model.Assets;
 import com.kleinsamuel.game.sprites.SpriteSheet;
 import com.kleinsamuel.game.util.Utils;
 
@@ -105,10 +103,11 @@ public class OtherPlayer {
     }
 
     public void drawName(SpriteBatch batch) {
-        Utils.basicFont.getData().setScale(0.4f, 0.5f);
+        Utils.basicFont.getData().setScale(0.2f, 0.2f);
         Utils.basicFont.setColor(Color.BLACK);
         Vector3 dims = Utils.getWidthAndHeightOfString(Utils.basicFont, name);
-        Utils.basicFont.draw(batch, name, entityX+Utils.TILEWIDTH/2-dims.x/2, entityY+77);
+        Utils.basicFont.draw(batch, name, entityX+Utils.TILEWIDTH/2-dims.x/2, entityY+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT*2);
+
     }
 
     private int HEALTHBAR_PADDING = 2;
@@ -123,14 +122,14 @@ public class OtherPlayer {
             PERC_HEALTH = currentHealth/maxHealth;
         }
 
-        batch.draw(Assets.manager.get(Assets.rectangle_black, Texture.class), entityX, entityY + currentTexture.getRegionHeight(), currentTexture.getRegionWidth(), HEALTHBAR_HEIGHT);
-        batch.draw(Assets.manager.get(Assets.rectangle_gray, Texture.class), entityX+HEALTHBAR_PADDING, entityY+currentTexture.getRegionHeight()+HEALTHBAR_PADDING, (currentTexture.getRegionWidth()-2*HEALTHBAR_PADDING)*PERC_HEALTH, HEALTHBAR_HEIGHT-2*HEALTHBAR_PADDING);
-        batch.draw(Assets.manager.get(Assets.rectangle_red, Texture.class), entityX+HEALTHBAR_PADDING, entityY+currentTexture.getRegionHeight()+HEALTHBAR_PADDING, currentTexture.getRegionWidth()-2*HEALTHBAR_PADDING, HEALTHBAR_HEIGHT-2*HEALTHBAR_PADDING);
+        //batch.draw(Assets.manager.get(Assets.rectangle_black, Texture.class), entityX, entityY + currentTexture.getRegionHeight(), currentTexture.getRegionWidth(), HEALTHBAR_HEIGHT);
+        //batch.draw(Assets.manager.get(Assets.rectangle_gray, Texture.class), entityX+HEALTHBAR_PADDING, entityY+currentTexture.getRegionHeight()+HEALTHBAR_PADDING, (currentTexture.getRegionWidth()-2*HEALTHBAR_PADDING)*PERC_HEALTH, HEALTHBAR_HEIGHT-2*HEALTHBAR_PADDING);
+        //batch.draw(Assets.manager.get(Assets.rectangle_red, Texture.class), entityX+HEALTHBAR_PADDING, entityY+currentTexture.getRegionHeight()+HEALTHBAR_PADDING, currentTexture.getRegionWidth()-2*HEALTHBAR_PADDING, HEALTHBAR_HEIGHT-2*HEALTHBAR_PADDING);
 
     }
 
     public void render(SpriteBatch batch){
-        batch.draw(currentTexture, entityX, entityY);
+        batch.draw(currentTexture, entityX, entityY, Utils.TILEWIDTH, Utils.TILEHEIGHT);
     }
 
     public void renderAfter(SpriteBatch batch){

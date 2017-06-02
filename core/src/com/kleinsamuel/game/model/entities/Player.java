@@ -22,7 +22,7 @@ import java.util.LinkedList;
 
 public class Player {
 
-    public static final int SPEED = 2;
+    public static final float SPEED = 0.5f;
     public int xMove;
     public int yMove;
 
@@ -230,23 +230,23 @@ public class Player {
     }
 
     public void drawName(SpriteBatch batch) {
-        Utils.basicFont.getData().setScale(0.4f, 0.5f);
+        Utils.basicFont.getData().setScale(0.2f, 0.2f);
         Utils.basicFont.setColor(Color.BLACK);
         Vector3 dims = Utils.getWidthAndHeightOfString(Utils.basicFont, content.name);
-        Utils.basicFont.draw(batch, content.name, content.x+Utils.TILEWIDTH/2-dims.x/2, content.y+77);
+        Utils.basicFont.draw(batch, content.name, content.x+Utils.TILEWIDTH/2-dims.x/2, content.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT*2);
     }
 
-    private int HEALTHBAR_PADDING = 2;
-    private int HEALTHBAR_HEIGHT = 7;
+    private float HEALTHBAR_PADDING = 0.5f;
+    private float HEALTHBAR_HEIGHT = 3;
     private float PERC_HEALTH;
 
     public void drawSmallHealthbar(SpriteBatch batch){
 
         PERC_HEALTH = content.current_health/content.health;
 
-        batch.draw(Assets.manager.get(Assets.rectangle_black, Texture.class), content.x, content.y + currentTexture.getRegionHeight(), currentTexture.getRegionWidth(), HEALTHBAR_HEIGHT);
-        batch.draw(Assets.manager.get(Assets.rectangle_gray, Texture.class), content.x+HEALTHBAR_PADDING, content.y+currentTexture.getRegionHeight()+HEALTHBAR_PADDING, currentTexture.getRegionWidth()-2*HEALTHBAR_PADDING, HEALTHBAR_HEIGHT-2*HEALTHBAR_PADDING);
-        batch.draw(Assets.manager.get(Assets.rectangle_red, Texture.class), content.x+HEALTHBAR_PADDING, content.y+currentTexture.getRegionHeight()+HEALTHBAR_PADDING, (currentTexture.getRegionWidth()-2*HEALTHBAR_PADDING)*PERC_HEALTH, HEALTHBAR_HEIGHT-2*HEALTHBAR_PADDING);
+        batch.draw(Assets.manager.get(Assets.rectangle_black, Texture.class), content.x, content.y + Utils.TILEHEIGHT, Utils.TILEWIDTH, HEALTHBAR_HEIGHT);
+        batch.draw(Assets.manager.get(Assets.rectangle_gray, Texture.class), content.x+HEALTHBAR_PADDING, content.y+Utils.TILEHEIGHT+HEALTHBAR_PADDING, Utils.TILEWIDTH-2*HEALTHBAR_PADDING, HEALTHBAR_HEIGHT-2*HEALTHBAR_PADDING);
+        batch.draw(Assets.manager.get(Assets.rectangle_red, Texture.class), content.x+HEALTHBAR_PADDING, content.y+Utils.TILEHEIGHT+HEALTHBAR_PADDING, (Utils.TILEWIDTH-2*HEALTHBAR_PADDING)*PERC_HEALTH, HEALTHBAR_HEIGHT-2*HEALTHBAR_PADDING);
 
     }
 
@@ -259,7 +259,7 @@ public class Player {
     }
 
     public void render(SpriteBatch batch){
-        batch.draw(currentTexture, content.x, content.y);
+        batch.draw(currentTexture, content.x, content.y, Utils.TILEWIDTH, Utils.TILEHEIGHT);
     }
 
     public void renderAfter(SpriteBatch batch){
