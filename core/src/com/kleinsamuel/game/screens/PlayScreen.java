@@ -20,6 +20,8 @@ import com.kleinsamuel.game.hud.Tilemarker;
 import com.kleinsamuel.game.model.Assets;
 import com.kleinsamuel.game.model.entities.OtherPlayer;
 import com.kleinsamuel.game.model.entities.Player;
+import com.kleinsamuel.game.model.entities.npcs.NPC;
+import com.kleinsamuel.game.model.entities.npcs.NPCData;
 import com.kleinsamuel.game.model.pathfinding.MapRepresentation;
 import com.kleinsamuel.game.sprites.SpriteSheet;
 import com.kleinsamuel.game.util.DebugMessageFactory;
@@ -35,8 +37,8 @@ import java.util.HashSet;
 
 public class PlayScreen implements Screen{
 
-    public static final int V_WIDTH = 1920/2;
-    public static final int V_HEIGHT = 1080/2;
+    public static final int V_WIDTH = 1920/3;
+    public static final int V_HEIGHT = 1080/3;
 
     public GameClass game;
 
@@ -58,8 +60,6 @@ public class PlayScreen implements Screen{
 
     public Player player;
     public Tilemarker tilemarker;
-
-    public HashMap<String, OtherPlayer> otherPlayers;
 
     BitmapFont font;
 
@@ -85,10 +85,10 @@ public class PlayScreen implements Screen{
         hud = new HUD();
 
         mapLoader = new TmxMapLoader();
-        map = mapLoader.load("testmap.tmx");
+        map = mapLoader.load("map_test/uf_map_1.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(map);
 
-        mapRepresentation = new MapRepresentation(map, new HashSet<Integer>(Arrays.asList(301)));
+        mapRepresentation = new MapRepresentation(map, new HashSet<Integer>(Arrays.asList(-1)));
 
         MapProperties prop = map.getProperties();
         int mapWidth = prop.get("width", Integer.class);
@@ -108,7 +108,26 @@ public class PlayScreen implements Screen{
         tilemarker = new Tilemarker();
         bag = new Bag(this);
 
-        otherPlayers = new HashMap<String, OtherPlayer>();
+        NPCData data = new NPCData(1, 1, 48, 48, 1, 10, 10);
+        NPC npc = new NPC(48, 48, new SpriteSheet(Assets.manager.get(Assets.bug_small, Texture.class), 1, 4), data);
+        game.npcs.put(1, npc);
+
+        NPCData data2 = new NPCData(2, 2, 72, 48, 1, 10, 10);
+        NPC npc2 = new NPC(48, 48, new SpriteSheet(Assets.manager.get(Assets.bird_crow, Texture.class), 1, 4), data2);
+        game.npcs.put(2, npc2);
+
+        NPCData data3 = new NPCData(3, 3, 48, 72, 1, 10, 10);
+        NPC npc3 = new NPC(48, 48, new SpriteSheet(Assets.manager.get(Assets.elemental_water, Texture.class), 1, 4), data3);
+        npc3.setSize(34, 34);
+        game.npcs.put(3, npc3);
+
+        NPCData data4 = new NPCData(4, 4, 168, 72, 1, 10, 10);
+        NPC npc4 = new NPC(48, 48, new SpriteSheet(Assets.manager.get(Assets.eloa_war, Texture.class), 1, 4), data4);
+        npc4.setSize(42, 42);
+        npc4.setAnimationSpeed(300);
+        game.npcs.put(4, npc4);
+
+        game.otherPlayers = new HashMap<String, OtherPlayer>();
 
         font = new BitmapFont();
 
@@ -116,14 +135,25 @@ public class PlayScreen implements Screen{
 
     }
 
-    public void update(float delta){
-        //handleInput(delta);
-
-        tilemarker.update();
-        player.update();
-        game.updateServer_Position(delta, player);
+    private void updateMainBars(){
         hud.healthbar.setHealth(player.content.current_health, player.content.health);
         hud.manabar.setMana(player.content.current_mana, player.content.mana);
+    }
+
+    private void updateNPCs(){
+        for(NPC npc : game.npcs.values()){
+            npc.update();
+        }
+    }
+
+    public void update(float delta){
+
+        tilemarker.update();
+        updateNPCs();
+        player.update();
+        game.updateServer_Position(delta, player);
+
+        updateMainBars();
 
         checkIfCameraIsInBounds();
         gameCam.update();
@@ -136,9 +166,11 @@ public class PlayScreen implements Screen{
 
         update(delta);
 
+        /* clear map */
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        /* render map */
         mapRenderer.render();
         batch.setProjectionMatrix(gameCam.combined);
 
@@ -146,15 +178,17 @@ public class PlayScreen implements Screen{
 
         /* render images */
         tilemarker.render(batch);
-        player.render(batch);
         renderOtherPlayers(batch);
+        renderNPCs(batch);
+        player.render(batch);
 
         /* render names and healthbars */
-        player.renderAfter(batch);
         renderOtherPlayersAfter(batch);
-
+        renderNPCsAfter(batch);
+        player.renderAfter(batch);
         batch.end();
 
+        /* render HUD */
         batch.setProjectionMatrix(hud.stage.getCamera().combined);
         hud.stage.draw();
 
@@ -168,14 +202,26 @@ public class PlayScreen implements Screen{
     }
 
     private void renderOtherPlayers(SpriteBatch batch){
-        for(OtherPlayer op : otherPlayers.values()){
+        for(OtherPlayer op : game.otherPlayers.values()){
             op.render(batch);
         }
     }
 
     private void renderOtherPlayersAfter(SpriteBatch batch){
-        for(OtherPlayer op : otherPlayers.values()){
+        for(OtherPlayer op : game.otherPlayers.values()){
             op.renderAfter(batch);
+        }
+    }
+
+    private void renderNPCs(SpriteBatch batch){
+        for(NPC npc : game.npcs.values()){
+            npc.render(batch);
+        }
+    }
+
+    private void renderNPCsAfter(SpriteBatch batch){
+        for(NPC npc : game.npcs.values()){
+            npc.renderAfter(batch);
         }
     }
 
@@ -202,34 +248,34 @@ public class PlayScreen implements Screen{
     }
 
     public boolean checkIfTileIsClickable(int arrayX, int arrayY){
-        return mapRepresentation.walkableTiles.contains(mapRepresentation.map2D[arrayX][arrayY]);
+        return !mapRepresentation.walkableTiles.contains(mapRepresentation.map2D[arrayX][arrayY]);
     }
 
     public void addOtherPlayer(String id){
         DebugMessageFactory.printNormalMessage("ADDED NEW PLAYER WITH ID: "+id);
-        otherPlayers.put(id, new OtherPlayer(new SpriteSheet(Assets.manager.get(Assets.playerSprite, Texture.class), 4, 3), "Unknown", 256, 1280));
+        game.otherPlayers.put(id, new OtherPlayer(new SpriteSheet(Assets.manager.get(Assets.playerSprite, Texture.class), 4, 3), "Unknown", 256, 1280));
     }
 
     public void addOtherPlayer(String id, String name, int entityX, int entityY, int xMove, int yMove, int xPos){
 
-        if(otherPlayers == null){
-            otherPlayers = new HashMap<String, OtherPlayer>();
+        if(game.otherPlayers == null){
+            game.otherPlayers = new HashMap<String, OtherPlayer>();
         }
 
         OtherPlayer op;
 
-        if(otherPlayers.containsKey(id)){
-            op = otherPlayers.get(id);
+        if(game.otherPlayers.containsKey(id)){
+            op = game.otherPlayers.get(id);
         }else{
             op = new OtherPlayer(new SpriteSheet(Assets.manager.get(Assets.playerSprite, Texture.class), 4, 3), name, entityX, entityY);
-            this.otherPlayers.put(id, op);
+            game.otherPlayers.put(id, op);
         }
         op.update(entityX, entityY, name, xMove, yMove, xPos);
     }
 
     public void removeOtherPlayer(String id){
         DebugMessageFactory.printNormalMessage("REMOVED PLAYER WITH ID: "+id);
-        otherPlayers.remove(id);
+        game.otherPlayers.remove(id);
     }
 
     @Override

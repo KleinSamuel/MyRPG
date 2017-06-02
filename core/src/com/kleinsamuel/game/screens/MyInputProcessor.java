@@ -35,6 +35,8 @@ public class MyInputProcessor implements InputProcessor {
 
     public boolean touchUp (int x, int y, int pointer, int button) {
 
+        DebugMessageFactory.printInfoMessage("CLICKED!");
+
         Vector3 v = playScreen.hud.stage.getCamera().unproject(new Vector3(x,y,0));
 
         int scaledX = (int)v.x;
