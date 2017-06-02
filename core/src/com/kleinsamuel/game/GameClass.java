@@ -1,13 +1,18 @@
 package com.kleinsamuel.game;
 
 import com.badlogic.gdx.Game;
+import com.kleinsamuel.game.model.entities.OtherPlayer;
 import com.kleinsamuel.game.model.entities.Player;
+import com.kleinsamuel.game.model.entities.npcs.NPC;
 import com.kleinsamuel.game.screens.PlayScreen;
+import com.kleinsamuel.game.startscreen.StartScreen;
 import com.kleinsamuel.game.util.DebugMessageFactory;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -15,25 +20,58 @@ import io.socket.emitter.Emitter;
 
 public class GameClass extends Game {
 
-	private String serverName = "87.160.62.238";
+	private String serverName = "87.160.59.32";
 	private String port = "8080";
+	private IO.Options socketOptions;
 
 	private final float UPDATE_TIMER = 1/40f;
 	private float timer;
 
+    public boolean CONNECTED = false;
+	public boolean signInSuccessfull = false;
+
 	private Socket socket;
+	public StartScreen startScreen;
 	public PlayScreen playScreen;
+
+	public HashMap<String, OtherPlayer> otherPlayers;
+	public HashMap<Integer, NPC> npcs;
 
 	@Override
 	public void create() {
 		DebugMessageFactory.printNormalMessage("STARTED GAME INSTANCE.");
 
+		socketOptions = new IO.Options();
+		socketOptions.timeout = 5000;
+		socketOptions.reconnectionAttempts = 0;
+
+		otherPlayers = new HashMap<String, OtherPlayer>();
+		npcs = new HashMap<Integer, NPC>();
+
+		startScreen = new StartScreen(this);
+
+		setScreen(startScreen);
+	}
+
+	public void connect(){
 		connectSocket();
 		configSocketEvents();
+	}
 
-		DebugMessageFactory.printNormalMessage("INITIALISING GAME...");
+	public void registerPlayer(String username, String password){
 
-		setScreen(new PlayScreen(this));
+		signInSuccessfull = false;
+
+		JSONObject data = new JSONObject();
+
+		try {
+			data.put("username", username);
+			data.put("password", password);
+
+			socket.emit("registerNewUser", data);
+		} catch (JSONException e){
+			DebugMessageFactory.printErrorMessage("ERROR SENDING REGISTERING DATA!");
+		}
 	}
 
 	public void updateServer_Position(float delta, Player player){
@@ -120,16 +158,22 @@ public class GameClass extends Game {
 	}
 
 	public void connectSocket(){
+
+		if(socket != null){
+			socket.disconnect();
+			socket.close();
+		}
+
 		DebugMessageFactory.printNormalMessage("CONNECTING TO SERVER ["+serverName+":"+port+"]...");
 		try {
-			socket = IO.socket("http://"+serverName+":"+port);
+			socket = null;
+			socket = IO.socket("http://"+serverName+":"+port, socketOptions);
 			socket.connect();
 		} catch( Exception e){
 			DebugMessageFactory.printNormalMessage("COULD NOT CONNECT TO SERVER!");
 			e.printStackTrace();
 			System.exit(1);
 		}
-		DebugMessageFactory.printNormalMessage("CONNECTION ESTABLISHED.");
 	}
 
 	public void configSocketEvents(){
@@ -137,6 +181,17 @@ public class GameClass extends Game {
 			@Override
 			public void call(Object... args) {
 				DebugMessageFactory.printInfoMessage("Socket IO Connected!");
+				CONNECTED = true;
+			}
+		}).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
+			@Override
+			public void call(Object... args) {
+				CONNECTED = false;
+			}
+		}).on(Socket.EVENT_CONNECT_TIMEOUT, new Emitter.Listener() {
+			@Override
+			public void call(Object... args) {
+				DebugMessageFactory.printInfoMessage("TIMEOUT");
 			}
 		}).on("socketID", new Emitter.Listener(){
 			@Override
@@ -156,7 +211,10 @@ public class GameClass extends Game {
 				try {
 					String id = data.getString("id");
 					DebugMessageFactory.printInfoMessage("New Player connected: ["+id+"]");
-					playScreen.addOtherPlayer(id);
+
+					if(playScreen != null) {
+						playScreen.addOtherPlayer(id);
+					}
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -168,7 +226,9 @@ public class GameClass extends Game {
 				try {
 					String id = data.getString("id");
 					DebugMessageFactory.printInfoMessage("Player disconnected: ["+id+"]");
-					playScreen.removeOtherPlayer(id);
+					if(playScreen != null) {
+						playScreen.removeOtherPlayer(id);
+					}
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -188,7 +248,9 @@ public class GameClass extends Game {
 						int yMove = objects.getJSONObject(i).getInt("yMove");
 						int xPos = objects.getJSONObject(i).getInt("xPos");
 
-						playScreen.addOtherPlayer(id, name, entityX, entityY, xMove, yMove, xPos);
+						if(playScreen != null) {
+							playScreen.addOtherPlayer(id, name, entityX, entityY, xMove, yMove, xPos);
+						}
 					}
 				} catch(JSONException e){
 
@@ -208,10 +270,31 @@ public class GameClass extends Game {
 					int yMove = data.getInt("yMove");
 					int xPos = data.getInt("xPos");
 
-					playScreen.addOtherPlayer(id, name, entityX, entityY, xMove, yMove, xPos);
+					if(playScreen != null) {
+						playScreen.addOtherPlayer(id, name, entityX, entityY, xMove, yMove, xPos);
+					}
 				} catch(JSONException e){
 
 				}
+			}
+		}).on("registerNewUserAnswer", new Emitter.Listener() {
+			@Override
+			public void call(Object... args) {
+
+				JSONObject data = (JSONObject) args[0];
+				try {
+
+					boolean success = data.getBoolean("status");
+					signInSuccessfull = success;
+
+					DebugMessageFactory.printInfoMessage("GOT ANSWER FOR SIGN UP REQUEST: "+success);
+
+				} catch(JSONException e){
+
+				}
+
+				startScreen.signUpScreen.changeStatusText = false;
+
 			}
 		});
 	}
@@ -225,7 +308,9 @@ public class GameClass extends Game {
 	@Override
 	public void pause() {
 		super.pause();
-		playScreen.player.content.writeToFile();
+		if(playScreen != null && playScreen.player != null) {
+			playScreen.player.content.writeToFile();
+		}
 	}
 
 	@Override
