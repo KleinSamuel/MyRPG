@@ -19,7 +19,7 @@ android {
     }
     defaultConfig {
         applicationId "com.kleinsamuel.game"
-        minSdkVersion 11
+        minSdkVersion 14
         targetSdkVersion 25
     }
     dependencies {
