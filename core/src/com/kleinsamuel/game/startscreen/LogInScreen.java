@@ -18,7 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.kleinsamuel.game.screens.PlayScreen;
+import com.kleinsamuel.game.util.DebugMessageFactory;
 
 /**
  * Created by sam on 01.06.17.
@@ -37,6 +37,8 @@ public class LogInScreen implements Screen {
 
     private Vector3 camPosition;
     private boolean moveCam = true;
+
+    private MessageDialog dialog;
 
     public LogInScreen(StartScreen startScreen) {
         this.startScreen = startScreen;
@@ -93,8 +95,39 @@ public class LogInScreen implements Screen {
         sendButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                startScreen.game.connect();
-                startScreen.game.setScreen(new PlayScreen(startScreen.game));
+                //startScreen.game.setScreen(new PlayScreen(startScreen.game));
+
+                startScreen.game.LOG_IN_ANSWER = false;
+                startScreen.game.LOG_IN_SUCCESS = false;
+
+                dialog = new MessageDialog("LOG IN STATUS:", skin);
+                dialog.setSize(StartScreen.START_WIDTH*0.7f, StartScreen.START_HEIGHT*0.6f);
+                dialog.text("WAITING FOR ANSWER..");
+                dialog.show(stage);
+
+                startScreen.game.logInUser(usernameField.getText(), passwordField.getText());
+                while(!startScreen.game.LOG_IN_ANSWER){
+                    DebugMessageFactory.printInfoMessage("WAITING FOR RESPONSE");
+                    try {
+                        Thread.sleep(1500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                DebugMessageFactory.printInfoMessage("GOT ANSWER: "+startScreen.game.LOG_IN_SUCCESS);
+
+                dialog.hide();
+                dialog = null;
+
+                if(startScreen.game.LOG_IN_SUCCESS){
+                    //startScreen.game.setScreen(new PlayScreen(startScreen.game));
+                }else{
+                    dialog = new MessageDialog("LOG IN STATUS:", skin);
+                    dialog.setSize(StartScreen.START_WIDTH*0.7f, StartScreen.START_HEIGHT*0.6f);
+                    dialog.text("FAILED! No such user or wrong password!");
+                    dialog.show(stage);
+                }
+
             }
         });
 

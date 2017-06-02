@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kleinsamuel.game.GameClass;
+import com.kleinsamuel.game.screens.PlayScreen;
 import com.kleinsamuel.game.util.DebugMessageFactory;
 
 /**
@@ -85,10 +86,12 @@ public class StartScreen implements Screen{
         logInButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if(game.CONNECTED) {
+
+                game.setScreen(new PlayScreen(game));
+                /*if(game.CONNECTED) {
                     onlineStatusLabel.clear();
                     game.setScreen(logInScreen);
-                }
+                }*/
             }
         });
 
