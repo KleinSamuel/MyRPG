@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Vector3;
+import com.kleinsamuel.game.screens.PlayScreen;
 
 /**
  * Created by sam on 30.05.17.
@@ -15,6 +16,11 @@ public class Utils {
     public static final int TILEWIDTH = 24;
     public static final int TILEHEIGHT = 24;
     public static final float ZOOM_FACTOR = 0.5f;
+
+    private static final float BASE_WIDTH = 960;
+    private static final float BASE_HEIGHT = 540;
+
+    public static final float FACTOR = PlayScreen.V_WIDTH/BASE_WIDTH;
 
     public static BitmapFont basicFont = new BitmapFont(Gdx.files.internal("font/8bitfont.fnt"));
 
