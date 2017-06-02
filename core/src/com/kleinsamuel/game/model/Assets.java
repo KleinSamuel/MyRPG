@@ -21,12 +21,24 @@ public class Assets {
     public static final String rectangle_light_gray = "rectangle_light_gray.png";
     public static final String rectangle_blue = "rectangle_blue.png";
 
+    /* health mana exp bars */
+    public static final String empty_bar = "bars/bar_empty.png";
+    public static final String red_bar = "bars/healthbar_internal_red.png";
+    public static final String blue_bar = "bars/mana_internal_blue.png";
+    public static final String green_bar = "bars/experience_internal_green.png";
+
     /* hud */
     public static final String settings_button = "hud/settings_button.png";
     public static final String bag_button = "hud/bag_button.png";
     public static final String chat_button = "hud/chat_button.png";
     public static final String news_button = "hud/news_button.png";
     public static final String social_button = "hud/social_button.png";
+
+    /* NPCs */
+    public static final String bug_small = "npcs/bug_small.png";
+    public static final String bird_crow = "npcs/bird_crow.png";
+    public static final String elemental_water = "npcs/elemental_water.png";
+    public static final String eloa_war = "npcs/eloa_war.png";
 
     /* bag */
     public static final String inventory_background = "bag/inventory_background.png";
@@ -77,6 +89,17 @@ public class Assets {
         manager.load(equip_button_2, Texture.class);
         manager.load(unequip_button_1, Texture.class);
         manager.load(unequip_button_2, Texture.class);
+
+        manager.load(empty_bar, Texture.class);
+        manager.load(red_bar, Texture.class);
+        manager.load(blue_bar, Texture.class);
+        manager.load(green_bar, Texture.class);
+
+        manager.load(bug_small, Texture.class);
+        manager.load(bird_crow, Texture.class);
+        manager.load(elemental_water, Texture.class);
+        manager.load(eloa_war, Texture.class);
+
         manager.load(arrows_1, Texture.class);
         manager.load(foot_left_1, Texture.class);
         manager.load(foot_right_1, Texture.class);
