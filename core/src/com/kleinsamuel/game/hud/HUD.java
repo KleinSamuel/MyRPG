@@ -51,8 +51,8 @@ public class HUD {
         stage.addActor(table);
     }
 
-    private final int button_width = 64;
-    private final int button_height = 64;
+    private final int button_width = 42;
+    private final int button_height = 42;
     private final int button_padding_top = 10;
     private final int button_padding_right = 10;
 
@@ -90,7 +90,7 @@ public class HUD {
     public void render() {
         healthbar.render(batch);
         manabar.render(batch);
-        experiencebar.render(batch);
+        //experiencebar.render(batch);
 
         batch.draw(Assets.manager.get(Assets.settings_button, Texture.class), settings_button_x, settings_button_y, button_width, button_height);
         batch.draw(Assets.manager.get(Assets.social_button, Texture.class), social_button_x, social_button_y, button_width, button_height);

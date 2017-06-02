@@ -3,6 +3,7 @@ package com.kleinsamuel.game.hud;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.kleinsamuel.game.model.Assets;
+import com.kleinsamuel.game.util.Utils;
 
 /**
  * Created by sam on 30.05.17.
@@ -28,7 +29,7 @@ public class Tilemarker {
 
     public void render(SpriteBatch batch){
         if(isVisible){
-            batch.draw(current, entityX, entityY);
+            batch.draw(current, entityX, entityY, Utils.TILEWIDTH, Utils.TILEHEIGHT);
         }
     }
 

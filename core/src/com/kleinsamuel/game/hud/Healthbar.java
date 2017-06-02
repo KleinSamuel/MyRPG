@@ -16,12 +16,12 @@ public class Healthbar {
 
     private final int PADDING_LEFT = 10;
     private final int PADDING_TOP = 10;
-    private final int INTERNAL_PADDING = 3;
-    private final int WIDTH = 300;
-    private final int HEIGHT = 40;
+    private final int INTERNAL_PADDING = 8;
+    private final float WIDTH = PlayScreen.V_WIDTH*0.30f;
+    private final float HEIGHT = PlayScreen.V_HEIGHT*0.1f;
     private int currentHealth, maxHealth;
 
-    public int CURRENT_WIDTH = WIDTH-(10*INTERNAL_PADDING);
+    public float CURRENT_WIDTH = WIDTH-(2*INTERNAL_PADDING);
 
     private double computePercent(int current, int max) {
         return (current*1.0)/(max*1.0);
@@ -31,13 +31,12 @@ public class Healthbar {
         currentHealth = current;
         maxHealth = max;
         double perc = computePercent(current, max);
-        CURRENT_WIDTH = (int)(perc*(WIDTH-(2*INTERNAL_PADDING)));
+        CURRENT_WIDTH = (float)(perc*(WIDTH-(2*INTERNAL_PADDING))-20f);
     }
 
     public void render(SpriteBatch batch){
-        batch.draw(Assets.manager.get(Assets.rectangle_black, Texture.class), PADDING_LEFT, PlayScreen.V_HEIGHT-HEIGHT-PADDING_TOP, WIDTH, HEIGHT);
-        batch.draw(Assets.manager.get(Assets.rectangle_gray, Texture.class), PADDING_LEFT+INTERNAL_PADDING, PlayScreen.V_HEIGHT-HEIGHT-PADDING_TOP+INTERNAL_PADDING, WIDTH-(2*INTERNAL_PADDING), HEIGHT-(2*INTERNAL_PADDING));
-        batch.draw(Assets.manager.get(Assets.rectangle_red, Texture.class), PADDING_LEFT+INTERNAL_PADDING, PlayScreen.V_HEIGHT-HEIGHT-PADDING_TOP+INTERNAL_PADDING, CURRENT_WIDTH, HEIGHT-(2*INTERNAL_PADDING));
+        batch.draw(Assets.manager.get(Assets.empty_bar, Texture.class), PADDING_LEFT, PlayScreen.V_HEIGHT-HEIGHT-PADDING_TOP, WIDTH, HEIGHT);
+        batch.draw(Assets.manager.get(Assets.red_bar, Texture.class), PADDING_LEFT+INTERNAL_PADDING, PlayScreen.V_HEIGHT-HEIGHT-PADDING_TOP+INTERNAL_PADDING-2, CURRENT_WIDTH, HEIGHT-(2*(INTERNAL_PADDING-2)));
 
         Utils.basicFont.getData().setScale(0.8f, 0.8f);
         Utils.basicFont.setColor(Color.WHITE);
@@ -47,7 +46,7 @@ public class Healthbar {
         Vector3 dims = Utils.getWidthAndHeightOfString(Utils.basicFont, s);
         float width = dims.x;
         float height = dims.y;
-        Utils.basicFont.draw(batch, s, (WIDTH/2)-(width/2)+PADDING_LEFT, PlayScreen.V_HEIGHT-PADDING_TOP-(HEIGHT/2));
+        //Utils.basicFont.draw(batch, s, (WIDTH/2)-(width/2)+PADDING_LEFT, PlayScreen.V_HEIGHT-PADDING_TOP-(HEIGHT/2));
 
     }
 }
