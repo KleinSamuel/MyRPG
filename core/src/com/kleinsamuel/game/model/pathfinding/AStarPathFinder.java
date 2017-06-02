@@ -163,7 +163,7 @@ public class AStarPathFinder {
 		if(contains(new PathFindingPoint(x, y), open)) {
 			return false;
 		}
-		if(walkableTiles.contains(map[x][y])) {
+		if(!walkableTiles.contains(map[x][y])) {
 			return true;
 		}
 		return false;
