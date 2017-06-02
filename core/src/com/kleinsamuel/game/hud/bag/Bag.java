@@ -1,4 +1,4 @@
-package com.kleinsamuel.game.hud;
+package com.kleinsamuel.game.hud.bag;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -12,60 +12,71 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static com.kleinsamuel.game.util.Utils.FACTOR;
+
 /**
  * Created by sam on 31.05.17.
  */
 
 public class Bag {
 
-    public static boolean DRAW_BAG = false;
-    public static boolean DRAW_ITEM_INFO = false;
+    public static boolean SHOW_BAG = false;
+    public static boolean SHOW_ITEM_INFO = false;
 
     private PlayScreen playScreen;
 
-    private final int bag_size_x = 7;
+    private final int bag_size_x = 6;
     private final int bag_size_y = 5;
-    private final int bag_container_width = 64;
-    private final int bag_container_height = 64;
-    private final int bag_padding_x = 8;
-    private final int bag_padding_y = 8;
-    private final int bag_margin_x = 8;
-    private final int bag_margin_y = 8;
+    private final float bag_container_width = 66 * FACTOR;
+    private final float bag_container_height = 66 * FACTOR;
+    private final float bag_padding_x = 10 * FACTOR;
+    private final float bag_padding_y = 10 * FACTOR;
+    private final float bag_margin_x = 19 * FACTOR;
+    private final float bag_margin_y = 19 * FACTOR;
 
-    public final int BAG_POS_X = 453;
-    public final int BAG_POS_Y = 405-64;
+    /* coordinates of first bag entry */
+    public final float BAG_POS_X = 440.0f * FACTOR;
+    public final float BAG_POS_Y = 394.0f * FACTOR;
 
-    public final int CLOSE_X_1 = 902;
-    public final int CLOSE_Y_1 = 498;
-    public final int CLOSE_X_2 = 940;
-    public final int CLOSE_Y_2 = 532;
+    /* coordinates for close button of bag */
+    public final float CLOSE_X_1 = 909.0f * FACTOR;
+    public final float CLOSE_Y_1 = 492.0f * FACTOR;
+    public final float CLOSE_X_2 = 941.0f * FACTOR;
+    public final float CLOSE_Y_2 = 523.0f * FACTOR;
 
-    public final int ITEM_PADDING_X = 6;
-    public final int ITEM_PADDING_Y = 6;
-    public final int ITEM_HEAD_X = 190;
-    public final int ITEM_HEAD_Y = 379;
-    public final int ITEM_TORSO_X = 190;
-    public final int ITEM_TORSO_Y = 292;
-    public final int ITEM_ARM_LEFT_X = 106;
-    public final int ITEM_ARM_LEFT_Y = 292;
-    public final int ITEM_ARM_RIGHT_X = 275;
-    public final int ITEM_ARM_RIGHT_Y = 292;
-    public final int ITEM_HAND_LEFT_X = 21;
-    public final int ITEM_HAND_LEFT_Y = 274;
-    public final int ITEM_HAND_RIGHT_X = 359;
-    public final int ITEM_HAND_RIGHT_Y = 274;
-    public final int ITEM_LEGS_X = 190;
-    public final int ITEM_LEGS_Y = 206;
-    public final int ITEM_FOOT_LEFT_X = 148;
-    public final int ITEM_FOOT_LEFT_Y = 120;
-    public final int ITEM_FOOT_RIGHT_X = 233;
-    public final int ITEM_FOOT_RIGHT_Y = 120;
-    public final int ITEM_RING_LEFT_X = 35;
-    public final int ITEM_RING_LEFT_Y = 360;
-    public final int ITEM_RING_RIGHT_X = 373;
-    public final int ITEM_RING_RIGHT_Y = 360;
-    public final int ITEM_NECKLACE_X = 322;
-    public final int ITEM_NECKLACE_Y = 421;
+    /* coordinates for stat and encyclopedia buttons */
+    public final float STAT_X_1 = 32.0f * FACTOR;
+    public final float STAT_Y_1 = 492.0f * FACTOR;
+    public final float STAT_X_2 = 108.0f * FACTOR;
+    public final float STAT_Y_2 = 522.0f * FACTOR;
+    public final float ENCY_X_1 = 161.0f * FACTOR;
+    public final float ENCY_Y_1 = 492.0f * FACTOR;
+    public final float ENCY_X_2 = 235.0f * FACTOR;
+    public final float ENCY_Y_2 = 522.0f * FACTOR;
+
+
+    public final float ITEM_PADDING_X = bag_padding_x;
+    public final float ITEM_PADDING_Y = bag_padding_y;
+    public final float ITEM_HEAD_X = 177.0f * FACTOR;
+    public final float ITEM_HEAD_Y = 387.0f * FACTOR;
+    public final float ITEM_TORSO_X = 177.0f * FACTOR;
+    public final float ITEM_TORSO_Y = 297.0f * FACTOR;
+    public final float ITEM_HAND_LEFT_X = 80.0f * FACTOR;
+    public final float ITEM_HAND_LEFT_Y = 273.0f * FACTOR;
+    public final float ITEM_HAND_RIGHT_X = 273.0f * FACTOR;
+    public final float ITEM_HAND_RIGHT_Y = 273.0f * FACTOR;
+    public final float ITEM_LEGS_X = 177.0f * FACTOR;
+    public final float ITEM_LEGS_Y = 210.0f * FACTOR;
+    public final float ITEM_FOOT_LEFT_X = 128.0f * FACTOR;
+    public final float ITEM_FOOT_LEFT_Y = 111.0f * FACTOR;
+    public final float ITEM_FOOT_RIGHT_X = 226.0f * FACTOR;
+    public final float ITEM_FOOT_RIGHT_Y = 111.0f * FACTOR;
+    public final float ITEM_RING_LEFT_X = 28.0f * FACTOR;
+    public final float ITEM_RING_LEFT_Y = 291.0f * FACTOR;
+    public final float ITEM_RING_RIGHT_X = 359.0f * FACTOR;
+    public final float ITEM_RING_RIGHT_Y = 291.0f * FACTOR;
+    public final float ITEM_NECKLACE_X = 265.0f * FACTOR;
+    public final float ITEM_NECKLACE_Y = 362.0f * FACTOR;
 
     public ArrayList<Vector3> bag_content_positions;
     private TreeMap<Integer, Integer> assignedMap;
@@ -84,8 +95,8 @@ public class Bag {
 
     private void initPositions(){
 
-        int currentX = BAG_POS_X;
-        int currentY = BAG_POS_Y;
+        float currentX = BAG_POS_X;
+        float currentY = BAG_POS_Y;
 
         for (int i = 0; i < bag_size_y; i++) {
             for (int j = 0; j < bag_size_x; j++) {
@@ -99,16 +110,22 @@ public class Bag {
 
     public void handleClick(int screenX, int screenY) {
 
-        DebugMessageFactory.printInfoMessage("HANDLE CLICK IN BAG: "+screenX+"-"+screenY);
-
-        if(DRAW_ITEM_INFO) {
+        if(SHOW_ITEM_INFO) {
             itemInfoWindow.handleClick(screenX, screenY);
             return;
         }
 
         if (clickOnExit(screenX, screenY)) {
-            DRAW_ITEM_INFO = false;
-            DRAW_BAG = false;
+            SHOW_ITEM_INFO = false;
+            SHOW_BAG = false;
+            return;
+        }
+
+        if(clickOnStat(screenX, screenY)){
+            return;
+        }
+
+        if(clickOnEncyclopedia(screenX, screenY)){
             return;
         }
 
@@ -128,9 +145,25 @@ public class Bag {
         return false;
     }
 
+    public boolean clickOnStat(int screenX, int screenY) {
+        if(screenX >= STAT_X_1 && screenX <= STAT_X_2 && screenY >= STAT_Y_1 && screenY <= STAT_Y_2) {
+            DebugMessageFactory.printInfoMessage("CLICKED ON STAT");
+            return true;
+        }
+        return false;
+    }
+
+    public boolean clickOnEncyclopedia(int screenX, int screenY) {
+        if(screenX >= ENCY_X_1 && screenX <= ENCY_X_2 && screenY >= ENCY_Y_1 && screenY <= ENCY_Y_2) {
+            DebugMessageFactory.printInfoMessage("CLICKED ON ENCYCLOPEDIA");
+            return true;
+        }
+        return false;
+    }
+
     private Vector3 getCoordinatesForSlotId(int slotId) {
-        int x = -1;
-        int y = -1;
+        float x = -1;
+        float y = -1;
         switch (slotId) {
             case 1:
                 x = ITEM_HEAD_X;
@@ -141,42 +174,34 @@ public class Bag {
                 y = ITEM_TORSO_Y;
                 break;
             case 3:
-                x = ITEM_ARM_LEFT_X;
-                y = ITEM_ARM_LEFT_Y;
-                break;
-            case 4:
-                x = ITEM_ARM_RIGHT_X;
-                y = ITEM_ARM_RIGHT_Y;
-                break;
-            case 5:
                 x = ITEM_HAND_LEFT_X;
                 y = ITEM_HAND_LEFT_Y;
                 break;
-            case 6:
+            case 4:
                 x = ITEM_HAND_RIGHT_X;
                 y = ITEM_HAND_RIGHT_Y;
                 break;
-            case 7:
+            case 5:
                 x = ITEM_LEGS_X;
                 y = ITEM_LEGS_Y;
                 break;
-            case 8:
+            case 6:
                 x = ITEM_FOOT_LEFT_X;
                 y = ITEM_FOOT_LEFT_Y;
                 break;
-            case 9:
+            case 7:
                 x = ITEM_FOOT_RIGHT_X;
                 y = ITEM_FOOT_RIGHT_Y;
                 break;
-            case 10:
+            case 8:
                 x = ITEM_RING_LEFT_X;
                 y = ITEM_RING_LEFT_Y;
                 break;
-            case 11:
+            case 9:
                 x = ITEM_RING_RIGHT_X;
                 y = ITEM_RING_RIGHT_Y;
                 break;
-            case 12:
+            case 10:
                 x = ITEM_NECKLACE_X;
                 y = ITEM_NECKLACE_Y;
                 break;
@@ -187,13 +212,15 @@ public class Bag {
     }
 
     public Vector3 getWidthAndHeightOfSlot(int slotId) {
-        if(slotId < 1 || slotId > 12) {
+        if(slotId < 1 || slotId > 10) {
             return null;
         }
-        if(slotId == 10 || slotId == 11 || slotId == 12) {
-            return new Vector3(34, 34, 0);
+        if(slotId == 8 || slotId == 9) {
+            return new Vector3(32*FACTOR, 32*FACTOR, 0);
+        }else if(slotId == 10 || slotId == 11) {
+            return new Vector3(53*FACTOR, 53*FACTOR, 0);
         }else {
-            return new Vector3(61, 61, 0);
+            return new Vector3(66*FACTOR, 66*FACTOR, 0);
         }
     }
 
@@ -211,7 +238,7 @@ public class Bag {
             if(screenX >= p.x && screenX <= p.x+bag_container_width && screenY >= p.y && screenY <= p.y+bag_container_height) {
                 int assigned = getAssignedKey(position);
                 if(assigned != -1) {
-                    DRAW_ITEM_INFO = true;
+                    SHOW_ITEM_INFO = true;
                     itemInfoWindow = new ItemInfoWindow(playScreen, assigned, true);
                     return true;
                 }
@@ -223,12 +250,12 @@ public class Bag {
     }
 
     public boolean getEquipmentSlot(int screenX, int screenY) {
-        for (int i = 1; i <= 12; i++) {
+        for (int i = 1; i <= 10; i++) {
             Vector3 p = getCoordinatesForSlotId(i);
             Vector3 dims = getWidthAndHeightOfSlot(i);
             if(screenX >= p.x && screenX <= p.x+dims.x && screenY >= p.y && screenY <= p.y+dims.y) {
                 if(playScreen.player.content.getEquippedItems().containsKey(i)) {
-                    DRAW_ITEM_INFO = true;
+                    SHOW_ITEM_INFO = true;
                     itemInfoWindow = new ItemInfoWindow(playScreen, playScreen.player.content.getEquippedItems().get(i), false);
                 }
                 return true;
@@ -240,7 +267,7 @@ public class Bag {
 
     public void render(SpriteBatch batch){
 
-        batch.draw(Assets.manager.get(Assets.inventory_background, Texture.class), 0, 0);
+        batch.draw(Assets.manager.get(Assets.inventory_background, Texture.class), 0, 0, PlayScreen.V_WIDTH, PlayScreen.V_HEIGHT);
 
         assignedMap = new TreeMap();
 
@@ -252,7 +279,7 @@ public class Bag {
             if(isEquipped == -1) {
                 Vector3 p = bag_content_positions.get(currentBagPosition);
                 assignedMap.put(currentBagPosition, entry.getKey());
-                batch.draw(Assets.manager.get(ItemFactory.getResourceStringForItemId(entry.getKey()), Texture.class), p.x+(bag_padding_x/2), p.y+(bag_padding_y/2), bag_container_width-bag_padding_x, bag_container_height-bag_padding_y);
+                batch.draw(Assets.manager.get(ItemFactory.getResourceStringForItemId(entry.getKey()), Texture.class), p.x+bag_padding_x, p.y+bag_padding_y, bag_container_width-(2*bag_padding_x), bag_container_height-(2*bag_padding_y));
                 currentBagPosition++;
             }else {
 
@@ -263,7 +290,7 @@ public class Bag {
             }
         }
 
-        if(DRAW_ITEM_INFO) {
+        if(SHOW_ITEM_INFO) {
             itemInfoWindow.render(batch);
         }
     }

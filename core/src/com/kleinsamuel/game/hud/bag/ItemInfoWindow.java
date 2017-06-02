@@ -1,4 +1,4 @@
-package com.kleinsamuel.game.hud;
+package com.kleinsamuel.game.hud.bag;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -17,35 +17,39 @@ public class ItemInfoWindow {
     private String itemName;
     private String description;
 
-    private int ITEM_INFO_WIDTH = 600;
-    private int ITEM_INFO_HEIGHT = 500;
-    private int ITEM_INFO_CLOSE_WIDTH = 40;
-    private int ITEM_INFO_CLOSE_HEIGHT = 35;
-    private int item_info_x = (PlayScreen.V_WIDTH/2)-(ITEM_INFO_WIDTH/2);
-    private int item_info_y = (PlayScreen.V_HEIGHT/2)-(ITEM_INFO_HEIGHT/2);
-    private int close_x = item_info_x+ITEM_INFO_WIDTH-ITEM_INFO_CLOSE_WIDTH;
-    private int close_y = item_info_y+ITEM_INFO_HEIGHT-(ITEM_INFO_CLOSE_HEIGHT);
+    /* size of item info window */
+    private float ITEM_INFO_WIDTH = PlayScreen.V_WIDTH*0.6f;
+    private float ITEM_INFO_HEIGHT = PlayScreen.V_HEIGHT*0.8f;
 
-    private int IMAGE_PADDING = 50;
-    private int IMAGE_WIDTH = 100;
-    private int IMAGE_HEIGHT = 100;
-    private int IMAGE_X = item_info_x+IMAGE_PADDING;
-    private int IMAGE_Y = item_info_y+ITEM_INFO_HEIGHT-IMAGE_HEIGHT-IMAGE_PADDING;
+    /* size of item info window close button */
+    private float ITEM_INFO_CLOSE_WIDTH = PlayScreen.V_WIDTH*0.05f;
+    private float ITEM_INFO_CLOSE_HEIGHT = PlayScreen.V_WIDTH*0.05f;
+
+    private float item_info_x = (PlayScreen.V_WIDTH/2)-(ITEM_INFO_WIDTH/2);
+    private float item_info_y = (PlayScreen.V_HEIGHT/2)-(ITEM_INFO_HEIGHT/2);
+    private float close_x = item_info_x+ITEM_INFO_WIDTH-ITEM_INFO_CLOSE_WIDTH;
+    private float close_y = item_info_y+ITEM_INFO_HEIGHT-(ITEM_INFO_CLOSE_HEIGHT);
+
+    private float IMAGE_PADDING = 0f;
+    private float IMAGE_WIDTH = 10f;
+    private float IMAGE_HEIGHT = 10f;
+    private float IMAGE_X = item_info_x+IMAGE_PADDING;
+    private float IMAGE_Y = item_info_y+ITEM_INFO_HEIGHT-IMAGE_HEIGHT-IMAGE_PADDING;
 
     //private Font nameFont = new Font("arial", Font.BOLD, 30);
-    private int NAME_X = IMAGE_X+IMAGE_WIDTH+IMAGE_PADDING;
-    private int NAME_Y = IMAGE_Y+IMAGE_PADDING;
-    private int NAME_PADDING = 60;
+    private float NAME_X = IMAGE_X+IMAGE_WIDTH+IMAGE_PADDING;
+    private float NAME_Y = IMAGE_Y+IMAGE_PADDING;
+    private float NAME_PADDING = 60;
 
     //private Font descFont = new Font("arial", Font.BOLD, 18);
-    private int DESC_X = IMAGE_X;
-    private int DESC_Y = IMAGE_Y+IMAGE_HEIGHT+NAME_PADDING;
-    private int DESC_PADDING = 30;
+    private float DESC_X = IMAGE_X;
+    private float DESC_Y = IMAGE_Y+IMAGE_HEIGHT+NAME_PADDING;
+    private float DESC_PADDING = 30;
 
-    private int USE_BUTTON_WIDTH = 100;
-    private int USE_BUTTON_HEIGHT = 50;
-    private int USE_BUTTON_X = (PlayScreen.V_WIDTH/2)-(USE_BUTTON_WIDTH/2);
-    private int USE_BUTTON_Y = item_info_y+(USE_BUTTON_HEIGHT);
+    private float USE_BUTTON_WIDTH = PlayScreen.V_WIDTH*0.1f;
+    private float USE_BUTTON_HEIGHT = PlayScreen.V_WIDTH*0.05f;
+    private float USE_BUTTON_X = (PlayScreen.V_WIDTH/2)-(USE_BUTTON_WIDTH/2);
+    private float USE_BUTTON_Y = item_info_y+(USE_BUTTON_HEIGHT);
 
     private boolean use_button_pressed = false;
     private String resourceStringPressed;
@@ -62,11 +66,11 @@ public class ItemInfoWindow {
             if(equip) {
                 resourceStringUnpressed = Assets.equip_button_1;
                 resourceStringPressed = Assets.equip_button_2;
-                USE_BUTTON_WIDTH = 150;
+                USE_BUTTON_WIDTH += PlayScreen.V_WIDTH*0.05f;
             }else{
                 resourceStringUnpressed = Assets.unequip_button_1;
                 resourceStringPressed = Assets.unequip_button_2;
-                USE_BUTTON_WIDTH = 180;
+                USE_BUTTON_WIDTH += PlayScreen.V_WIDTH*0.07f;
             }
             USE_BUTTON_X = (PlayScreen.V_WIDTH/2)-(USE_BUTTON_WIDTH/2);
         }else {
@@ -101,7 +105,7 @@ public class ItemInfoWindow {
 
     public void handleClick(int screenX, int screenY) {
         if(checkIfClickedOnClose(screenX, screenY)) {
-            Bag.DRAW_ITEM_INFO = false;
+            Bag.SHOW_ITEM_INFO = false;
             return;
         }
         if(checkIfClickedOnUse(screenX, screenY)) {
@@ -110,9 +114,9 @@ public class ItemInfoWindow {
                 if(equip) {
                     playScreen.player.content.equipItemById(itemId, equipmentSlot);
                 }else {
-                    playScreen.player.content.uneauipItemBySlotId(equipmentSlot);
+                    playScreen.player.content.unequipItemBySlotId(equipmentSlot);
                 }
-                Bag.DRAW_ITEM_INFO = false;
+                Bag.SHOW_ITEM_INFO = false;
                 return;
             }
         }

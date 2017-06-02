@@ -1,4 +1,4 @@
-package com.kleinsamuel.game.hud;
+package com.kleinsamuel.game.hud.bag;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -38,8 +38,6 @@ public class Equipment {
     static {
         itemsForHelmet = new HashSet<Integer>(Arrays.asList(4,12));
         itemsForTorso = new HashSet<Integer>(Arrays.asList(5));
-        itemsForLeftArm = new HashSet<Integer>(Arrays.asList(-1));
-        itemsForRightArm = new HashSet<Integer>(Arrays.asList(-1));
         itemsForLeftHand = new HashSet<Integer>(Arrays.asList(7));
         itemsForRightHand = new HashSet<Integer>(Arrays.asList(8));
         itemsForLegs = new HashSet<Integer>(Arrays.asList(6));
@@ -57,24 +55,20 @@ public class Equipment {
             case 2:
                 return itemsForTorso;
             case 3:
-                return itemsForLeftArm;
-            case 4:
-                return itemsForRightArm;
-            case 5:
                 return itemsForLeftHand;
-            case 6:
+            case 4:
                 return itemsForRightHand;
-            case 7:
+            case 5:
                 return itemsForLegs;
-            case 8:
+            case 6:
                 return itemsForLeftFoot;
-            case 9:
+            case 7:
                 return itemsForRightFoot;
-            case 10:
+            case 8:
                 return itemsForLeftRing;
-            case 11:
+            case 9:
                 return itemsForRightRing;
-            case 12:
+            case 10:
                 return itemsForNecklace;
         }
         return null;
@@ -88,7 +82,7 @@ public class Equipment {
      * @return
      */
     public static int getEquipmentSlotByItemId(int itemId) {
-        for (int i = 1; i <= 12; i++) {
+        for (int i = 1; i <= 10; i++) {
             if(getItemSetForEquipmentSlot(i).contains(itemId)) {
                 return i;
             }
