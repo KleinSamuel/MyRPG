@@ -12,9 +12,9 @@ import com.badlogic.gdx.math.Vector3;
 
 public class Utils {
 
-    public static final int TILEWIDTH = 64;
-    public static final int TILEHEIGHT = 64;
-    public static final float ZOOM_FACTOR = 1f;
+    public static final int TILEWIDTH = 24;
+    public static final int TILEHEIGHT = 24;
+    public static final float ZOOM_FACTOR = 0.5f;
 
     public static BitmapFont basicFont = new BitmapFont(Gdx.files.internal("font/8bitfont.fnt"));
 
