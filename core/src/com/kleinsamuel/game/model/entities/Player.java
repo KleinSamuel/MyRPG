@@ -22,7 +22,7 @@ import java.util.LinkedList;
 
 public class Player {
 
-    public static final float SPEED = 0.5f;
+    public static final float SPEED = 1f;
     public int xMove;
     public int yMove;
 
@@ -77,6 +77,7 @@ public class Player {
     boolean directlyAfter;
 
     public void move() {
+
         content.x += xMove * SPEED;
         content.y += yMove * SPEED;
 
@@ -224,8 +225,8 @@ public class Player {
 
     public void updateOldCoordinates() {
         if(content.x % Utils.TILEWIDTH == 0 && content.x % Utils.TILEHEIGHT == 0) {
-            oldDirX = content.x/Utils.TILEWIDTH;
-            oldDirY = content.y/Utils.TILEHEIGHT;
+            oldDirX = (int)content.x/Utils.TILEWIDTH;
+            oldDirY = (int)content.y/Utils.TILEHEIGHT;
         }
     }
 
