@@ -11,6 +11,9 @@ public class CharacterFactory {
     }
 
     public static int getNeededXpForLevel(int level) {
+        if(level <= 3){
+            return level * 20;
+        }
         return computeFormula(level);
     }
 

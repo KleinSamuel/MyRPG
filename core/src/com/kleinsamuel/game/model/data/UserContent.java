@@ -192,7 +192,7 @@ public class UserContent {
         uc.current_mana = 100;
         uc.money = 100;
         uc.level = 1;
-        uc.experience = 0;
+        uc.experience = 2;
         uc.name = "ADMIN";
         uc.bag_size = 10;
         uc.bag = new HashMap();
