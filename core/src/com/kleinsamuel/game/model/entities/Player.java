@@ -22,7 +22,7 @@ import java.util.LinkedList;
 
 public class Player {
 
-    public static final float SPEED = 1f;
+    public static final float SPEED = 1.0f;
     public int xMove;
     public int yMove;
 
@@ -36,7 +36,10 @@ public class Player {
     public Path pathToWalk;
     private AStarPathFinder pathFinder;
 
-    public Player(PlayScreen playScreen, int currentX, int currentY, SpriteSheet spriteSheet){
+    public Vector3 oldMoveTo;
+    public Vector3 moveTo;
+
+    public Player(PlayScreen playScreen, SpriteSheet spriteSheet){
 
         pathToWalk = new Path();
         xMove = 0;
@@ -94,7 +97,6 @@ public class Player {
                 setCurrentImage(0, 0, 1);
 
                 if(directlyAfter) {
-                    //g.udp_client.sendRequest("update_userdata["+id+","+entityX+","+entityY+","+oldDirX+","+oldDirY+","+1+","+health+","+currentHealth+"]");
                     directlyAfter = false;
                 }
 
@@ -174,6 +176,12 @@ public class Player {
         Vector3 currentWayPoint = pathToWalk.pathPoints.getLast();
         Vector3 dirs = walkToPoint(currentWayPoint);
 
+        moveTo = currentWayPoint;
+        if(moveTo != oldMoveTo){
+            oldMoveTo = moveTo;
+            playScreen.game.playerMovedPoint(this);
+        }
+
         if(dirs == null) {
             pathToWalk.pathPoints.removeLast();
             return output;
@@ -231,10 +239,17 @@ public class Player {
     }
 
     public void drawName(SpriteBatch batch) {
-        Utils.basicFont.getData().setScale(0.2f, 0.2f);
-        Utils.basicFont.setColor(Color.BLACK);
-        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.basicFont, content.name);
-        Utils.basicFont.draw(batch, content.name, content.x+Utils.TILEWIDTH/2-dims.x/2, content.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT*2);
+        Utils.testFont.getData().setScale(0.4f, 0.3f);
+        Utils.testFont.setColor(Color.BLACK);
+        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.testFont, content.name);
+        Utils.testFont.draw(batch, content.name, content.x+Utils.TILEWIDTH/2-dims.x/2, content.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+5);
+    }
+
+    public void drawLevel(SpriteBatch batch){
+        Utils.testFont.getData().setScale(0.3f, 0.2f);
+        Utils.testFont.setColor(Color.BLACK);
+        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.testFont, "Lvl. "+content.level);
+        Utils.testFont.draw(batch, "Lvl. "+content.level, content.x+Utils.TILEWIDTH/2-dims.x/2, content.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+10);
     }
 
     private float HEALTHBAR_PADDING = 0.5f;
@@ -243,7 +258,7 @@ public class Player {
 
     public void drawSmallHealthbar(SpriteBatch batch){
 
-        PERC_HEALTH = content.current_health/content.health;
+        PERC_HEALTH = (1.0f*content.current_health)/(1.0f*content.health);
 
         batch.draw(Assets.manager.get(Assets.rectangle_black, Texture.class), content.x, content.y + Utils.TILEHEIGHT, Utils.TILEWIDTH, HEALTHBAR_HEIGHT);
         batch.draw(Assets.manager.get(Assets.rectangle_gray, Texture.class), content.x+HEALTHBAR_PADDING, content.y+Utils.TILEHEIGHT+HEALTHBAR_PADDING, Utils.TILEWIDTH-2*HEALTHBAR_PADDING, HEALTHBAR_HEIGHT-2*HEALTHBAR_PADDING);
@@ -266,6 +281,7 @@ public class Player {
     public void renderAfter(SpriteBatch batch){
         drawSmallHealthbar(batch);
         drawName(batch);
+        drawLevel(batch);
     }
 
 }

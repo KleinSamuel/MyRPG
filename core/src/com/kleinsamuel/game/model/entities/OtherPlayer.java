@@ -17,6 +17,7 @@ public class OtherPlayer {
     private int level;
     private int entityX;
     private int entityY;
+    private float SPEED = 1.0f;
     private int currentHealth;
     private int maxHealth;
     private int currentMana;
@@ -24,6 +25,8 @@ public class OtherPlayer {
     private int xMove;
     private int yMove;
     private int xPos;
+
+    public Vector3 moveTo;
 
     private SpriteSheet spriteSheet;
     private TextureRegion currentTexture;
@@ -46,20 +49,108 @@ public class OtherPlayer {
         this.xMove = xMove;
         this.yMove = yMove;
         this.xPos = xPos;
+    }
 
-        setCurrentImage(xMove, yMove, xPos);
+    public void update(){
+
+        if(moveTo != null) {
+            Vector3 p = walkToPoint(moveTo);
+            if(p != null){
+                setMove(p);
+            }else{
+                setMove(new Vector3(0, 0, 0));
+            }
+            move();
+        }
+    }
+
+    public void setMove(Vector3 p) {
+        xMove = (int)p.x;
+        yMove = (int)p.y;
+    }
+
+    int op = 1;
+    int slow = 0;
+    int oldDirX;
+    int oldDirY;
+    int prevDirection = 0;
+
+    public void move() {
+
+        entityX += xMove * SPEED;
+        entityY += yMove * SPEED;
+
+        if (slow++ >= 7) {
+            if (xMove == 0 && yMove == 0) {
+                slow = 7;
+                setCurrentImage(0, 0, 1);
+
+            } else {
+
+                slow = 0;
+                if (op == -1 && xPos <= 0) {
+                    op = 1;
+                } else if (op == 1 && xPos >= 2) {
+                    op = -1;
+                }
+                xPos = (xPos + op);
+                setCurrentImage(xMove, yMove, xPos);
+
+                oldDirX = xMove;
+                oldDirY = yMove;
+
+            }
+        }
+    }
+
+    /**
+     * Return x and y directions needed to get to given point.
+     * Returns null if given Point is reached
+     */
+    public Vector3 walkToPoint(Vector3 pointOnMap) {
+
+        if(entityX == pointOnMap.x && entityY == pointOnMap.y) {
+            return null;
+        }
+
+        int xMove = 0;
+        int yMove = 0;
+
+        if(entityX != pointOnMap.x) {
+            if(entityX < pointOnMap.x) {
+                xMove = 1;
+            }else if(entityX > pointOnMap.x) {
+                xMove = -1;
+            }
+            return new Vector3(xMove, yMove, 0);
+        }
+
+        if(entityY < pointOnMap.y) {
+            yMove = 1;
+        }else if(entityY > pointOnMap.y) {
+            yMove = -1;
+        }
+
+        return new Vector3(xMove, yMove, 0);
     }
 
     void setCurrentImage(int x, int y, int xPos) {
         if (y == -1) {
             currentTexture = spriteSheet.getTextureRegion(0, xPos);
+            prevDirection = 0;
         } else if (y == 1) {
             currentTexture = spriteSheet.getTextureRegion(3, xPos);
+            prevDirection = 3;
         } else if (x == -1) {
             currentTexture = spriteSheet.getTextureRegion(1, xPos);
+            prevDirection = 1;
         } else if (x == 1) {
             currentTexture = spriteSheet.getTextureRegion(2, xPos);
+            prevDirection = 2;
+        }else{
+            currentTexture = spriteSheet.getTextureRegion(prevDirection, xPos);
         }
+
     }
 
     public int getLevel() {
