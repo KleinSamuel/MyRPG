@@ -11,15 +11,18 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kleinsamuel.game.GameClass;
-import com.kleinsamuel.game.hud.bag.Bag;
 import com.kleinsamuel.game.hud.HUD;
 import com.kleinsamuel.game.hud.Tilemarker;
+import com.kleinsamuel.game.hud.bag.Bag;
 import com.kleinsamuel.game.hud.lexicon.Lexicon;
 import com.kleinsamuel.game.hud.stats.Stats;
 import com.kleinsamuel.game.model.Assets;
+import com.kleinsamuel.game.model.animations.Animation;
+import com.kleinsamuel.game.model.data.CharacterFactory;
 import com.kleinsamuel.game.model.entities.OtherPlayer;
 import com.kleinsamuel.game.model.entities.Player;
 import com.kleinsamuel.game.model.entities.npcs.NPC;
@@ -32,6 +35,7 @@ import com.kleinsamuel.game.util.Utils;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 
 /**
  * Created by sam on 29.05.17.
@@ -69,6 +73,8 @@ public class PlayScreen implements Screen{
 
     private boolean wasClickedDown = false;
 
+    public LinkedList<Animation> animations;
+
     public PlayScreen(GameClass game){
         this.game = game;
 
@@ -77,10 +83,6 @@ public class PlayScreen implements Screen{
         Gdx.input.setInputProcessor(new MyInputProcessor(this));
 
         batch = new SpriteBatch();
-
-        Assets.load();
-        Assets.manager.finishLoading();
-        Assets.manager.update();
 
         gameCam = new OrthographicCamera();
         //gamePort = new ScreenViewport(gameCam);
@@ -105,36 +107,16 @@ public class PlayScreen implements Screen{
         gameCam.position.set(500, 500, 0);
         gameCam.zoom = Utils.ZOOM_FACTOR;
 
-        player = new Player(this, 256, 1280, new SpriteSheet(Assets.manager.get(Assets.playerSprite, Texture.class), 4, 3));
+        player = new Player(this, new SpriteSheet(Assets.manager.get(Assets.test, Texture.class), 4, 3));
         game.sendInitialInfo(player);
 
         tilemarker = new Tilemarker();
+        animations = new LinkedList<Animation>();
 
         bag = new Bag(this);
-        hud = new HUD();
+        hud = new HUD(this);
         stats = new Stats(this);
         lexicon = new Lexicon(this);
-
-        NPCData data = new NPCData(1, 1, 48, 48, 1, 10, 10);
-        NPC npc = new NPC(48, 48, new SpriteSheet(Assets.manager.get(Assets.bug_small, Texture.class), 1, 4), data);
-        game.npcs.put(1, npc);
-
-        NPCData data2 = new NPCData(2, 2, 72, 48, 1, 10, 10);
-        NPC npc2 = new NPC(48, 48, new SpriteSheet(Assets.manager.get(Assets.bird_crow, Texture.class), 1, 4), data2);
-        game.npcs.put(2, npc2);
-
-        NPCData data3 = new NPCData(3, 3, 48, 72, 1, 10, 10);
-        NPC npc3 = new NPC(48, 48, new SpriteSheet(Assets.manager.get(Assets.elemental_water, Texture.class), 1, 4), data3);
-        npc3.setSize(34, 34);
-        game.npcs.put(3, npc3);
-
-        NPCData data4 = new NPCData(4, 4, 168, 72, 1, 10, 10);
-        NPC npc4 = new NPC(48, 48, new SpriteSheet(Assets.manager.get(Assets.eloa_war, Texture.class), 1, 4), data4);
-        npc4.setSize(42, 42);
-        npc4.setAnimationSpeed(300);
-        game.npcs.put(4, npc4);
-
-        game.otherPlayers = new HashMap<String, OtherPlayer>();
 
         font = new BitmapFont();
 
@@ -145,6 +127,7 @@ public class PlayScreen implements Screen{
     private void updateMainBars(){
         hud.healthbar.setHealth(player.content.current_health, player.content.health);
         hud.manabar.setMana(player.content.current_mana, player.content.mana);
+        hud.experiencebar.setExperience(player.content.experience, CharacterFactory.getNeededXpForLevel(player.content.level));
     }
 
     private void updateNPCs(){
@@ -153,13 +136,35 @@ public class PlayScreen implements Screen{
         }
     }
 
+    private void updateOtherPlayers(){
+        for(OtherPlayer op : game.otherPlayers.values()){
+            op.update();
+        }
+    }
+
+    private void updateAnimations(){
+        int toDelete = -1;
+        for (int i = 0; i < animations.size(); i++) {
+            Animation a = animations.get(i);
+            a.update();
+            if(a.delete){
+                toDelete = i;
+            }
+        }
+        if(toDelete != -1){
+            animations.remove(toDelete);
+        }
+    }
+
     public void update(float delta){
 
         tilemarker.update();
         updateNPCs();
+        updateOtherPlayers();
         player.update();
-        game.updateServer_Position(delta, player);
+        //game.updateServer_Position(delta, player);
 
+        updateAnimations();
         updateMainBars();
 
         checkIfCameraIsInBounds();
@@ -193,6 +198,7 @@ public class PlayScreen implements Screen{
         renderOtherPlayersAfter(batch);
         renderNPCsAfter(batch);
         player.renderAfter(batch);
+        renderAnimations(batch);
         batch.end();
 
         /* render HUD */
@@ -236,6 +242,12 @@ public class PlayScreen implements Screen{
         }
     }
 
+    private void renderAnimations(SpriteBatch batch){
+        for(Animation a : animations){
+            a.render(batch);
+        }
+    }
+
     /**
      * Check if camera is out of bounds of map
      */
@@ -262,31 +274,76 @@ public class PlayScreen implements Screen{
         return !mapRepresentation.walkableTiles.contains(mapRepresentation.map2D[arrayX][arrayY]);
     }
 
+    /*
+           OTHER PLAYER STUFF
+     */
+
     public void addOtherPlayer(String id){
         DebugMessageFactory.printNormalMessage("ADDED NEW PLAYER WITH ID: "+id);
-        game.otherPlayers.put(id, new OtherPlayer(new SpriteSheet(Assets.manager.get(Assets.playerSprite, Texture.class), 4, 3), "Unknown", 256, 1280));
+        addOtherPlayer(id, "Unknown", 0, 0, 0, 0, 0);
     }
 
-    public void addOtherPlayer(String id, String name, int entityX, int entityY, int xMove, int yMove, int xPos){
-
+    public void updateOtherPlayer(String id, String name, int entityX, int entityY, int xMove, int yMove, int xPos){
         if(game.otherPlayers == null){
             game.otherPlayers = new HashMap<String, OtherPlayer>();
         }
 
-        OtherPlayer op;
+        OtherPlayer toUpdate = game.otherPlayers.get(id);
 
-        if(game.otherPlayers.containsKey(id)){
-            op = game.otherPlayers.get(id);
-        }else{
-            op = new OtherPlayer(new SpriteSheet(Assets.manager.get(Assets.playerSprite, Texture.class), 4, 3), name, entityX, entityY);
-            game.otherPlayers.put(id, op);
+        if(toUpdate != null){
+            toUpdate.update(entityX, entityY, name, xMove, yMove, xPos);
         }
-        op.update(entityX, entityY, name, xMove, yMove, xPos);
+    }
+
+    public void addOtherPlayer(String id, String name, int entityX, int entityY, int xMove, int yMove, int xPos){
+        game.otherPlayers.put(id, new OtherPlayer(new SpriteSheet(Assets.manager.get(Assets.test, Texture.class), 4, 3), name, entityX, entityY));
+    }
+
+    public void setOtherPlayerPoint(String id, int x, int y){
+        if(game.otherPlayers.containsKey(id)){
+            game.otherPlayers.get(id).moveTo = new Vector3(x, y, 0);
+        }
     }
 
     public void removeOtherPlayer(String id){
-        DebugMessageFactory.printNormalMessage("REMOVED PLAYER WITH ID: "+id);
         game.otherPlayers.remove(id);
+    }
+
+    /*
+            NPC STUFF
+     */
+
+    public void addNPC(int id, int npc_key, int level, float x, float y, float speed, int current_health, int max_health){
+        if(game.npcs == null){
+            game.npcs = new HashMap<Integer, NPC>();
+        }
+
+        NPCData data = new NPCData(id, npc_key, level, x, y, speed, current_health, max_health);
+
+        if(game.npcs.containsKey(id)) {
+            game.npcs.get(id).data = data;
+        }else{
+            game.npcs.put(id, new NPC(new SpriteSheet(Assets.manager.get(Assets.elemental_water, Texture.class), 1, 4), data));
+        }
+    }
+
+    public void updateNPCPosition(int id, float x, float y){
+        NPC npc = game.npcs.get(id);
+        if(npc == null){
+            DebugMessageFactory.printErrorMessage("ERROR NPC "+id+" DOES NOT EXISTS BUT WANTS TO BE UPDATED");
+            return;
+        }
+        npc.data.x = x;
+        npc.data.y = y;
+    }
+
+    public void updateNPCPoint(int id, float x, float y){
+        NPC npc = game.npcs.get(id);
+        if(npc == null){
+            DebugMessageFactory.printErrorMessage("ERROR NPC "+id+" DOES NOT EXISTS BUT WANTS TO BE UPDATED");
+            return;
+        }
+        npc.data.moveTo = new Vector3(x, y, 0);
     }
 
     @Override
