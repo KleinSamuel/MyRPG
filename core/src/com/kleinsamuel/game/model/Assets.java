@@ -27,6 +27,10 @@ public class Assets {
     public static final String blue_bar = "bars/mana_internal_blue.png";
     public static final String green_bar = "bars/experience_internal_green.png";
 
+    public static final String uf_healthbar = "bars/uf_healthbar.png";
+    public static final String uf_manabar = "bars/uf_manabar.png";
+    public static final String uf_experiencebar = "bars/uf_experiencebar.png";
+
     /* hud */
     public static final String money_skull_bar = "hud/money_skull_bar.png";
     public static final String settings_button = "hud/settings_button.png";
@@ -75,6 +79,17 @@ public class Assets {
     public static final String potion_health_1 = "items/potion_health_1.png";
     public static final String torso_1 = "items/torso_1.png";
 
+    /* animations */
+    public static final String slash_single = "animations/slash_single.png";
+    public static final String slash_triple = "animations/slash_triple.png";
+    public static final String slash_curve_half = "animations/slash_curve_half.png";
+    public static final String slash_curve_full = "animations/slash_curve_full.png";
+    public static final String slash_x_symmetrical = "animations/slash_x_symmetrical.png";
+    public static final String slash_x_asymmetrical = "animations/slash_x_asymmetrical.png";
+    public static final String explosion = "animations/explosion.png";
+
+    public static final String test = "player/goblin.png";
+
     public static void load() {
         manager.load(playerSprite, Texture.class);
         manager.load(tilemarker_normal, Texture.class);
@@ -84,6 +99,12 @@ public class Assets {
         manager.load(rectangle_gray, Texture.class);
         manager.load(rectangle_blue, Texture.class);
         manager.load(rectangle_light_gray, Texture.class);
+
+        manager.load(test, Texture.class);
+
+        manager.load(uf_healthbar, Texture.class);
+        manager.load(uf_manabar, Texture.class);
+        manager.load(uf_experiencebar, Texture.class);
 
         manager.load(settings_button, Texture.class);
         manager.load(bag_button, Texture.class);
@@ -132,6 +153,13 @@ public class Assets {
         manager.load(potion_red_1, Texture.class);
         manager.load(torso_1, Texture.class);
 
+        manager.load(slash_single, Texture.class);
+        manager.load(slash_triple, Texture.class);
+        manager.load(slash_curve_half, Texture.class);
+        manager.load(slash_curve_full, Texture.class);
+        manager.load(slash_x_symmetrical, Texture.class);
+        manager.load(slash_x_asymmetrical, Texture.class);
+        manager.load(explosion, Texture.class);
     }
 
     public static void dispose()     {
