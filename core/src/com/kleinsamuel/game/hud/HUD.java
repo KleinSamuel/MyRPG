@@ -1,17 +1,21 @@
 package com.kleinsamuel.game.hud;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.kleinsamuel.game.hud.bars.Experiencebar;
 import com.kleinsamuel.game.hud.bars.Healthbar;
 import com.kleinsamuel.game.hud.bars.Manabar;
 import com.kleinsamuel.game.model.Assets;
 import com.kleinsamuel.game.screens.PlayScreen;
+import com.kleinsamuel.game.util.Utils;
 
 import static com.kleinsamuel.game.util.Utils.FACTOR;
 
@@ -27,13 +31,16 @@ public class HUD {
 
     Label testLabel;
 
-    public com.kleinsamuel.game.hud.bars.Healthbar healthbar;
-    public com.kleinsamuel.game.hud.bars.Manabar manabar;
-    public com.kleinsamuel.game.hud.bars.Experiencebar experiencebar;
+    public Healthbar healthbar;
+    public Manabar manabar;
+    public Experiencebar experiencebar;
 
-    public HUD(){
+    private PlayScreen playScreen;
+
+    public HUD(PlayScreen playScreen){
 
         batch = new SpriteBatch();
+        this.playScreen = playScreen;
 
         viewport = new FitViewport(PlayScreen.V_WIDTH, PlayScreen.V_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, batch);
@@ -105,12 +112,24 @@ public class HUD {
         return (screenX >= bag_button_x && screenX <= bag_button_x+button_width && screenY >= bag_button_y && screenY <= bag_button_y+button_height);
     }
 
+    private void drawMoneyString(SpriteBatch batch){
+
+        Utils.basicFont.getData().setScale(0.4f, 0.5f);
+        Utils.basicFont.setColor(new Color(255.0f, 255.0f, 0.0f, 10.0f));
+        String s = ""+playScreen.player.content.money;
+        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.basicFont, s);
+        Utils.basicFont.draw(batch, s, MONEY_SKULL_BAR_X+25, MONEY_SKULL_BAR_Y+15);
+
+    }
+
     public void render() {
         healthbar.render(batch);
         manabar.render(batch);
-        //experiencebar.render(batch);
+        experiencebar.render(batch);
 
         batch.draw(Assets.manager.get(Assets.money_skull_bar, Texture.class), MONEY_SKULL_BAR_X, MONEY_SKULL_BAR_Y, MONEY_SKULL_BAR_WIDTH, MONEY_SKULL_BAR_HEIGHT);
+
+        drawMoneyString(batch);
 
         batch.draw(Assets.manager.get(Assets.settings_button, Texture.class), settings_button_x, settings_button_y, button_width, button_height);
         batch.draw(Assets.manager.get(Assets.social_button, Texture.class), social_button_x, social_button_y, button_width, button_height);
