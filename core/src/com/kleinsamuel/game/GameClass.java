@@ -1,6 +1,7 @@
 package com.kleinsamuel.game;
 
 import com.badlogic.gdx.Game;
+import com.kleinsamuel.game.model.Assets;
 import com.kleinsamuel.game.model.entities.OtherPlayer;
 import com.kleinsamuel.game.model.entities.Player;
 import com.kleinsamuel.game.model.entities.npcs.NPC;
@@ -20,8 +21,8 @@ import io.socket.emitter.Emitter;
 
 public class GameClass extends Game {
 
-	private String serverName = "87.160.48.51";
-	private String port = "61498";
+	private String serverName = "87.160.48.132";
+	private String port = "8081";
 	private IO.Options socketOptions;
 
 	private final float UPDATE_TIMER = 1/40f;
@@ -48,6 +49,10 @@ public class GameClass extends Game {
 		socketOptions = new IO.Options();
 		socketOptions.timeout = 5000;
 		socketOptions.reconnectionAttempts = 0;
+
+		Assets.load();
+		Assets.manager.finishLoading();
+		Assets.manager.update();
 
 		otherPlayers = new HashMap<String, OtherPlayer>();
 		npcs = new HashMap<Integer, NPC>();
@@ -116,6 +121,21 @@ public class GameClass extends Game {
 		}
 	}
 
+	public void playerMovedPoint(Player p){
+		JSONObject data = new JSONObject();
+		try {
+			data.put("x", p.moveTo.x);
+			data.put("y", p.moveTo.y);
+			data.put("currentX", p.content.x);
+			data.put("currentY", p.content.y);
+
+			socket.emit("playerMovedPoint", data);
+
+		} catch (JSONException e){
+			DebugMessageFactory.printErrorMessage("SOCKET:IO ERROR SENDING PLAYER MOVED POINT DATA");
+		}
+	}
+
 	public void updateServer_Health(Player p){
 		JSONObject data = new JSONObject();
 
@@ -172,6 +192,8 @@ public class GameClass extends Game {
 
 			socket.emit("initPlayer", data);
 
+			DebugMessageFactory.printInfoMessage("SENT INITIAL PLAYER DATA");
+
 		} catch (JSONException e){
 			DebugMessageFactory.printErrorMessage("SOCKET:IO ERROR SENDING INITIAL INFO");
 		}
@@ -187,7 +209,7 @@ public class GameClass extends Game {
 		DebugMessageFactory.printNormalMessage("CONNECTING TO SERVER ["+serverName+":"+port+"]...");
 		try {
 			socket = null;
-			socket = IO.socket("http://"+serverName+":"+port, socketOptions);
+			socket = IO.socket("http://"+serverName+":"+port+"/player", socketOptions);
 			socket.connect();
 		} catch( Exception e){
 			DebugMessageFactory.printNormalMessage("COULD NOT CONNECT TO SERVER!");
@@ -207,17 +229,11 @@ public class GameClass extends Game {
 			@Override
 			public void call(Object... args) {
 				CONNECTED = false;
-				startScreen = new StartScreen(game);
+				//startScreen = new StartScreen(game);
 				setScreen(startScreen);
-				if(playScreen != null){
-					playScreen = null;
-				}
-				if(startScreen.signUpScreen != null){
-					startScreen.signUpScreen = null;
-				}
-				if(startScreen.logInScreen != null){
-					startScreen.logInScreen = null;
-				}
+				playScreen = null;
+				startScreen.signUpScreen = null;
+				startScreen.logInScreen = null;
 			}
 		}).on(Socket.EVENT_CONNECT_TIMEOUT, new Emitter.Listener() {
 			@Override
@@ -263,7 +279,28 @@ public class GameClass extends Game {
 					e.printStackTrace();
 				}
 			}
-		}).on("playerDisconnected", new Emitter.Listener(){
+		}).on("initNewPlayer", new Emitter.Listener(){
+            @Override
+            public void call(Object... args) {
+                JSONObject data = (JSONObject) args[0];
+                try {
+
+                    String id = data.getString("id");
+                    String name = data.getString("name");
+                    int entityX = data.getInt("x");
+                    int entityY = data.getInt("y");
+                    int xMove = data.getInt("xMove");
+                    int yMove = data.getInt("yMove");
+                    int xPos = data.getInt("xPos");
+
+                    if(playScreen != null) {
+                        playScreen.updateOtherPlayer(id, name, entityX, entityY, xMove, yMove, xPos);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).on("playerDisconnected", new Emitter.Listener(){
 			@Override
 			public void call(Object... args) {
 				JSONObject data = (JSONObject) args[0];
@@ -282,6 +319,7 @@ public class GameClass extends Game {
 			public void call(Object... args) {
 				JSONArray objects = (JSONArray) args[0];
 				try {
+
 					for(int i = 0; i < objects.length(); i++){
 
 						String id = objects.getJSONObject(i).getString("id");
@@ -297,7 +335,7 @@ public class GameClass extends Game {
 						}
 					}
 				} catch(JSONException e){
-
+					DebugMessageFactory.printErrorMessage("ERROR GETTING OTHER PLAYERS!");
 				}
 			}
 		}).on("playerMoved", new Emitter.Listener() {
@@ -315,30 +353,104 @@ public class GameClass extends Game {
 					int xPos = data.getInt("xPos");
 
 					if(playScreen != null) {
-						playScreen.addOtherPlayer(id, name, entityX, entityY, xMove, yMove, xPos);
+                        playScreen.updateOtherPlayer(id, name, entityX, entityY, xMove, yMove, xPos);
 					}
 				} catch(JSONException e){
-
+                    DebugMessageFactory.printErrorMessage("ERROR UPDATING OTHER PLAYERS!");
 				}
 			}
-		}).on("registerNewUserAnswer", new Emitter.Listener() {
+		}).on("playerMovedPoint", new Emitter.Listener() {
 			@Override
 			public void call(Object... args) {
 
 				JSONObject data = (JSONObject) args[0];
 				try {
+					String id = data.getString("id");
+					int entityX = data.getInt("x");
+					int entityY = data.getInt("y");
 
+					if(playScreen != null) {
+						playScreen.setOtherPlayerPoint(id, entityX, entityY);
+					}
+				} catch(JSONException e){
+                    DebugMessageFactory.printErrorMessage("ERROR GETTING OTHER PLAYERS POINT!");
+				}
+			}
+		}).on("registerNewUserAnswer", new Emitter.Listener() {
+			@Override
+			public void call(Object... args) {
+				JSONObject data = (JSONObject) args[0];
+				try {
 					boolean success = data.getBoolean("status");
 					signInSuccessfull = success;
-
-					DebugMessageFactory.printInfoMessage("GOT ANSWER FOR SIGN UP REQUEST: "+success);
-
 				} catch(JSONException e){
 
 				}
-
 				startScreen.signUpScreen.changeStatusText = false;
 
+			}
+		}).on("getNPCs", new Emitter.Listener() {
+			@Override
+			public void call(Object... args) {
+
+				JSONArray objects = (JSONArray) args[0];
+
+				try {
+
+					for(int i = 0; i < objects.length(); i++) {
+
+						int id = objects.getJSONObject(i).getInt("id");
+						int npc_key = objects.getJSONObject(i).getInt("npc_key");
+						int level = objects.getJSONObject(i).getInt("level");
+						float x = objects.getJSONObject(i).getInt("x");
+						float y = objects.getJSONObject(i).getInt("y");
+						float speed = (float)objects.getJSONObject(i).getDouble("speed");
+						int current_health = objects.getJSONObject(i).getInt("currHealth");
+						int max_health = objects.getJSONObject(i).getInt("maxHealth");
+
+                        if(playScreen != null) {
+                            playScreen.addNPC(id, npc_key, level, x, y, speed, current_health, max_health);
+                        }
+					}
+
+				} catch(JSONException e){
+					DebugMessageFactory.printErrorMessage("ERROR HANDLING GET NPCS");
+					e.printStackTrace();
+				}
+			}
+		}).on("npcMoved", new Emitter.Listener() {
+			@Override
+			public void call(Object... args) {
+				JSONObject data = (JSONObject) args[0];
+				try {
+					int id = data.getInt("id");
+                    float x = data.getInt("x");
+                    float y = data.getInt("y");
+
+                    if(playScreen != null) {
+                        playScreen.updateNPCPosition(id, x, y);
+                    }
+
+				} catch(JSONException e){
+                    DebugMessageFactory.printErrorMessage("ERROR UPDATING NPCS");
+				}
+			}
+		}).on("npcMovedPoint", new Emitter.Listener() {
+			@Override
+			public void call(Object... args) {
+				JSONObject data = (JSONObject) args[0];
+				try {
+					int id = data.getInt("id");
+					float x = data.getInt("pointX");
+					float y = data.getInt("pointY");
+
+					if(playScreen != null) {
+						playScreen.updateNPCPoint(id, x, y);
+					}
+
+				} catch(JSONException e){
+					DebugMessageFactory.printErrorMessage("ERROR UPDATING NPCS");
+				}
 			}
 		});
 	}
