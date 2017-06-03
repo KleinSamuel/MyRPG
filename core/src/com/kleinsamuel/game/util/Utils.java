@@ -23,6 +23,7 @@ public class Utils {
     public static final float FACTOR = PlayScreen.V_WIDTH/BASE_WIDTH;
 
     public static BitmapFont basicFont = new BitmapFont(Gdx.files.internal("font/8bitfont.fnt"));
+    public static BitmapFont testFont = new BitmapFont(Gdx.files.internal("font/editundo.fnt"));
 
     public static Vector3 getArrayCoordinates(float screenX, float screenY){
         int x = (int)((screenX)/(TILEWIDTH));
