@@ -239,7 +239,15 @@ public class Player {
     }
 
     public void drawName(SpriteBatch batch) {
+
+        /*
+        float r = Utils.random.nextFloat() / 2f + 0.5f;
+        float g = Utils.random.nextFloat() / 2f + 0.5f;
+        float b = Utils.random.nextFloat() / 2f + 0.5f;
+        */
+
         Utils.testFont.getData().setScale(0.4f, 0.3f);
+        //Utils.testFont.setColor(new Color(r, g, b, 10.0f));
         Utils.testFont.setColor(Color.BLACK);
         Vector3 dims = Utils.getWidthAndHeightOfString(Utils.testFont, content.name);
         Utils.testFont.draw(batch, content.name, content.x+Utils.TILEWIDTH/2-dims.x/2, content.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+5);
