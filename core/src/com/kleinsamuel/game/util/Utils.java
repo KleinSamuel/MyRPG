@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Vector3;
 import com.kleinsamuel.game.screens.PlayScreen;
 
+import java.util.Random;
+
 /**
  * Created by sam on 30.05.17.
  */
@@ -21,6 +23,8 @@ public class Utils {
     private static final float BASE_HEIGHT = 540;
 
     public static final float FACTOR = PlayScreen.V_WIDTH/BASE_WIDTH;
+
+    public static Random random = new Random();
 
     public static BitmapFont basicFont = new BitmapFont(Gdx.files.internal("font/8bitfont.fnt"));
     public static BitmapFont testFont = new BitmapFont(Gdx.files.internal("font/editundo.fnt"));
