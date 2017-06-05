@@ -2,7 +2,6 @@ package com.kleinsamuel.game.screens;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector3;
-import com.kleinsamuel.game.model.animations.DamageAnimation;
 import com.kleinsamuel.game.util.DebugMessageFactory;
 import com.kleinsamuel.game.util.Utils;
 
@@ -101,13 +100,16 @@ public class MyInputProcessor implements InputProcessor {
                 return true;
             }
 
+            if(playScreen.checkIfClickedOnNPC((int)arrayCoord.x, (int)arrayCoord.y)){
+                return true;
+            }
+
+            playScreen.player.following = null;
+
+            playScreen.tilemarker.setToNormal();
             playScreen.tilemarker.setVisible(true);
             playScreen.tilemarker.setEntityX((int) arrayCoord.x * Utils.TILEWIDTH);
             playScreen.tilemarker.setEntityY((int) arrayCoord.y * Utils.TILEHEIGHT);
-
-            //playScreen.animations.add(new EffectAnimation(AnimationFactory.getSpriteSheet(AnimationEnum.SLASH_X_ASYMMETRICAL), 200, arrayCoord.x*Utils.TILEWIDTH, arrayCoord.y * Utils.TILEHEIGHT));
-            //playScreen.animations.add(new EffectAnimation(new SpriteSheet(Assets.manager.get(Assets.explosion, Texture.class), 1, 15), 100, arrayCoord.x*Utils.TILEWIDTH, arrayCoord.y * Utils.TILEHEIGHT));
-            playScreen.animations.add(new DamageAnimation(true, true, 100, arrayCoord.x*Utils.TILEWIDTH+(Utils.TILEWIDTH/2), arrayCoord.y * Utils.TILEHEIGHT+Utils.TILEHEIGHT));
 
             playScreen.player.createSmartPathTo(arrayCoord, new Vector3(playScreen.player.content.x,playScreen. player.content.y, 0));
         }
