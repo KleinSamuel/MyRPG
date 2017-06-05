@@ -13,7 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -41,8 +41,8 @@ public class GameClass extends Game {
 	public PlayScreen playScreen;
 	public GameClass game;
 
-	public HashMap<String, OtherPlayer> otherPlayers;
-	public HashMap<Integer, NPC> npcs;
+	public ConcurrentHashMap<String, OtherPlayer> otherPlayers;
+	public ConcurrentHashMap<Integer, NPC> npcs;
 
 	@Override
 	public void create() {
@@ -56,8 +56,8 @@ public class GameClass extends Game {
 		Assets.manager.finishLoading();
 		Assets.manager.update();
 
-		otherPlayers = new HashMap<String, OtherPlayer>();
-		npcs = new HashMap<Integer, NPC>();
+		otherPlayers = new ConcurrentHashMap<String, OtherPlayer>();
+		npcs = new ConcurrentHashMap<Integer, NPC>();
 
 		//startScreen = new StartScreen(this);
 		//setScreen(startScreen);
@@ -433,7 +433,7 @@ public class GameClass extends Game {
 						int max_health = objects.getJSONObject(i).getInt("maxHealth");
 
                         if(playScreen != null) {
-                            playScreen.addNPC(id, npc_key, level, x, y, speed, current_health, max_health);
+							playScreen.addNPC(id, npc_key, level, x, y, speed, current_health, max_health);
                         }
 					}
 
@@ -477,6 +477,30 @@ public class GameClass extends Game {
 				}
 			}
 		});
+		socket.on("newNpc", new Emitter.Listener() {
+			@Override
+			public void call(Object... args) {
+				JSONObject data = (JSONObject) args[0];
+				try {
+
+					int id = data.getInt("id");
+					int npc_key = data.getInt("npc_key");
+					int level = data.getInt("level");
+					int x = data.getInt("x");
+					int y = data.getInt("y");
+					double speed = data.getDouble("speed");
+					int current_health = data.getInt("current_health");
+					int max_health = data.getInt("max_health");
+
+					if(playScreen != null) {
+						playScreen.addNPC(id, npc_key, level, x, y, (float)speed, current_health, max_health);
+					}
+
+				} catch(JSONException e){
+					DebugMessageFactory.printErrorMessage("ERROR ADDING NEW NPC");
+				}
+			}
+		});
 		socket.on("damageToNpc", new Emitter.Listener() {
 			@Override
 			public void call(Object... args) {
@@ -501,9 +525,7 @@ public class GameClass extends Game {
 				JSONObject data = (JSONObject) args[0];
 				try {
 					int toId = data.getInt("to");
-					if(playScreen != null) {
-						npcs.remove(toId);
-					}
+					npcs.remove(toId);
 				} catch(JSONException e){
 					DebugMessageFactory.printErrorMessage("ERROR UPDATING NPCS");
 				}
@@ -517,9 +539,6 @@ public class GameClass extends Game {
 					String fromId = data.getString("from");
 					String toId = data.getString("to");
 					int amount = data.getInt("amount");
-
-					DebugMessageFactory.printInfoMessage("DAMAGE TO PLAYER: from: "+fromId+", to: "+toId+", amount: "+amount);
-					DebugMessageFactory.printInfoMessage("MY ID: "+clientID);
 
 					if(playScreen != null) {
 						if (toId.equals(clientID)) {
