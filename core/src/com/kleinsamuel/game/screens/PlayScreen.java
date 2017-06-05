@@ -22,6 +22,10 @@ import com.kleinsamuel.game.hud.lexicon.Lexicon;
 import com.kleinsamuel.game.hud.stats.Stats;
 import com.kleinsamuel.game.model.Assets;
 import com.kleinsamuel.game.model.animations.Animation;
+import com.kleinsamuel.game.model.animations.AnimationEnum;
+import com.kleinsamuel.game.model.animations.AnimationFactory;
+import com.kleinsamuel.game.model.animations.DamageAnimation;
+import com.kleinsamuel.game.model.animations.EffectAnimation;
 import com.kleinsamuel.game.model.data.CharacterFactory;
 import com.kleinsamuel.game.model.entities.OtherPlayer;
 import com.kleinsamuel.game.model.entities.Player;
@@ -274,6 +278,19 @@ public class PlayScreen implements Screen{
         return !mapRepresentation.walkableTiles.contains(mapRepresentation.map2D[arrayX][arrayY]);
     }
 
+    public boolean checkIfClickedOnNPC(int arrayX, int arrayY){
+        for(NPC npc : game.npcs.values()){
+            Vector3 npcArrayCoord = Utils.getArrayCoordinates(npc.data.x, npc.data.y);
+            if(arrayX == npcArrayCoord.x && arrayY == npcArrayCoord.y){
+                DebugMessageFactory.printInfoMessage("CLICKED ON NPC!!");
+                player.following = npc;
+                player.follow(npcArrayCoord, new Vector3(player.content.x, player.content.y, 0));
+                return true;
+            }
+        }
+        return false;
+    }
+
     /*
            OTHER PLAYER STUFF
      */
@@ -346,6 +363,27 @@ public class PlayScreen implements Screen{
         npc.data.moveTo = new Vector3(x, y, 0);
     }
 
+    public void damageNpc(int id, int amount) {
+        game.npcs.get(id).data.current_health -= amount;
+        game.damageNpc(id, amount);
+    }
+
+    public void killNpc(int id){
+        game.npcs.remove(id);
+        game.killNpc(id);
+    }
+
+    public void damageToOtherPlayer(String id, int amount){
+
+        OtherPlayer op = game.otherPlayers.get(id);
+
+        if(op != null){
+            op.currentHealth -= amount;
+            animations.add(new EffectAnimation(AnimationFactory.getSpriteSheet(AnimationEnum.SLASH_SINGLE), 150, op.entityX, op.entityY));
+            animations.add(new DamageAnimation(false, true, amount, op.entityX, op.entityY));
+        }
+    }
+
     @Override
     public void resize(int width, int height) {
         gamePort.update(width, height);
@@ -371,4 +409,5 @@ public class PlayScreen implements Screen{
         batch.dispose();
         player.content.writeToFile();
     }
+
 }
