@@ -27,12 +27,11 @@ public class DamageAnimation extends Animation{
         this.left = left;
         this.toEnemy = toEnemy;
         this.damage = damage;
-        this.damage = Utils.random.nextInt(100);
         if(left){
             x -= Utils.TILEWIDTH/2;
         }
-        this.x = x;
-        this.y = y;
+        this.x = x+(Utils.TILEWIDTH/2);
+        this.y = y+Utils.TILEHEIGHT;
         this.animationspeed = 40;
         this.duration = 900;
         timestamp = System.currentTimeMillis();
