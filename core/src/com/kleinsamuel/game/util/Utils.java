@@ -41,6 +41,36 @@ public class Utils {
         return cam.project(new Vector3(adjX, adjY, 0));
     }
 
+    /**
+     * Returns x and y coordinates of array position in which more than 50% of players mass are.
+     *
+     * @param screenX
+     * @param screenY
+     * @return
+     */
+    public static Vector3 getArrayCoordinatesMiddle(float screenX, float screenY){
+        float xOffset = screenX%TILEWIDTH;
+        float yOffset = screenY%TILEHEIGHT;
+
+        int x = 0;
+        if(xOffset < TILEWIDTH/2){
+            x = (int)screenX/TILEWIDTH;
+        }else{
+            x = ((int)screenX/TILEWIDTH)+1;
+        }
+
+        int y = 0;
+        if(yOffset < TILEHEIGHT/2){
+            y = (int)screenY/TILEHEIGHT;
+        }else{
+            y = ((int)screenY/TILEHEIGHT)+1;
+        }
+
+        return new Vector3(x, y, 0);
+    }
+
+
+
     private static GlyphLayout layout = new GlyphLayout();
 
     public static Vector3 getWidthAndHeightOfString(BitmapFont font, String s){
