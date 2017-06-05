@@ -1,5 +1,6 @@
 package com.kleinsamuel.game.model.entities.npcs;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -181,6 +182,21 @@ public class NPC {
         setNextTexture();
     }
 
+    // TODO add specific NPC name
+    public void drawName(SpriteBatch batch) {
+        Utils.testFont.getData().setScale(0.4f, 0.3f);
+        Utils.testFont.setColor(Color.BLACK);
+        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.testFont, "ENEMY");
+        Utils.testFont.draw(batch, "ENEMY", data.x+Utils.TILEWIDTH/2-dims.x/2, data.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+5);
+    }
+
+    public void drawLevel(SpriteBatch batch){
+        Utils.testFont.getData().setScale(0.3f, 0.2f);
+        Utils.testFont.setColor(Color.BLACK);
+        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.testFont, "Lvl. "+data.level);
+        Utils.testFont.draw(batch, "Lvl. "+data.level, data.x+Utils.TILEWIDTH/2-dims.x/2, data.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+10);
+    }
+
     public void drawSmallHealthbar(SpriteBatch batch){
 
         PERC_HEALTH = (1.0f*data.current_health)/(1.0f*data.max_health);
@@ -198,6 +214,8 @@ public class NPC {
     public void renderAfter(SpriteBatch batch){
         // TODO draw name, level and health
         drawSmallHealthbar(batch);
+        drawName(batch);
+        drawLevel(batch);
     }
 
 }
