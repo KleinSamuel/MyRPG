@@ -3,6 +3,7 @@ package com.kleinsamuel.game.hud;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.kleinsamuel.game.model.Assets;
+import com.kleinsamuel.game.util.DebugMessageFactory;
 import com.kleinsamuel.game.util.Utils;
 
 /**
@@ -13,7 +14,7 @@ public class Tilemarker {
 
     private boolean isVisible = false;
 
-    private int entityX, entityY;
+    private float entityX, entityY;
 
     private Texture normal, enemy, current;
 
@@ -41,20 +42,28 @@ public class Tilemarker {
         isVisible = visible;
     }
 
-    public int getEntityX() {
+    public float getEntityX() {
         return entityX;
     }
 
-    public void setEntityX(int entityX) {
+    public void setEntityX(float entityX) {
         this.entityX = entityX;
     }
 
-    public int getEntityY() {
+    public float getEntityY() {
         return entityY;
     }
 
-    public void setEntityY(int entityY) {
+    public void setEntityY(float entityY) {
         this.entityY = entityY;
+    }
+
+    public void setToNormal(){
+        this.current = normal;
+    }
+
+    public void setToEnemy(){
+        this.current = enemy;
     }
 
 }
