@@ -1,14 +1,12 @@
 package com.kleinsamuel.game.model.entities.npcs;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
-import com.kleinsamuel.game.model.pathfinding.AStarPathFinder;
-import com.kleinsamuel.game.model.pathfinding.Path;
+import com.kleinsamuel.game.model.Assets;
 import com.kleinsamuel.game.sprites.SpriteSheet;
 import com.kleinsamuel.game.util.Utils;
-
-import java.util.LinkedList;
 
 /**
  * Created by sam on 02.06.17.
@@ -40,18 +38,15 @@ public class NPC {
     public int oldArrayX;
     public int oldArrayY;
 
-    /* only used on server side */
-    public Path pathToWalk;
-    private AStarPathFinder pathFinder;
+    private float PERC_HEALTH;
+    private float HEALTHBAR_PADDING = 0.5f;
+    private float HEALTHBAR_HEIGHT = 3;
 
     public NPC(SpriteSheet spriteSheet, NPCData data){
 
         this.spriteSheet =  spriteSheet;
         this.currentTexture = spriteSheet.getTextureRegion(0, 0);
         this.data = data;
-
-        this.pathToWalk = new Path();
-        this.pathFinder = new AStarPathFinder(null, null);
 
         this.xMove = 0;
         this.yMove = 0;
@@ -63,6 +58,8 @@ public class NPC {
         Vector3 offset = computePositionOffset();
         offsetX = offset.x;
         offsetY = offset.y;
+
+        PERC_HEALTH = (1.0f*data.current_health)/(1.0f*data.max_health);
     }
 
     public void setMove(Vector3 p){
@@ -73,52 +70,6 @@ public class NPC {
     public void move() {
         data.x += xMove*data.speed;
         data.y += yMove*data.speed;
-    }
-
-    public void createSmartPathTo(Vector3 target, Vector3 old) {
-
-        Vector3 adjPosTarget = target;
-        Vector3 adjPosChaser = Utils.getArrayCoordinates(old.x, old.y);
-        if(xMove > 0){
-            adjPosChaser.x += 1;
-        }
-        if(yMove > 0 ){
-            adjPosChaser.y += 1;
-        }
-
-        LinkedList<Vector3> path = pathFinder.findPath((int)adjPosChaser.x, (int)adjPosChaser.y, (int)adjPosTarget.x, (int)adjPosTarget.y);
-
-        if(path == null) {
-            pathToWalk.pathPoints.clear();
-        }else {
-            for(Vector3 p : path) {
-                p.set(p.x*Utils.TILEWIDTH, p.y*Utils.TILEHEIGHT, 0);
-            }
-            pathToWalk.pathPoints = path;
-        }
-    }
-
-    /**
-     * Returns direction to next way point on path.
-     *
-     */
-    public Vector3 walkOnPath() {
-
-        Vector3 output = new Vector3(0, 0, 0);
-
-        if(pathToWalk.pathPoints.size() == 0) {
-            return output;
-        }
-
-        Vector3 currentWayPoint = pathToWalk.pathPoints.getLast();
-        Vector3 dirs = walkToPoint(currentWayPoint);
-
-        if(dirs == null) {
-            pathToWalk.pathPoints.removeLast();
-            return output;
-        }
-
-        return dirs;
     }
 
     /**
@@ -150,16 +101,6 @@ public class NPC {
         }
 
         return new Vector3(xMove, yMove, 0);
-    }
-
-    public boolean checkIfPointIsEndpointOfCurrentPath(Vector3 v){
-        if(pathToWalk.pathPoints.size() == 0){
-            return false;
-        }
-        if(v.x*Utils.TILEWIDTH == pathToWalk.pathPoints.getFirst().x && v.y* Utils.TILEHEIGHT == pathToWalk.pathPoints.getFirst().y){
-            return true;
-        }
-        return false;
     }
 
    /* public void updateOldCoordinates() {
@@ -240,12 +181,23 @@ public class NPC {
         setNextTexture();
     }
 
+    public void drawSmallHealthbar(SpriteBatch batch){
+
+        PERC_HEALTH = (1.0f*data.current_health)/(1.0f*data.max_health);
+
+        batch.draw(Assets.manager.get(Assets.rectangle_black, Texture.class), data.x, data.y + Utils.TILEHEIGHT, Utils.TILEWIDTH, HEALTHBAR_HEIGHT);
+        batch.draw(Assets.manager.get(Assets.rectangle_gray, Texture.class), data.x+HEALTHBAR_PADDING, data.y+Utils.TILEHEIGHT+HEALTHBAR_PADDING, Utils.TILEWIDTH-2*HEALTHBAR_PADDING, HEALTHBAR_HEIGHT-2*HEALTHBAR_PADDING);
+        batch.draw(Assets.manager.get(Assets.rectangle_red, Texture.class), data.x+HEALTHBAR_PADDING, data.y+Utils.TILEHEIGHT+HEALTHBAR_PADDING, (Utils.TILEWIDTH-2*HEALTHBAR_PADDING)*PERC_HEALTH, HEALTHBAR_HEIGHT-2*HEALTHBAR_PADDING);
+
+    }
+
     public void render(SpriteBatch batch){
         batch.draw(currentTexture, data.x-offsetX, data.y-offsetY, WIDTH, HEIGHT);
     }
 
     public void renderAfter(SpriteBatch batch){
         // TODO draw name, level and health
+        drawSmallHealthbar(batch);
     }
 
 }
