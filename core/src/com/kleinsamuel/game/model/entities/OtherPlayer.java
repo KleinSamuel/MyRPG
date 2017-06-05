@@ -15,11 +15,11 @@ public class OtherPlayer {
 
     private String name;
     private int level;
-    private int entityX;
-    private int entityY;
+    public int entityX;
+    public int entityY;
     private float SPEED = 1.0f;
-    private int currentHealth;
-    private int maxHealth;
+    public int currentHealth;
+    public int maxHealth;
     private int currentMana;
     private int maxMana;
     private int xMove;
@@ -167,14 +167,6 @@ public class OtherPlayer {
 
     public void setCurrentHealth(int currentHealth) {
         this.currentHealth = currentHealth;
-    }
-
-    public int getMaxHealth() {
-        return maxHealth;
-    }
-
-    public void setMaxHealth(int maxHealth) {
-        this.maxHealth = maxHealth;
     }
 
     public int getCurrentMana() {

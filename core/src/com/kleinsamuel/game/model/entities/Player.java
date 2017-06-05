@@ -6,7 +6,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import com.kleinsamuel.game.model.Assets;
+import com.kleinsamuel.game.model.animations.AnimationEnum;
+import com.kleinsamuel.game.model.animations.AnimationFactory;
+import com.kleinsamuel.game.model.animations.DamageAnimation;
+import com.kleinsamuel.game.model.animations.EffectAnimation;
 import com.kleinsamuel.game.model.data.UserContent;
+import com.kleinsamuel.game.model.entities.npcs.NPC;
 import com.kleinsamuel.game.model.pathfinding.AStarPathFinder;
 import com.kleinsamuel.game.model.pathfinding.Path;
 import com.kleinsamuel.game.screens.PlayScreen;
@@ -23,12 +28,15 @@ import java.util.LinkedList;
 public class Player {
 
     public static final float SPEED = 1.0f;
+
     public int xMove;
     public int yMove;
 
     private PlayScreen playScreen;
 
     public UserContent content;
+
+    private int damage;
 
     private SpriteSheet spriteSheet;
     private TextureRegion currentTexture;
@@ -38,6 +46,11 @@ public class Player {
 
     public Vector3 oldMoveTo;
     public Vector3 moveTo;
+
+    public NPC following;
+    public boolean isAttacking;
+    public long attackSpeed = 500;
+    public long lastAttackTimestamp;
 
     public Player(PlayScreen playScreen, SpriteSheet spriteSheet){
 
@@ -52,6 +65,8 @@ public class Player {
 
         loadContent();
 
+        damage = 10;
+
         if(content.id == -1){
             DebugMessageFactory.printInfoMessage("FIRST STARTUP!");
         }else{
@@ -64,6 +79,15 @@ public class Player {
 
     private void loadContent() {
         this.content = UserContent.readFromFile();
+    }
+
+    public void checkIfDead(){
+        if(content.current_health <= 0){
+            content.x = 24;
+            content.y = 24;
+            following = null;
+            DebugMessageFactory.printInfoMessage("YOU JUST DIED!");
+        }
     }
 
     public void setMove(Vector3 p) {
@@ -85,7 +109,7 @@ public class Player {
         content.y += yMove * SPEED;
 
 		/* if player reached target */
-		if(pathToWalk.pathPoints.size() == 0 && xMove == 0 && yMove == 0) {
+		if(pathToWalk.pathPoints.size() == 0 && xMove == 0 && yMove == 0 && following == null) {
 			playScreen.tilemarker.setVisible(false);
 		}else {
 			playScreen.tilemarker.setVisible(true);
@@ -135,6 +159,20 @@ public class Player {
             prevDirection = 2;
         } else {
             currentTexture = spriteSheet.getTextureRegion(prevDirection, xPos);
+        }
+    }
+
+    public void follow(Vector3 p, Vector3 oldArray) {
+        createSmartPathTo(p, oldArray);
+
+        if(pathToWalk.pathPoints.size() >= 1) {
+            pathToWalk.pathPoints.removeLast();
+        }
+        if(pathToWalk.pathPoints.size() >= 1) {
+            pathToWalk.pathPoints.removeFirst();
+        }
+        if(pathToWalk.pathPoints.size() >= 1) {
+            pathToWalk.pathPoints.removeFirst();
         }
     }
 
@@ -221,6 +259,61 @@ public class Player {
         return new Vector3(xMove, yMove, 0);
     }
 
+    public void checkIfInAttackRange(){
+        if(following == null){
+            isAttacking = false;
+            return;
+        }
+
+        if(Math.abs(following.data.x - content.x) == 0 && Math.abs(following.data.y - content.y) == Utils.TILEHEIGHT){
+            isAttacking = true;
+        }else if(Math.abs(following.data.x - content.x) == Utils.TILEWIDTH && Math.abs(following.data.y - content.y) == 0){
+            isAttacking = true;
+        }else{
+            isAttacking = false;
+        }
+    }
+
+    public void attack(){
+        if(isAttacking){
+
+            /* change direction to enemy */
+            /* above enemy */
+            if(content.y < following.data.y){
+                setCurrentImage(0,1, 1);
+            }else if(content.y > following.data.y){
+                setCurrentImage(0, -1, 1);
+            }else if(content.x < following.data.x){
+                setCurrentImage(1, 0, 1);
+            }else if(content.x > following.data.x){
+                setCurrentImage(-1, 0, 1);
+            }
+
+            if(System.currentTimeMillis()-lastAttackTimestamp > attackSpeed){
+                lastAttackTimestamp = System.currentTimeMillis();
+                boolean left = following.data.x < content.x;
+
+                if(damage >= following.data.current_health){
+                    playScreen.killNpc(following.data.id);
+                    following = null;
+                    return;
+                }else {
+                    playScreen.damageNpc(following.data.id, damage);
+                }
+
+                playScreen.animations.add(new EffectAnimation(AnimationFactory.getSpriteSheet(AnimationEnum.SLASH_SINGLE), 150, following.data.x, following.data.y));
+                playScreen.animations.add(new DamageAnimation(left, true, damage, following.data.x, following.data.y));
+            }
+        }
+    }
+
+    public void getDamage(int amount){
+        DebugMessageFactory.printInfoMessage("DAMAGE ME!");
+        content.current_health -= amount;
+        playScreen.animations.add(new EffectAnimation(AnimationFactory.getSpriteSheet(AnimationEnum.SLASH_SINGLE), 150, content.x, content.y));
+        playScreen.animations.add(new DamageAnimation(false, true, amount, content.x, content.y));
+    }
+
     public boolean checkIfPointIsEndpointOfCurrentPath(Vector3 v){
         if(pathToWalk.pathPoints.size() == 0){
             return false;
@@ -230,6 +323,8 @@ public class Player {
         }
         return false;
     }
+
+
 
     public void updateOldCoordinates() {
         if(content.x % Utils.TILEWIDTH == 0 && content.x % Utils.TILEHEIGHT == 0) {
@@ -276,8 +371,19 @@ public class Player {
 
     public void update(){
 
+        checkIfDead();
+
+        if(following != null){
+            follow(Utils.getArrayCoordinates(following.data.x, following.data.y), new Vector3(content.x, content.y, 0));
+        }
+
         setMove(walkOnPath());
         move();
+
+        checkIfInAttackRange();
+        attack();
+
+        updateOldCoordinates();
 
         playScreen.gameCam.position.set(content.x+(currentTexture.getRegionWidth()/2), content.y, 0);
     }
