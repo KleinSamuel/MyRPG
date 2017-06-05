@@ -21,9 +21,11 @@ import io.socket.emitter.Emitter;
 
 public class GameClass extends Game {
 
-	private String serverName = "87.160.48.132";
+	private String serverName = "87.160.48.33";
 	private String port = "8081";
 	private IO.Options socketOptions;
+
+	public String clientID;
 
 	private final float UPDATE_TIMER = 1/40f;
 	private float timer;
@@ -174,6 +176,27 @@ public class GameClass extends Game {
 		}
 	}
 
+	public void damageNpc(int npcId, int amount){
+		JSONObject data = new JSONObject();
+		try {
+			data.put("npcId", npcId);
+			data.put("amount", amount);
+			socket.emit("damageToNpc", data);
+		} catch (JSONException e){
+			DebugMessageFactory.printErrorMessage("SOCKET:IO ERROR SENDING DAMAGE TO NPC UPDATE");
+		}
+	}
+
+	public void killNpc(int npcId){
+		JSONObject data = new JSONObject();
+		try {
+			data.put("npcId", npcId);
+			socket.emit("killNpc", data);
+		} catch (JSONException e){
+			DebugMessageFactory.printErrorMessage("SOCKET:IO ERROR SENDING KILL NPC UPDATE");
+		}
+	}
+
 	public void sendInitialInfo(Player p){
 		JSONObject data = new JSONObject();
 
@@ -246,6 +269,7 @@ public class GameClass extends Game {
 				JSONObject data = (JSONObject) args[0];
 				try {
 					String id = data.getString("id");
+					clientID = id;
 					DebugMessageFactory.printInfoMessage("Received ID: ["+id+"]");
 				} catch (JSONException e) {
 					e.printStackTrace();
@@ -450,6 +474,62 @@ public class GameClass extends Game {
 
 				} catch(JSONException e){
 					DebugMessageFactory.printErrorMessage("ERROR UPDATING NPCS");
+				}
+			}
+		});
+		socket.on("damageToNpc", new Emitter.Listener() {
+			@Override
+			public void call(Object... args) {
+				JSONObject data = (JSONObject) args[0];
+				try {
+					String fromId = data.getString("from");
+					int toId = data.getInt("to");
+					int amount = data.getInt("amount");
+
+					if(playScreen != null) {
+						playScreen.damageNpc(toId, amount);
+					}
+
+				} catch(JSONException e){
+					DebugMessageFactory.printErrorMessage("ERROR UPDATING NPCS");
+				}
+			}
+		});
+		socket.on("killNpc", new Emitter.Listener() {
+			@Override
+			public void call(Object... args) {
+				JSONObject data = (JSONObject) args[0];
+				try {
+					int toId = data.getInt("to");
+					if(playScreen != null) {
+						npcs.remove(toId);
+					}
+				} catch(JSONException e){
+					DebugMessageFactory.printErrorMessage("ERROR UPDATING NPCS");
+				}
+			}
+		});
+		socket.on("damageToPlayer", new Emitter.Listener() {
+			@Override
+			public void call(Object... args) {
+				JSONObject data = (JSONObject) args[0];
+				try {
+					String fromId = data.getString("from");
+					String toId = data.getString("to");
+					int amount = data.getInt("amount");
+
+					DebugMessageFactory.printInfoMessage("DAMAGE TO PLAYER: from: "+fromId+", to: "+toId+", amount: "+amount);
+					DebugMessageFactory.printInfoMessage("MY ID: "+clientID);
+
+					if(playScreen != null) {
+						if (toId.equals(clientID)) {
+							playScreen.player.getDamage(amount);
+						} else {
+							playScreen.damageToOtherPlayer(toId, amount);
+						}
+					}
+				} catch(JSONException e){
+					DebugMessageFactory.printErrorMessage("ERROR AT DAMAGE TO PLAYER");
 				}
 			}
 		});
