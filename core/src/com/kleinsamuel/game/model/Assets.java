@@ -86,7 +86,6 @@ public class Assets {
     public static final String slash_curve_full = "animations/slash_curve_full.png";
     public static final String slash_x_symmetrical = "animations/slash_x_symmetrical.png";
     public static final String slash_x_asymmetrical = "animations/slash_x_asymmetrical.png";
-    public static final String explosion = "animations/explosion.png";
 
     public static final String test = "player/goblin.png";
 
@@ -159,7 +158,6 @@ public class Assets {
         manager.load(slash_curve_full, Texture.class);
         manager.load(slash_x_symmetrical, Texture.class);
         manager.load(slash_x_asymmetrical, Texture.class);
-        manager.load(explosion, Texture.class);
     }
 
     public static void dispose()     {
