@@ -18,13 +18,16 @@ public class CharacterFactory {
     }
 
     public static int getGainedXpForLevel(int level) {
+        if(level < 30){
+            return 1;
+        }
         return getNeededXpForLevel(level)/30;
     }
 
     public static int getHealthForLevel(int level) {
 
         if(level <= 3){
-            return level * 10;
+            return level * 100;
         }
         return computeFormula(level)/2;
     }
