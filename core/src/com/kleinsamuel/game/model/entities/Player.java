@@ -10,6 +10,7 @@ import com.kleinsamuel.game.model.animations.AnimationEnum;
 import com.kleinsamuel.game.model.animations.AnimationFactory;
 import com.kleinsamuel.game.model.animations.DamageAnimation;
 import com.kleinsamuel.game.model.animations.EffectAnimation;
+import com.kleinsamuel.game.model.data.CharacterFactory;
 import com.kleinsamuel.game.model.data.UserContent;
 import com.kleinsamuel.game.model.entities.npcs.NPC;
 import com.kleinsamuel.game.model.pathfinding.AStarPathFinder;
@@ -32,7 +33,7 @@ public class Player {
     public int xMove;
     public int yMove;
 
-    private PlayScreen playScreen;
+    public PlayScreen playScreen;
 
     public UserContent content;
 
@@ -57,7 +58,7 @@ public class Player {
         pathToWalk = new Path();
         xMove = 0;
         yMove = 0;
-        pathFinder = new AStarPathFinder(playScreen.mapRepresentation.walkableTiles, playScreen.mapRepresentation.map2D);
+        pathFinder = new AStarPathFinder(playScreen.mapRepresentation.walkableTiles, playScreen.mapRepresentation.map2D, this);
 
         this.playScreen = playScreen;
         this.spriteSheet = spriteSheet;
@@ -171,7 +172,8 @@ public class Player {
         if(pathToWalk.pathPoints.size() >= 1) {
             pathToWalk.pathPoints.removeFirst();
         }
-        if(pathToWalk.pathPoints.size() >= 1) {
+
+        if (pathToWalk.pathPoints.size() >= 1) {
             pathToWalk.pathPoints.removeFirst();
         }
     }
@@ -259,6 +261,15 @@ public class Player {
         return new Vector3(xMove, yMove, 0);
     }
 
+    private void addExperience(int amount){
+        if(content.experience+amount >= CharacterFactory.getNeededXpForLevel(content.level)){
+            content.level += 1;
+            content.experience = 0;
+        }else{
+            content.experience += amount;
+        }
+    }
+
     public void checkIfInAttackRange(){
         if(following == null){
             isAttacking = false;
@@ -278,7 +289,6 @@ public class Player {
         if(isAttacking){
 
             /* change direction to enemy */
-            /* above enemy */
             if(content.y < following.data.y){
                 setCurrentImage(0,1, 1);
             }else if(content.y > following.data.y){
@@ -295,6 +305,7 @@ public class Player {
 
                 if(damage >= following.data.current_health){
                     playScreen.killNpc(following.data.id);
+                    addExperience(CharacterFactory.getGainedXpForLevel(following.data.level));
                     following = null;
                     return;
                 }else {
@@ -307,9 +318,15 @@ public class Player {
         }
     }
 
+    /*
+    TODO add player death
+     */
     public void getDamage(int amount){
-        DebugMessageFactory.printInfoMessage("DAMAGE ME!");
-        content.current_health -= amount;
+        if(content.current_health < amount){
+            content.current_health = 0;
+        }else {
+            content.current_health -= amount;
+        }
         playScreen.animations.add(new EffectAnimation(AnimationFactory.getSpriteSheet(AnimationEnum.SLASH_SINGLE), 150, content.x, content.y));
         playScreen.animations.add(new DamageAnimation(false, true, amount, content.x, content.y));
     }
@@ -334,15 +351,7 @@ public class Player {
     }
 
     public void drawName(SpriteBatch batch) {
-
-        /*
-        float r = Utils.random.nextFloat() / 2f + 0.5f;
-        float g = Utils.random.nextFloat() / 2f + 0.5f;
-        float b = Utils.random.nextFloat() / 2f + 0.5f;
-        */
-
         Utils.testFont.getData().setScale(0.4f, 0.3f);
-        //Utils.testFont.setColor(new Color(r, g, b, 10.0f));
         Utils.testFont.setColor(Color.BLACK);
         Vector3 dims = Utils.getWidthAndHeightOfString(Utils.testFont, content.name);
         Utils.testFont.draw(batch, content.name, content.x+Utils.TILEWIDTH/2-dims.x/2, content.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+5);
@@ -371,13 +380,33 @@ public class Player {
 
     public void update(){
 
-        checkIfDead();
+        //checkIfDead();
 
         if(following != null){
             follow(Utils.getArrayCoordinates(following.data.x, following.data.y), new Vector3(content.x, content.y, 0));
+            playScreen.tilemarker.setToEnemy();
+            playScreen.tilemarker.setVisible(true);
+            playScreen.tilemarker.setEntityX(following.data.x);
+            playScreen.tilemarker.setEntityY(following.data.y);
         }
 
         setMove(walkOnPath());
+
+        /* fix move to */
+        if(moveTo != null && xMove == 0 && yMove == 0){
+            Vector3 newDirs = new Vector3(0, 0, 0);
+            if(content.x < moveTo.x){
+                newDirs.x = 1;
+            }else if(content.x > moveTo.x){
+                newDirs.x = -1;
+            }else if(content.y < moveTo.y){
+                newDirs.y = 1;
+            }else if(content.y > moveTo.y){
+                newDirs.y = -1;
+            }
+            setMove(newDirs);
+        }
+
         move();
 
         checkIfInAttackRange();

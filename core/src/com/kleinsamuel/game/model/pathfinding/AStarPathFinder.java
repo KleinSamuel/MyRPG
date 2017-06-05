@@ -1,7 +1,10 @@
 package com.kleinsamuel.game.model.pathfinding;
 
 import com.badlogic.gdx.math.Vector3;
+import com.kleinsamuel.game.model.entities.Player;
+import com.kleinsamuel.game.model.entities.npcs.NPC;
 import com.kleinsamuel.game.util.DebugMessageFactory;
+import com.kleinsamuel.game.util.Utils;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -13,10 +16,12 @@ public class AStarPathFinder {
 
 	private LinkedList<PathFindingPoint> open;
 	private LinkedList<PathFindingPoint> closed;
+	private Player player;
 	
-	public AStarPathFinder(HashSet<Integer> walkableTiles, int[][] map) {
+	public AStarPathFinder(HashSet<Integer> walkableTiles, int[][] map, Player owner) {
 		this.map = map;
 		this.walkableTiles = walkableTiles;
+		this.player = owner;
 	}
 	
 	public LinkedList<Vector3> findPath(int startX, int startY, int targetX, int targetY){
@@ -119,8 +124,7 @@ public class AStarPathFinder {
 			current = getPointInDirection((int)current.x, (int)current.y, current.parent);
 			out.add(current);
 		}
-		
-//		Collections.reverse(out);
+
 		return out;
 	}
 	
@@ -163,6 +167,28 @@ public class AStarPathFinder {
 		if(contains(new PathFindingPoint(x, y), open)) {
 			return false;
 		}
+
+		/* dont allow tiles with other npcs than target on it */
+		for(NPC npc : player.playScreen.game.npcs.values()){
+			if(npc.equals(player.following)){
+				break;
+			}
+			Vector3 tmpPos = Utils.getArrayCoordinates(npc.data.x, npc.data.y);
+			if(tmpPos.x == x && tmpPos.y == y){
+				return false;
+			}
+			if(npc.data.moveTo != null) {
+				Vector3 moveToAdj = Utils.getArrayCoordinates(npc.data.moveTo.x, npc.data.moveTo.y);
+				if (x == moveToAdj.x && y == moveToAdj.y) {
+					return false;
+				}
+			}
+			Vector3 posHard = Utils.getArrayCoordinatesMiddle(npc.data.x, npc.data.y);
+			if(posHard.x == x && posHard.y == y){
+				return false;
+			}
+		}
+
 		if(!walkableTiles.contains(map[x][y])) {
 			return true;
 		}
