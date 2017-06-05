@@ -37,9 +37,9 @@ import com.kleinsamuel.game.util.DebugMessageFactory;
 import com.kleinsamuel.game.util.Utils;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by sam on 29.05.17.
@@ -77,7 +77,8 @@ public class PlayScreen implements Screen{
 
     private boolean wasClickedDown = false;
 
-    public LinkedList<Animation> animations;
+    //public LinkedList<Animation> animations;
+    public CopyOnWriteArrayList<Animation> animations;
 
     public PlayScreen(GameClass game){
         this.game = game;
@@ -115,7 +116,8 @@ public class PlayScreen implements Screen{
         game.sendInitialInfo(player);
 
         tilemarker = new Tilemarker();
-        animations = new LinkedList<Animation>();
+        //animations = new LinkedList<Animation>();
+        animations = new CopyOnWriteArrayList<Animation>();
 
         bag = new Bag(this);
         hud = new HUD(this);
@@ -148,12 +150,13 @@ public class PlayScreen implements Screen{
 
     private void updateAnimations(){
         int toDelete = -1;
-        for (int i = 0; i < animations.size(); i++) {
-            Animation a = animations.get(i);
+        int index = 0;
+        for(Animation a : animations){
             a.update();
             if(a.delete){
-                toDelete = i;
+                toDelete = index;
             }
+            index++;
         }
         if(toDelete != -1){
             animations.remove(toDelete);
@@ -163,10 +166,11 @@ public class PlayScreen implements Screen{
     public void update(float delta){
 
         tilemarker.update();
+
         updateNPCs();
+
         updateOtherPlayers();
         player.update();
-        //game.updateServer_Position(delta, player);
 
         updateAnimations();
         updateMainBars();
@@ -302,7 +306,7 @@ public class PlayScreen implements Screen{
 
     public void updateOtherPlayer(String id, String name, int entityX, int entityY, int xMove, int yMove, int xPos){
         if(game.otherPlayers == null){
-            game.otherPlayers = new HashMap<String, OtherPlayer>();
+            game.otherPlayers = new ConcurrentHashMap<String, OtherPlayer>();
         }
 
         OtherPlayer toUpdate = game.otherPlayers.get(id);
@@ -332,7 +336,8 @@ public class PlayScreen implements Screen{
 
     public void addNPC(int id, int npc_key, int level, float x, float y, float speed, int current_health, int max_health){
         if(game.npcs == null){
-            game.npcs = new HashMap<Integer, NPC>();
+            //game.npcs = new HashMap<Integer, NPC>();
+            game.npcs = new ConcurrentHashMap<Integer, NPC>();
         }
 
         NPCData data = new NPCData(id, npc_key, level, x, y, speed, current_health, max_health);
@@ -347,7 +352,7 @@ public class PlayScreen implements Screen{
     public void updateNPCPosition(int id, float x, float y){
         NPC npc = game.npcs.get(id);
         if(npc == null){
-            DebugMessageFactory.printErrorMessage("ERROR NPC "+id+" DOES NOT EXISTS BUT WANTS TO BE UPDATED");
+            DebugMessageFactory.printErrorMessage("ERROR NPC "+id+" DOES NOT EXIST BUT WANTS TO BE POSITION UPDATED");
             return;
         }
         npc.data.x = x;
@@ -357,7 +362,7 @@ public class PlayScreen implements Screen{
     public void updateNPCPoint(int id, float x, float y){
         NPC npc = game.npcs.get(id);
         if(npc == null){
-            DebugMessageFactory.printErrorMessage("ERROR NPC "+id+" DOES NOT EXISTS BUT WANTS TO BE UPDATED");
+            DebugMessageFactory.printErrorMessage("ERROR NPC "+id+" DOES NOT EXIST BUT WANTS TO BE POINT UPDATED");
             return;
         }
         npc.data.moveTo = new Vector3(x, y, 0);
