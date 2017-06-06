@@ -1,6 +1,7 @@
 package com.kleinsamuel.game.model;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 
 /**
@@ -59,25 +60,94 @@ public class Assets {
     public static final String unequip_button_2 = "bag/unequip_button_2.png";
 
     /* lexicon */
-    public static final String lexicon_background = "lexicon/uf_lexicon_background.png";
+    public static final String lexicon_background = "lexicon/uf_lexicon_background_filled.png";
 
     /* stats */
-    public static final String stats_background = "stats/uf_stats_background.png";
+    public static final String stats_background = "stats/uf_stats_background_filled.png";
 
     /* items */
-    public static final String arrows_1 = "items/arrows_1.png";
-    public static final String foot_left_1 = "items/foot_left_1.png";
-    public static final String foot_right_1 = "items/foot_right_1.png";
-    public static final String hand_left_1 = "items/hand_left_1.png";
-    public static final String hand_right_1 = "items/hand_right_1.png";
-    public static final String helmet_2 = "items/helmet_2.png";
-    public static final String helmet_3 = "items/helmet_3.png";
-    public static final String legs_1 = "items/legs_1.png";
-    public static final String necklace_1 = "items/necklace_1.png";
-    public static final String potion_blue_1 = "items/potion_blue_1.png";
-    public static final String potion_red_1 = "items/potion_red_1.png";
-    public static final String potion_health_1 = "items/potion_health_1.png";
-    public static final String torso_1 = "items/torso_1.png";
+    public static final String potion_red = "items/potions/potion_red.png";
+
+    /* equipment */
+    public static final String armor_blood_torso = "items/equipment/torso/armor_blood_torso.png";
+    public static final String armor_blood_helmet = "items/equipment/helmet/armor_blood_helmet.png";
+    public static final String armor_blood_legs = "items/equipment/legs/armor_blood_legs.png";
+    public static final String armor_blood_foot_left = "items/equipment/foot/armor_blood_foot_left.png";
+    public static final String armor_blood_foot_right = "items/equipment/foot/armor_blood_foot_right.png";
+    public static final String armor_blood_hand_left = "items/equipment/hand/armor_blood_hand_left.png";
+    public static final String armor_blood_hand_right = "items/equipment/hand/armor_blood_hand_right.png";
+
+    public static final String armor_chain_torso = "items/equipment/torso/armor_chain_torso.png";
+    public static final String armor_chain_helmet = "items/equipment/helmet/armor_chain_helmet.png";
+    public static final String armor_chain_legs = "items/equipment/legs/armor_chain_legs.png";
+    public static final String armor_chain_foot_left = "items/equipment/foot/armor_chain_foot_left.png";
+    public static final String armor_chain_foot_right = "items/equipment/foot/armor_chain_foot_right.png";
+    public static final String armor_chain_hand_left = "items/equipment/hand/armor_chain_hand_left.png";
+    public static final String armor_chain_hand_right = "items/equipment/hand/armor_chain_hand_right.png";
+
+    public static final String armor_cloth_torso = "items/equipment/torso/armor_cloth_torso.png";
+    public static final String armor_cloth_helmet = "items/equipment/helmet/armor_cloth_helmet.png";
+    public static final String armor_cloth_legs = "items/equipment/legs/armor_cloth_legs.png";
+    public static final String armor_cloth_foot_left = "items/equipment/foot/armor_cloth_foot_left.png";
+    public static final String armor_cloth_foot_right = "items/equipment/foot/armor_cloth_foot_right.png";
+    public static final String armor_cloth_hand_left = "items/equipment/hand/armor_cloth_hand_left.png";
+    public static final String armor_cloth_hand_right = "items/equipment/hand/armor_cloth_hand_right.png";
+
+    public static final String armor_gold_torso = "items/equipment/torso/armor_gold_torso.png";
+    public static final String armor_gold_helmet = "items/equipment/helmet/armor_gold_helmet.png";
+    public static final String armor_gold_legs = "items/equipment/legs/armor_gold_legs.png";
+    public static final String armor_gold_foot_left = "items/equipment/foot/armor_gold_foot_left.png";
+    public static final String armor_gold_foot_right = "items/equipment/foot/armor_gold_foot_right.png";
+    public static final String armor_gold_hand_left = "items/equipment/hand/armor_gold_hand_left.png";
+    public static final String armor_gold_hand_right = "items/equipment/hand/armor_gold_hand_right.png";
+
+    public static final String armor_leather_torso = "items/equipment/torso/armor_leather_torso.png";
+    public static final String armor_leather_helmet = "items/equipment/helmet/armor_leather_helmet.png";
+    public static final String armor_leather_legs = "items/equipment/legs/armor_leather_legs.png";
+    public static final String armor_leather_foot_left = "items/equipment/foot/armor_leather_foot_left.png";
+    public static final String armor_leather_foot_right = "items/equipment/foot/armor_leather_foot_right.png";
+    public static final String armor_leather_hand_left = "items/equipment/hand/armor_leather_hand_left.png";
+    public static final String armor_leather_hand_right = "items/equipment/hand/armor_leather_hand_right.png";
+
+    public static final String armor_mystic_torso = "items/equipment/torso/armor_mystic_torso.png";
+    public static final String armor_mystic_helmet = "items/equipment/helmet/armor_mystic_helmet.png";
+    public static final String armor_mystic_legs = "items/equipment/legs/armor_mystic_legs.png";
+    public static final String armor_mystic_foot_left = "items/equipment/foot/armor_mystic_foot_left.png";
+    public static final String armor_mystic_foot_right = "items/equipment/foot/armor_mystic_foot_right.png";
+    public static final String armor_mystic_hand_left = "items/equipment/hand/armor_mystic_hand_left.png";
+    public static final String armor_mystic_hand_right = "items/equipment/hand/armor_mystic_hand_right.png";
+
+    public static final String armor_plate_torso = "items/equipment/torso/armor_plate_torso.png";
+    public static final String armor_plate_helmet = "items/equipment/helmet/armor_plate_helmet.png";
+    public static final String armor_plate_legs = "items/equipment/legs/armor_plate_legs.png";
+    public static final String armor_plate_foot_left = "items/equipment/foot/armor_plate_foot_left.png";
+    public static final String armor_plate_foot_right = "items/equipment/foot/armor_plate_foot_right.png";
+    public static final String armor_plate_hand_left = "items/equipment/hand/armor_plate_hand_left.png";
+    public static final String armor_plate_hand_right = "items/equipment/hand/armor_plate_hand_right.png";
+
+    public static final String armor_royal_torso = "items/equipment/torso/armor_royal_torso.png";
+    public static final String armor_royal_helmet = "items/equipment/helmet/armor_royal_helmet.png";
+    public static final String armor_royal_legs = "items/equipment/legs/armor_royal_legs.png";
+    public static final String armor_royal_foot_left = "items/equipment/foot/armor_royal_foot_left.png";
+    public static final String armor_royal_foot_right = "items/equipment/foot/armor_royal_foot_right.png";
+    public static final String armor_royal_hand_left = "items/equipment/hand/armor_royal_hand_left.png";
+    public static final String armor_royal_hand_right = "items/equipment/hand/armor_royal_hand_right.png";
+
+    public static final String armor_studded_torso = "items/equipment/torso/armor_studded_torso.png";
+    public static final String armor_studded_helmet = "items/equipment/helmet/armor_studded_helmet.png";
+    public static final String armor_studded_legs = "items/equipment/legs/armor_studded_legs.png";
+    public static final String armor_studded_foot_left = "items/equipment/foot/armor_studded_foot_left.png";
+    public static final String armor_studded_foot_right = "items/equipment/foot/armor_studded_foot_right.png";
+    public static final String armor_studded_hand_left = "items/equipment/hand/armor_studded_hand_left.png";
+    public static final String armor_studded_hand_right = "items/equipment/hand/armor_studded_hand_right.png";
+
+    public static final String armor_wild_torso = "items/equipment/torso/armor_wild_torso.png";
+    public static final String armor_wild_helmet = "items/equipment/helmet/armor_wild_helmet.png";
+    public static final String armor_wild_legs = "items/equipment/legs/armor_wild_legs.png";
+    public static final String armor_wild_foot_left = "items/equipment/foot/armor_wild_foot_left.png";
+    public static final String armor_wild_foot_right = "items/equipment/foot/armor_wild_foot_right.png";
+    public static final String armor_wild_hand_left = "items/equipment/hand/armor_wild_hand_left.png";
+    public static final String armor_wild_hand_right = "items/equipment/hand/armor_wild_hand_right.png";
 
     /* animations */
     public static final String slash_single = "animations/slash_single.png";
@@ -88,6 +158,18 @@ public class Assets {
     public static final String slash_x_asymmetrical = "animations/slash_x_asymmetrical.png";
 
     public static final String test = "player/goblin.png";
+    public static final String chara_23 = "player/chara23_battle_walk.png";
+    public static final String chara_24 = "player/chara24_battle_walk.png";
+
+    /*
+        MUSIC
+     */
+
+    /*
+        SOUND EFFECTS
+     */
+    public static final String hit_enemy = "sounds/hit_enemy.wav";
+    public static final String hit_player = "sounds/hit_player.wav";
 
     public static void load() {
         manager.load(playerSprite, Texture.class);
@@ -99,6 +181,9 @@ public class Assets {
         manager.load(rectangle_blue, Texture.class);
         manager.load(rectangle_light_gray, Texture.class);
 
+        /* player */
+        manager.load(chara_23, Texture.class);
+        manager.load(chara_24, Texture.class);
         manager.load(test, Texture.class);
 
         manager.load(uf_healthbar, Texture.class);
@@ -138,19 +223,89 @@ public class Assets {
         manager.load(elemental_water, Texture.class);
         manager.load(eloa_war, Texture.class);
 
-        manager.load(arrows_1, Texture.class);
-        manager.load(foot_left_1, Texture.class);
-        manager.load(foot_right_1, Texture.class);
-        manager.load(hand_left_1, Texture.class);
-        manager.load(hand_right_1, Texture.class);
-        manager.load(helmet_2, Texture.class);
-        manager.load(helmet_3, Texture.class);
-        manager.load(legs_1, Texture.class);
-        manager.load(necklace_1, Texture.class);
-        manager.load(potion_blue_1, Texture.class);
-        manager.load(potion_health_1, Texture.class);
-        manager.load(potion_red_1, Texture.class);
-        manager.load(torso_1, Texture.class);
+        /* items */
+        manager.load(potion_red, Texture.class);
+
+        /* equipment */
+        manager.load(armor_blood_torso, Texture.class);
+        manager.load(armor_blood_helmet, Texture.class);
+        manager.load(armor_blood_legs, Texture.class);
+        manager.load(armor_blood_foot_left, Texture.class);
+        manager.load(armor_blood_foot_right, Texture.class);
+        manager.load(armor_blood_hand_left, Texture.class);
+        manager.load(armor_blood_hand_right, Texture.class);
+
+        manager.load(armor_chain_torso, Texture.class);
+        manager.load(armor_chain_helmet, Texture.class);
+        manager.load(armor_chain_legs, Texture.class);
+        manager.load(armor_chain_foot_left, Texture.class);
+        manager.load(armor_chain_foot_right, Texture.class);
+        manager.load(armor_chain_hand_left, Texture.class);
+        manager.load(armor_chain_hand_right, Texture.class);
+
+        manager.load(armor_cloth_torso, Texture.class);
+        manager.load(armor_cloth_helmet, Texture.class);
+        manager.load(armor_cloth_legs, Texture.class);
+        manager.load(armor_cloth_foot_left, Texture.class);
+        manager.load(armor_cloth_foot_right, Texture.class);
+        manager.load(armor_cloth_hand_left, Texture.class);
+        manager.load(armor_cloth_hand_right, Texture.class);
+
+        manager.load(armor_gold_torso, Texture.class);
+        manager.load(armor_gold_helmet, Texture.class);
+        manager.load(armor_gold_legs, Texture.class);
+        manager.load(armor_gold_foot_left, Texture.class);
+        manager.load(armor_gold_foot_right, Texture.class);
+        manager.load(armor_gold_hand_left, Texture.class);
+        manager.load(armor_gold_hand_right, Texture.class);
+
+        manager.load(armor_leather_torso, Texture.class);
+        manager.load(armor_leather_helmet, Texture.class);
+        manager.load(armor_leather_legs, Texture.class);
+        manager.load(armor_leather_foot_left, Texture.class);
+        manager.load(armor_leather_foot_right, Texture.class);
+        manager.load(armor_leather_hand_left, Texture.class);
+        manager.load(armor_leather_hand_right, Texture.class);
+
+        manager.load(armor_mystic_torso, Texture.class);
+        manager.load(armor_mystic_helmet, Texture.class);
+        manager.load(armor_mystic_legs, Texture.class);
+        manager.load(armor_mystic_foot_left, Texture.class);
+        manager.load(armor_mystic_foot_right, Texture.class);
+        manager.load(armor_mystic_hand_left, Texture.class);
+        manager.load(armor_mystic_hand_right, Texture.class);
+
+        manager.load(armor_plate_torso, Texture.class);
+        manager.load(armor_plate_helmet, Texture.class);
+        manager.load(armor_plate_legs, Texture.class);
+        manager.load(armor_plate_foot_left, Texture.class);
+        manager.load(armor_plate_foot_right, Texture.class);
+        manager.load(armor_plate_hand_left, Texture.class);
+        manager.load(armor_plate_hand_right, Texture.class);
+
+        manager.load(armor_royal_torso, Texture.class);
+        manager.load(armor_royal_helmet, Texture.class);
+        manager.load(armor_royal_legs, Texture.class);
+        manager.load(armor_royal_foot_left, Texture.class);
+        manager.load(armor_royal_foot_right, Texture.class);
+        manager.load(armor_royal_hand_left, Texture.class);
+        manager.load(armor_royal_hand_right, Texture.class);
+
+        manager.load(armor_studded_torso, Texture.class);
+        manager.load(armor_studded_helmet, Texture.class);
+        manager.load(armor_studded_legs, Texture.class);
+        manager.load(armor_studded_foot_left, Texture.class);
+        manager.load(armor_studded_foot_right, Texture.class);
+        manager.load(armor_studded_hand_left, Texture.class);
+        manager.load(armor_studded_hand_right, Texture.class);
+
+        manager.load(armor_wild_torso, Texture.class);
+        manager.load(armor_wild_helmet, Texture.class);
+        manager.load(armor_wild_legs, Texture.class);
+        manager.load(armor_wild_foot_left, Texture.class);
+        manager.load(armor_wild_foot_right, Texture.class);
+        manager.load(armor_wild_hand_left, Texture.class);
+        manager.load(armor_wild_hand_right, Texture.class);
 
         manager.load(slash_single, Texture.class);
         manager.load(slash_triple, Texture.class);
@@ -158,6 +313,9 @@ public class Assets {
         manager.load(slash_curve_full, Texture.class);
         manager.load(slash_x_symmetrical, Texture.class);
         manager.load(slash_x_asymmetrical, Texture.class);
+
+        manager.load(hit_enemy, Sound.class);
+        manager.load(hit_player, Sound.class);
     }
 
     public static void dispose()     {
