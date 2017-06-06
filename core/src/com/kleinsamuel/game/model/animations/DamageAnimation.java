@@ -60,7 +60,7 @@ public class DamageAnimation extends Animation{
         if(toEnemy){
             Utils.basicFont.setColor(Color.WHITE);
         }else{
-            Utils.basicFont.setColor(Color.RED);
+            Utils.basicFont.setColor(Color.CYAN);
         }
         Utils.basicFont.draw(batch, ""+damage, x, y);
     }
