@@ -112,7 +112,7 @@ public class HUD {
         return (screenX >= bag_button_x && screenX <= bag_button_x+button_width && screenY >= bag_button_y && screenY <= bag_button_y+button_height);
     }
 
-    private void drawMoneyString(SpriteBatch batch){
+    public void drawMoneyString(SpriteBatch batch){
 
         Utils.basicFont.getData().setScale(0.4f, 0.5f);
         Utils.basicFont.setColor(new Color(255.0f, 255.0f, 0.0f, 10.0f));
