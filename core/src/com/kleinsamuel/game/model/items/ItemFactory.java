@@ -18,18 +18,87 @@ public class ItemFactory {
     static {
         items = new HashMap();
 
-        items.put(1, ItemEnum.POTION_HEALTH_1);
-        items.put(2, ItemEnum.POTION_MANA_1);
-        items.put(3, ItemEnum.ARROWS_1);
-        items.put(4, ItemEnum.HELMET_3);
-        items.put(5, ItemEnum.TORSO_1);
-        items.put(6, ItemEnum.LEGS_1);
-        items.put(7, ItemEnum.HAND_LEFT_1);
-        items.put(8, ItemEnum.HAND_RIGHT_1);
-        items.put(9, ItemEnum.FOOT_LEFT_1);
-        items.put(10, ItemEnum.FOOT_RIGHT_1);
-        items.put(11, ItemEnum.NECKLACE_1);
-        items.put(12, ItemEnum.HELMET_2);
+        items.put(1, ItemEnum.ARMOR_BLOOD_TORSO);
+        items.put(2, ItemEnum.ARMOR_BLOOD_HELMET);
+        items.put(3, ItemEnum.ARMOR_BLOOD_LEGS);
+        items.put(4, ItemEnum.ARMOR_BLOOD_FOOT_LEFT);
+        items.put(5, ItemEnum.ARMOR_BLOOD_FOOT_RIGHT);
+        items.put(6, ItemEnum.ARMOR_BLOOD_HAND_LEFT);
+        items.put(7, ItemEnum.ARMOR_BLOOD_HAND_RIGHT);
+
+        items.put(8, ItemEnum.ARMOR_CHAIN_TORSO);
+        items.put(9, ItemEnum.ARMOR_CHAIN_HELMET);
+        items.put(10, ItemEnum.ARMOR_CHAIN_LEGS);
+        items.put(11, ItemEnum.ARMOR_CHAIN_FOOT_LEFT);
+        items.put(12, ItemEnum.ARMOR_CHAIN_FOOT_RIGHT);
+        items.put(13, ItemEnum.ARMOR_CHAIN_HAND_LEFT);
+        items.put(14, ItemEnum.ARMOR_CHAIN_HAND_RIGHT);
+
+        items.put(15, ItemEnum.ARMOR_CLOTH_TORSO);
+        items.put(16, ItemEnum.ARMOR_CLOTH_HELMET);
+        items.put(17, ItemEnum.ARMOR_CLOTH_LEGS);
+        items.put(18, ItemEnum.ARMOR_CLOTH_FOOT_LEFT);
+        items.put(19, ItemEnum.ARMOR_CLOTH_FOOT_RIGHT);
+        items.put(20, ItemEnum.ARMOR_CLOTH_HAND_LEFT);
+        items.put(21, ItemEnum.ARMOR_CLOTH_HAND_RIGHT);
+
+        items.put(22, ItemEnum.ARMOR_GOLD_TORSO);
+        items.put(23, ItemEnum.ARMOR_GOLD_HELMET);
+        items.put(24, ItemEnum.ARMOR_GOLD_LEGS);
+        items.put(25, ItemEnum.ARMOR_GOLD_FOOT_LEFT);
+        items.put(26, ItemEnum.ARMOR_GOLD_FOOT_RIGHT);
+        items.put(27, ItemEnum.ARMOR_GOLD_HAND_LEFT);
+        items.put(28, ItemEnum.ARMOR_GOLD_HAND_RIGHT);
+
+        items.put(29, ItemEnum.ARMOR_LEATHER_TORSO);
+        items.put(30, ItemEnum.ARMOR_LEATHER_HELMET);
+        items.put(31, ItemEnum.ARMOR_LEATHER_LEGS);
+        items.put(32, ItemEnum.ARMOR_LEATHER_FOOT_LEFT);
+        items.put(33, ItemEnum.ARMOR_LEATHER_FOOT_RIGHT);
+        items.put(34, ItemEnum.ARMOR_LEATHER_HAND_LEFT);
+        items.put(35, ItemEnum.ARMOR_LEATHER_HAND_RIGHT);
+
+        items.put(36, ItemEnum.ARMOR_MYSTIC_TORSO);
+        items.put(37, ItemEnum.ARMOR_MYSTIC_HELMET);
+        items.put(38, ItemEnum.ARMOR_MYSTIC_LEGS);
+        items.put(39, ItemEnum.ARMOR_MYSTIC_FOOT_LEFT);
+        items.put(40, ItemEnum.ARMOR_MYSTIC_FOOT_RIGHT);
+        items.put(41, ItemEnum.ARMOR_MYSTIC_HAND_LEFT);
+        items.put(42, ItemEnum.ARMOR_MYSTIC_HAND_RIGHT);
+
+        items.put(43, ItemEnum.ARMOR_PLATE_TORSO);
+        items.put(44, ItemEnum.ARMOR_PLATE_HELMET);
+        items.put(45, ItemEnum.ARMOR_PLATE_LEGS);
+        items.put(46, ItemEnum.ARMOR_PLATE_FOOT_LEFT);
+        items.put(47, ItemEnum.ARMOR_PLATE_FOOT_RIGHT);
+        items.put(48, ItemEnum.ARMOR_PLATE_HAND_LEFT);
+        items.put(49, ItemEnum.ARMOR_PLATE_HAND_RIGHT);
+
+        items.put(50, ItemEnum.ARMOR_ROYAL_TORSO);
+        items.put(51, ItemEnum.ARMOR_ROYAL_HELMET);
+        items.put(52, ItemEnum.ARMOR_ROYAL_LEGS);
+        items.put(53, ItemEnum.ARMOR_ROYAL_FOOT_LEFT);
+        items.put(54, ItemEnum.ARMOR_ROYAL_FOOT_RIGHT);
+        items.put(55, ItemEnum.ARMOR_ROYAL_HAND_LEFT);
+        items.put(56, ItemEnum.ARMOR_ROYAL_HAND_RIGHT);
+
+        items.put(57, ItemEnum.ARMOR_STUDDED_TORSO);
+        items.put(58, ItemEnum.ARMOR_STUDDED_HELMET);
+        items.put(59, ItemEnum.ARMOR_STUDDED_LEGS);
+        items.put(60, ItemEnum.ARMOR_STUDDED_FOOT_LEFT);
+        items.put(61, ItemEnum.ARMOR_STUDDED_FOOT_RIGHT);
+        items.put(62, ItemEnum.ARMOR_STUDDED_HAND_LEFT);
+        items.put(63, ItemEnum.ARMOR_STUDDED_HAND_RIGHT);
+
+        items.put(64, ItemEnum.ARMOR_WILD_TORSO);
+        items.put(65, ItemEnum.ARMOR_WILD_HELMET);
+        items.put(66, ItemEnum.ARMOR_WILD_LEGS);
+        items.put(67, ItemEnum.ARMOR_WILD_FOOT_LEFT);
+        items.put(68, ItemEnum.ARMOR_WILD_FOOT_RIGHT);
+        items.put(69, ItemEnum.ARMOR_WILD_HAND_LEFT);
+        items.put(70, ItemEnum.ARMOR_WILD_HAND_RIGHT);
+
+        items.put(1001, ItemEnum.POTION_HEALTH);
     }
 
     public static HashSet<ItemData> getItemDataFromString(String input) {
@@ -55,38 +124,159 @@ public class ItemFactory {
 
         switch (id) {
             case 1:
-                return Assets.potion_red_1;
+                return Assets.armor_blood_torso;
             case 2:
-                return Assets.potion_blue_1;
+                return Assets.armor_blood_helmet;
             case 3:
-                return Assets.arrows_1;
+                return Assets.armor_blood_legs;
             case 4:
-                return Assets.helmet_3;
+                return Assets.armor_blood_foot_left;
             case 5:
-                return Assets.torso_1;
+                return Assets.armor_blood_foot_right;
             case 6:
-                return Assets.legs_1;
+                return Assets.armor_blood_hand_left;
             case 7:
-                return Assets.hand_left_1;
+                return Assets.armor_blood_hand_right;
+
             case 8:
-                return Assets.hand_right_1;
+                return Assets.armor_chain_torso;
             case 9:
-                return Assets.foot_left_1;
+                return Assets.armor_chain_helmet;
             case 10:
-                return Assets.foot_right_1;
+                return Assets.armor_chain_legs;
             case 11:
-                return Assets.necklace_1;
+                return Assets.armor_chain_foot_left;
             case 12:
-                return Assets.helmet_2;
+                return Assets.armor_chain_foot_right;
+            case 13:
+                return Assets.armor_chain_hand_left;
+            case 14:
+                return Assets.armor_chain_hand_right;
+
+            case 15:
+                return Assets.armor_cloth_torso;
+            case 16:
+                return Assets.armor_cloth_helmet;
+            case 17:
+                return Assets.armor_cloth_legs;
+            case 18:
+                return Assets.armor_cloth_foot_left;
+            case 19:
+                return Assets.armor_cloth_foot_right;
+            case 20:
+                return Assets.armor_cloth_hand_left;
+            case 21:
+                return Assets.armor_cloth_hand_right;
+
+            case 22:
+                return Assets.armor_gold_torso;
+            case 23:
+                return Assets.armor_gold_helmet;
+            case 24:
+                return Assets.armor_gold_legs;
+            case 25:
+                return Assets.armor_gold_foot_left;
+            case 26:
+                return Assets.armor_gold_foot_right;
+            case 27:
+                return Assets.armor_gold_hand_left;
+            case 28:
+                return Assets.armor_gold_hand_right;
+
+            case 29:
+                return Assets.armor_leather_torso;
+            case 30:
+                return Assets.armor_leather_helmet;
+            case 31:
+                return Assets.armor_leather_legs;
+            case 32:
+                return Assets.armor_leather_foot_left;
+            case 33:
+                return Assets.armor_leather_foot_right;
+            case 34:
+                return Assets.armor_leather_hand_left;
+            case 35:
+                return Assets.armor_leather_hand_right;
+
+            case 36:
+                return Assets.armor_mystic_torso;
+            case 37:
+                return Assets.armor_mystic_helmet;
+            case 38:
+                return Assets.armor_mystic_legs;
+            case 39:
+                return Assets.armor_mystic_foot_left;
+            case 40:
+                return Assets.armor_mystic_foot_right;
+            case 41:
+                return Assets.armor_mystic_hand_left;
+            case 42:
+                return Assets.armor_mystic_hand_right;
+
+            case 43:
+                return Assets.armor_plate_torso;
+            case 44:
+                return Assets.armor_plate_helmet;
+            case 45:
+                return Assets.armor_plate_legs;
+            case 46:
+                return Assets.armor_plate_foot_left;
+            case 47:
+                return Assets.armor_plate_foot_right;
+            case 48:
+                return Assets.armor_plate_hand_left;
+            case 49:
+                return Assets.armor_plate_hand_right;
+
+            case 50:
+                return Assets.armor_royal_torso;
+            case 51:
+                return Assets.armor_royal_helmet;
+            case 52:
+                return Assets.armor_royal_legs;
+            case 53:
+                return Assets.armor_royal_foot_left;
+            case 54:
+                return Assets.armor_royal_foot_right;
+            case 55:
+                return Assets.armor_royal_hand_left;
+            case 56:
+                return Assets.armor_royal_hand_right;
+
+            case 57:
+                return Assets.armor_studded_torso;
+            case 58:
+                return Assets.armor_studded_helmet;
+            case 59:
+                return Assets.armor_studded_legs;
+            case 60:
+                return Assets.armor_studded_foot_left;
+            case 61:
+                return Assets.armor_studded_foot_right;
+            case 62:
+                return Assets.armor_studded_hand_left;
+            case 63:
+                return Assets.armor_studded_hand_right;
+
+            case 64:
+                return Assets.armor_wild_torso;
+            case 65:
+                return Assets.armor_wild_helmet;
+            case 66:
+                return Assets.armor_wild_legs;
+            case 67:
+                return Assets.armor_wild_foot_left;
+            case 68:
+                return Assets.armor_wild_foot_right;
+            case 69:
+                return Assets.armor_wild_hand_left;
+            case 70:
+                return Assets.armor_wild_hand_right;
+
+            case 1001:
+                return Assets.potion_red;
         }
         return null;
-    }
-
-    public static String getCommonnessByProbabilty(double itemId) {
-        if(itemId >= 0.9) {
-            return "common";
-        }
-        return "unknown";
     }
 
     public static String getNameOfItemById(int itemId) {
