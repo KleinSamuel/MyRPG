@@ -107,10 +107,10 @@ public class GameClass extends Game {
 		if(timer >= UPDATE_TIMER && playScreen != null){
 			JSONObject data = new JSONObject();
 			try {
-				data.put("name", player.content.name);
+				data.put("NAME", player.content.NAME);
 				data.put("x", player.content.x);
 				data.put("y", player.content.y);
-				data.put("level", player.content.level);
+				data.put("LEVEL", player.content.LEVEL);
 				data.put("xMove", player.xMove);
 				data.put("yMove", player.yMove);
 				data.put("xPos", player.xPos);
@@ -142,8 +142,8 @@ public class GameClass extends Game {
 		JSONObject data = new JSONObject();
 
 		try {
-			data.put("currHealth", p.content.current_health);
-			data.put("maxHealth", p.content.health);
+			data.put("currHealth", p.content.CURRENT_HEALTH);
+			data.put("maxHealth", p.content.MAX_HEALTH);
 
 			socket.emit("healthUpdate", data);
 		} catch (JSONException e){
@@ -155,8 +155,8 @@ public class GameClass extends Game {
 		JSONObject data = new JSONObject();
 
 		try {
-			data.put("currMana", p.content.current_mana);
-			data.put("maxMana", p.content.mana);
+			data.put("currMana", p.content.CURRENT_MANA);
+			data.put("maxMana", p.content.MAX_MANA);
 
 			socket.emit("manaUpdate", data);
 		} catch (JSONException e){
@@ -168,7 +168,7 @@ public class GameClass extends Game {
 		JSONObject data = new JSONObject();
 
 		try {
-			data.put("level", p.content.level);
+			data.put("LEVEL", p.content.LEVEL);
 
 			socket.emit("levelUpdate", data);
 		} catch (JSONException e){
@@ -201,17 +201,17 @@ public class GameClass extends Game {
 		JSONObject data = new JSONObject();
 
 		try {
-			data.put("name", p.content.name);
+			data.put("NAME", p.content.NAME);
 			data.put("x", p.content.x);
 			data.put("y", p.content.y);
-			data.put("level", p.content.level);
+			data.put("LEVEL", p.content.LEVEL);
 			data.put("xMove", p.xMove);
 			data.put("yMove", p.yMove);
 			data.put("xPos", p.xPos);
-			data.put("currHealth", p.content.current_health);
-			data.put("maxHealth", p.content.health);
-			data.put("currMana", p.content.current_mana);
-			data.put("maxMana", p.content.mana);
+			data.put("currHealth", p.content.CURRENT_HEALTH);
+			data.put("maxHealth", p.content.MAX_HEALTH);
+			data.put("currMana", p.content.CURRENT_MANA);
+			data.put("maxMana", p.content.MAX_MANA);
 
 			socket.emit("initPlayer", data);
 
@@ -268,7 +268,7 @@ public class GameClass extends Game {
 			public void call(Object... args) {
 				JSONObject data = (JSONObject) args[0];
 				try {
-					String id = data.getString("id");
+					String id = data.getString("ID");
 					clientID = id;
 					DebugMessageFactory.printInfoMessage("Received ID: ["+id+"]");
 				} catch (JSONException e) {
@@ -293,7 +293,7 @@ public class GameClass extends Game {
 			public void call(Object... args) {
 				JSONObject data = (JSONObject) args[0];
 				try {
-					String id = data.getString("id");
+					String id = data.getString("ID");
 					DebugMessageFactory.printInfoMessage("New Player connected: ["+id+"]");
 
 					if(playScreen != null) {
@@ -309,8 +309,8 @@ public class GameClass extends Game {
                 JSONObject data = (JSONObject) args[0];
                 try {
 
-                    String id = data.getString("id");
-                    String name = data.getString("name");
+                    String id = data.getString("ID");
+                    String name = data.getString("NAME");
                     int entityX = data.getInt("x");
                     int entityY = data.getInt("y");
                     int xMove = data.getInt("xMove");
@@ -329,7 +329,7 @@ public class GameClass extends Game {
 			public void call(Object... args) {
 				JSONObject data = (JSONObject) args[0];
 				try {
-					String id = data.getString("id");
+					String id = data.getString("ID");
 					DebugMessageFactory.printInfoMessage("Player disconnected: ["+id+"]");
 					if(playScreen != null) {
 						playScreen.removeOtherPlayer(id);
@@ -346,8 +346,8 @@ public class GameClass extends Game {
 
 					for(int i = 0; i < objects.length(); i++){
 
-						String id = objects.getJSONObject(i).getString("id");
-						String name = objects.getJSONObject(i).getString("name");
+						String id = objects.getJSONObject(i).getString("ID");
+						String name = objects.getJSONObject(i).getString("NAME");
 						int entityX = objects.getJSONObject(i).getInt("x");
 						int entityY = objects.getJSONObject(i).getInt("y");
 						int xMove = objects.getJSONObject(i).getInt("xMove");
@@ -368,8 +368,8 @@ public class GameClass extends Game {
 
 				JSONObject data = (JSONObject) args[0];
 				try {
-					String id = data.getString("id");
-					String name = data.getString("name");
+					String id = data.getString("ID");
+					String name = data.getString("NAME");
 					int entityX = data.getInt("x");
 					int entityY = data.getInt("y");
 					int xMove = data.getInt("xMove");
@@ -389,7 +389,7 @@ public class GameClass extends Game {
 
 				JSONObject data = (JSONObject) args[0];
 				try {
-					String id = data.getString("id");
+					String id = data.getString("ID");
 					int entityX = data.getInt("x");
 					int entityY = data.getInt("y");
 
@@ -423,9 +423,9 @@ public class GameClass extends Game {
 
 					for(int i = 0; i < objects.length(); i++) {
 
-						int id = objects.getJSONObject(i).getInt("id");
+						int id = objects.getJSONObject(i).getInt("ID");
 						int npc_key = objects.getJSONObject(i).getInt("npc_key");
-						int level = objects.getJSONObject(i).getInt("level");
+						int level = objects.getJSONObject(i).getInt("LEVEL");
 						float x = objects.getJSONObject(i).getInt("x");
 						float y = objects.getJSONObject(i).getInt("y");
 						float speed = (float)objects.getJSONObject(i).getDouble("speed");
@@ -447,7 +447,7 @@ public class GameClass extends Game {
 			public void call(Object... args) {
 				JSONObject data = (JSONObject) args[0];
 				try {
-					int id = data.getInt("id");
+					int id = data.getInt("ID");
                     float x = data.getInt("x");
                     float y = data.getInt("y");
 
@@ -464,7 +464,7 @@ public class GameClass extends Game {
 			public void call(Object... args) {
 				JSONObject data = (JSONObject) args[0];
 				try {
-					int id = data.getInt("id");
+					int id = data.getInt("ID");
 					float x = data.getInt("pointX");
 					float y = data.getInt("pointY");
 
@@ -483,13 +483,13 @@ public class GameClass extends Game {
 				JSONObject data = (JSONObject) args[0];
 				try {
 
-					int id = data.getInt("id");
+					int id = data.getInt("ID");
 					int npc_key = data.getInt("npc_key");
-					int level = data.getInt("level");
+					int level = data.getInt("LEVEL");
 					int x = data.getInt("x");
 					int y = data.getInt("y");
 					double speed = data.getDouble("speed");
-					int current_health = data.getInt("current_health");
+					int current_health = data.getInt("CURRENT_HEALTH");
 					int max_health = data.getInt("max_health");
 
 					if(playScreen != null) {
