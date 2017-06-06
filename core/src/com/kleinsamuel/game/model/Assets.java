@@ -21,7 +21,7 @@ public class Assets {
     public static final String rectangle_light_gray = "rectangle_light_gray.png";
     public static final String rectangle_blue = "rectangle_blue.png";
 
-    /* health mana exp bars */
+    /* MAX_HEALTH MAX_MANA exp bars */
     public static final String empty_bar = "bars/bar_empty.png";
     public static final String red_bar = "bars/healthbar_internal_red.png";
     public static final String blue_bar = "bars/mana_internal_blue.png";
