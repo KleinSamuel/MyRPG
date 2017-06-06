@@ -223,6 +223,7 @@ public class UserContent {
         uc.NAME = "ADMIN";
         uc.BAG_SIZE = 10;
         uc.bag = new HashMap();
+
         uc.bag.put(1,1);
         uc.bag.put(2,1);
         uc.bag.put(3,1);
@@ -230,11 +231,8 @@ public class UserContent {
         uc.bag.put(5,1);
         uc.bag.put(6,1);
         uc.bag.put(7,1);
-        uc.bag.put(8,1);
-        uc.bag.put(9,1);
-        uc.bag.put(10,1);
-        uc.bag.put(11,1);
-        uc.bag.put(12,1);
+
+        uc.bag.put(1001, 1);
 
         uc.equippedItems = new HashMap();
         return uc;
