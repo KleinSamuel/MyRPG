@@ -182,7 +182,7 @@ public class NPC {
         setNextTexture();
     }
 
-    // TODO add specific NPC name
+    // TODO add specific NPC NAME
     public void drawName(SpriteBatch batch) {
         Utils.testFont.getData().setScale(0.4f, 0.3f);
         Utils.testFont.setColor(Color.BLACK);
@@ -212,7 +212,7 @@ public class NPC {
     }
 
     public void renderAfter(SpriteBatch batch){
-        // TODO draw name, level and health
+        // TODO draw NAME, LEVEL and MAX_HEALTH
         drawSmallHealthbar(batch);
         drawName(batch);
         drawLevel(batch);
