@@ -106,7 +106,7 @@ public class ItemFactory {
         switch (itemId) {
             case 1:
                 return "A delicious red potion which restores a given\n"
-                        + "amount of health points of the lucky person\n"
+                        + "amount of MAX_HEALTH points of the lucky person\n"
                         + "to drink it.\n"
                         + "One of the most common items to be found.";
             case 2:
