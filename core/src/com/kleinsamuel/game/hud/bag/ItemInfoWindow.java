@@ -1,10 +1,12 @@
 package com.kleinsamuel.game.hud.bag;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.kleinsamuel.game.model.Assets;
 import com.kleinsamuel.game.model.items.ItemFactory;
 import com.kleinsamuel.game.screens.PlayScreen;
+import com.kleinsamuel.game.util.DebugMessageFactory;
 
 /**
  * Created by sam on 31.05.17.
@@ -81,6 +83,11 @@ public class ItemInfoWindow {
 
     public void render(SpriteBatch batch) {
 
+        Color c = batch.getColor();
+        batch.setColor(c.r, c.g, c.b, 0.7f);
+        batch.draw(Assets.manager.get(Assets.rectangle_black, Texture.class), 0, 0, PlayScreen.V_WIDTH, PlayScreen.V_HEIGHT);
+        batch.setColor(c.r, c.g, c.b, 1f);
+
         batch.draw(Assets.manager.get(Assets.item_selected_background, Texture.class), item_info_x, item_info_y, ITEM_INFO_WIDTH, ITEM_INFO_HEIGHT);
 
         batch.draw(Assets.manager.get(Assets.bag_close_button, Texture.class), close_x, close_y, ITEM_INFO_CLOSE_WIDTH, ITEM_INFO_CLOSE_HEIGHT);
@@ -118,6 +125,9 @@ public class ItemInfoWindow {
                 }
                 Bag.SHOW_ITEM_INFO = false;
                 return;
+            }else{
+                // TODO handle different items
+                DebugMessageFactory.printInfoMessage("USED HEALTH POTION");
             }
         }
     }
