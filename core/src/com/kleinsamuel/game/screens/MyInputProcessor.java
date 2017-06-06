@@ -94,17 +94,18 @@ public class MyInputProcessor implements InputProcessor {
         Vector3 v3 = playScreen.gameCam.unproject(new Vector3(x, y, 0f));
         Vector3 arrayCoord = Utils.getArrayCoordinates(v3.x, v3.y);
 
+        /* check if player clicked on npc to follow */
+        if(playScreen.checkIfClickedOnNPC((int)arrayCoord.x, (int)arrayCoord.y)){
+            return true;
+        }
+        /* if player clicked on another tiled than an npc -> stop following current npc */
+        playScreen.player.following = null;
+
         if(playScreen.checkIfTileIsClickable((int)arrayCoord.x, (int)arrayCoord.y)) {
 
             if(playScreen.player.checkIfPointIsEndpointOfCurrentPath(arrayCoord)){
                 return true;
             }
-
-            if(playScreen.checkIfClickedOnNPC((int)arrayCoord.x, (int)arrayCoord.y)){
-                return true;
-            }
-
-            playScreen.player.following = null;
 
             playScreen.tilemarker.setToNormal();
             playScreen.tilemarker.setVisible(true);
