@@ -131,9 +131,9 @@ public class PlayScreen implements Screen{
     }
 
     private void updateMainBars(){
-        hud.healthbar.setHealth(player.content.current_health, player.content.health);
-        hud.manabar.setMana(player.content.current_mana, player.content.mana);
-        hud.experiencebar.setExperience(player.content.experience, CharacterFactory.getNeededXpForLevel(player.content.level));
+        hud.healthbar.setHealth(player.content.CURRENT_HEALTH, player.content.MAX_HEALTH);
+        hud.manabar.setMana(player.content.CURRENT_MANA, player.content.MAX_MANA);
+        hud.experiencebar.setExperience(player.content.CURRENT_EXPERIENCE, CharacterFactory.getNeededXpForLevel(player.content.LEVEL));
     }
 
     private void updateNPCs(){
