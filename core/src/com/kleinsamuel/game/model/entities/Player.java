@@ -1,5 +1,6 @@
 package com.kleinsamuel.game.model.entities;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -60,7 +61,7 @@ public class Player {
         pathToWalk = new Path();
         xMove = 0;
         yMove = 0;
-        pathFinder = new AStarPathFinder(playScreen.mapRepresentation.walkableTiles, playScreen.mapRepresentation.map2D, this);
+        pathFinder = new AStarPathFinder(playScreen.mapRepresentation.walkableTiles, playScreen.mapRepresentation.map2D, playScreen.mapRepresentation.map3D, this);
 
         this.playScreen = playScreen;
         this.spriteSheet = spriteSheet;
@@ -317,6 +318,7 @@ public class Player {
 
                 playScreen.animations.add(new EffectAnimation(AnimationFactory.getSpriteSheet(AnimationEnum.SLASH_SINGLE), 150, following.data.x, following.data.y));
                 playScreen.animations.add(new DamageAnimation(left, true, damage, following.data.x, following.data.y));
+                Assets.manager.get(Assets.hit_player, Sound.class).play();
             }
         }
     }
@@ -324,14 +326,25 @@ public class Player {
     /*
     TODO add player death
      */
-    public void getDamage(int amount){
+    public void getDamage(int fromId, int amount){
         if(content.CURRENT_HEALTH < amount){
             content.CURRENT_HEALTH = 0;
         }else {
             content.CURRENT_HEALTH -= amount;
         }
+
+        /* get direction of hitter */
+        NPC hitter = playScreen.game.npcs.get(fromId);
+        boolean left = true;
+        if(hitter != null){
+            if(hitter.data.x < content.x || hitter.data.y > content.y){
+                left = false;
+            }
+        }
+
         playScreen.animations.add(new EffectAnimation(AnimationFactory.getSpriteSheet(AnimationEnum.SLASH_SINGLE), 150, content.x, content.y));
-        playScreen.animations.add(new DamageAnimation(false, true, amount, content.x, content.y));
+        playScreen.animations.add(new DamageAnimation(left, false, amount, content.x, content.y));
+        Assets.manager.get(Assets.hit_enemy, Sound.class).play();
     }
 
     public boolean checkIfPointIsEndpointOfCurrentPath(Vector3 v){
@@ -421,7 +434,7 @@ public class Player {
     }
 
     public void render(SpriteBatch batch){
-        batch.draw(currentTexture, content.x, content.y, Utils.TILEWIDTH, Utils.TILEHEIGHT);
+        batch.draw(currentTexture, content.x, content.y, Utils.TILEWIDTH, Utils.TILEHEIGHT-3);
     }
 
     public void renderAfter(SpriteBatch batch){
