@@ -29,8 +29,8 @@ public class Bag {
     private final int bag_size_y = 5;
     private final float bag_container_width = 66 * FACTOR;
     private final float bag_container_height = 66 * FACTOR;
-    private final float bag_padding_x = 10 * FACTOR;
-    private final float bag_padding_y = 10 * FACTOR;
+    private final float bag_padding_x = 1 * FACTOR;
+    private final float bag_padding_y = 1 * FACTOR;
     private final float bag_margin_x = 19 * FACTOR;
     private final float bag_margin_y = 19 * FACTOR;
 
@@ -122,10 +122,16 @@ public class Bag {
         }
 
         if(clickOnStat(screenX, screenY)){
+            SHOW_ITEM_INFO = false;
+            SHOW_BAG = false;
+            playScreen.stats.SHOW_STATS = true;
             return;
         }
 
         if(clickOnEncyclopedia(screenX, screenY)){
+            SHOW_ITEM_INFO = false;
+            SHOW_BAG = false;
+            playScreen.lexicon.SHOW_LEXICON = true;
             return;
         }
 
@@ -148,6 +154,7 @@ public class Bag {
     public boolean clickOnStat(int screenX, int screenY) {
         if(screenX >= STAT_X_1 && screenX <= STAT_X_2 && screenY >= STAT_Y_1 && screenY <= STAT_Y_2) {
             DebugMessageFactory.printInfoMessage("CLICKED ON STAT");
+
             return true;
         }
         return false;
@@ -285,10 +292,12 @@ public class Bag {
 
                 Vector3 p = getCoordinatesForSlotId(isEquipped);
                 if(p != null) {
-                    batch.draw(Assets.manager.get(ItemFactory.getResourceStringForItemId(entry.getKey()), Texture.class), p.x+(ITEM_PADDING_X/2), p.y+(ITEM_PADDING_Y/2), getWidthAndHeightOfSlot(isEquipped).x-ITEM_PADDING_X, getWidthAndHeightOfSlot(isEquipped).y-ITEM_PADDING_Y);
+                    batch.draw(Assets.manager.get(ItemFactory.getResourceStringForItemId(entry.getKey()), Texture.class), p.x-(ITEM_PADDING_X/2), p.y-(ITEM_PADDING_Y/2), getWidthAndHeightOfSlot(isEquipped).x+ITEM_PADDING_X, getWidthAndHeightOfSlot(isEquipped).y+ITEM_PADDING_Y);
                 }
             }
         }
+
+        playScreen.hud.drawMoneyString(batch);
 
         if(SHOW_ITEM_INFO) {
             itemInfoWindow.render(batch);
