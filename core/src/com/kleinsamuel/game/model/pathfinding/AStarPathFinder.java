@@ -13,15 +13,17 @@ public class AStarPathFinder {
 
 	private HashSet<Integer> walkableTiles;
 	private int[][] map;
+	private int[][][] map3D;
 
 	private LinkedList<PathFindingPoint> open;
 	private LinkedList<PathFindingPoint> closed;
 	private Player player;
 	
-	public AStarPathFinder(HashSet<Integer> walkableTiles, int[][] map, Player owner) {
+	public AStarPathFinder(HashSet<Integer> walkableTiles, int[][] map, int[][][] map3D, Player owner) {
 		this.map = map;
 		this.walkableTiles = walkableTiles;
 		this.player = owner;
+		this.map3D = map3D;
 	}
 	
 	public LinkedList<Vector3> findPath(int startX, int startY, int targetX, int targetY){
@@ -189,10 +191,12 @@ public class AStarPathFinder {
 			}
 		}
 
-		if(!walkableTiles.contains(map[x][y])) {
-			return true;
+		for (int i = 0; i < map3D.length; i++) {
+			if(walkableTiles.contains(map3D[i][x][y])){
+				return false;
+			}
 		}
-		return false;
+		return true;
 	}
 	
 	private int getParent(int currentX, int currentY, int oldX, int oldY) {
