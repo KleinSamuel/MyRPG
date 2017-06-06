@@ -27,7 +27,7 @@ public class CharacterFactory {
     public static int getHealthForLevel(int level) {
 
         if(level <= 3){
-            return level * 100;
+            return level * 10;
         }
         return computeFormula(level)/2;
     }

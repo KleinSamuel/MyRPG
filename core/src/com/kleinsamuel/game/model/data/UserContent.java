@@ -16,35 +16,43 @@ import java.util.Map;
 
 public class UserContent {
 
-    /* id to map object to a unique user */
-    public int id;
-    /* users name */
-    public String name;
+    /* ID to map object to a unique user */
+    public int ID;
+    /* users NAME */
+    public String NAME;
     public float x;
     public float y;
-    /* users level needed for calculation of several values */
-    public int level;
+
+    public long VALUE_ATTACK;
+    public long VALUE_ATTACK_SPEED;
+    public long VALUE_DEFENSE;
+    public float VALUE_MOVING_SPEED;
+    public int VALUE_RANGE;
+
+    /* users LEVEL needed for calculation of several values */
+    public int LEVEL;
     /* users current xp */
-    public int experience;
-    /* users max health */
-    public int health;
-    /* users current health */
-    public int current_health;
-    /* users mana */
-    public int mana;
-    /* users current mana */
-    public int current_mana;
-    /* users money */
-    public int money;
+    public int CURRENT_EXPERIENCE;
+    /* users max MAX_HEALTH */
+    public int MAX_HEALTH;
+    /* users current MAX_HEALTH */
+    public int CURRENT_HEALTH;
+    /* users MAX_MANA */
+    public int MAX_MANA;
+    /* users current MAX_MANA */
+    public int CURRENT_MANA;
+    /* users MONEY */
+    public int MONEY;
     /* users max carry amount */
-    public int bag_size;
+    public int BAG_SIZE;
     /* users bag containing items */
     private HashMap<Integer, Integer> bag;
     /* equipped items
      * key = int position for equipment slot
-     * value = int id for item
+     * value = int ID for item
      */
     private HashMap<Integer, Integer> equippedItems;
+
 
     public UserContent() {
         this.bag = new HashMap();
@@ -60,18 +68,23 @@ public class UserContent {
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append("id:"+id+"\n");
-        sb.append("name:"+name+"\n");
+        sb.append("ID:"+ ID +"\n");
+        sb.append("NAME:"+ NAME +"\n");
         sb.append("x:"+(int)arrayPos.x+"\n");
         sb.append("y:"+(int)arrayPos.y+"\n");
-        sb.append("level:"+level+"\n");
-        sb.append("exp:"+experience+"\n");
-        sb.append("health:"+health+"\n");
-        sb.append("currenthealth:"+current_health+"\n");
-        sb.append("mana:"+mana+"\n");
-        sb.append("currentmana:"+current_mana+"\n");
-        sb.append("money:"+money+"\n");
-        sb.append("bag_size:"+bag_size+"\n");
+        sb.append("stat_attack:"+VALUE_ATTACK+"\n");
+        sb.append("stat_attack_speed:"+VALUE_ATTACK_SPEED+"\n");
+        sb.append("stat_defense:"+VALUE_DEFENSE+"\n");
+        sb.append("stat_moving_speed:"+VALUE_MOVING_SPEED+"\n");
+        sb.append("stat_range:"+VALUE_RANGE+"\n");
+        sb.append("LEVEL:"+ LEVEL +"\n");
+        sb.append("exp:"+ CURRENT_EXPERIENCE +"\n");
+        sb.append("MAX_HEALTH:"+ MAX_HEALTH +"\n");
+        sb.append("currenthealth:"+ CURRENT_HEALTH +"\n");
+        sb.append("MAX_MANA:"+ MAX_MANA +"\n");
+        sb.append("currentmana:"+ CURRENT_MANA +"\n");
+        sb.append("MONEY:"+ MONEY +"\n");
+        sb.append("BAG_SIZE:"+ BAG_SIZE +"\n");
         sb.append("bag_content:");
         for(Map.Entry<Integer, Integer> e : bag.entrySet()) {
             sb.append(e.getKey()+"-"+e.getValue()+",");
@@ -111,37 +124,46 @@ public class UserContent {
             String line = tmp[i];
             String[] lineArray = line.split(":");
 
-            if (lineArray[0].equals("id")) {
-                uc.id = Integer.parseInt(lineArray[1]);
-            } else if (lineArray[0].equals("name")) {
-                uc.name = lineArray[1];
+            if (lineArray[0].equals("ID")) {
+                uc.ID = Integer.parseInt(lineArray[1]);
+            } else if (lineArray[0].equals("NAME")) {
+                uc.NAME = lineArray[1];
             } else if (lineArray[0].equals("x")) {
                 uc.x = Integer.parseInt(lineArray[1])*Utils.TILEWIDTH;
             } else if (lineArray[0].equals("y")) {
                 uc.y = Integer.parseInt(lineArray[1])*Utils.TILEHEIGHT;
-            } else if (lineArray[0].equals("level")) {
-                uc.level = Integer.parseInt(lineArray[1]);
+            } else if (lineArray[0].equals("stat_attack")) {
+                uc.VALUE_ATTACK = Long.parseLong(lineArray[1]);
+            } else if (lineArray[0].equals("stat_attack_speed")) {
+                uc.VALUE_ATTACK_SPEED = Long.parseLong(lineArray[1]);
+            } else if (lineArray[0].equals("stat_defense")) {
+                uc.VALUE_DEFENSE = Long.parseLong(lineArray[1]);
+            } else if (lineArray[0].equals("stat_moving_speed")) {
+                uc.VALUE_MOVING_SPEED = Float.parseFloat(lineArray[1]);
+            } else if (lineArray[0].equals("stat_range")) {
+                uc.VALUE_RANGE = Integer.parseInt(lineArray[1]);
+            } else if (lineArray[0].equals("LEVEL")) {
+                uc.LEVEL = Integer.parseInt(lineArray[1]);
             } else if (lineArray[0].equals("exp")) {
-                uc.experience = Integer.parseInt(lineArray[1]);
-            } else if (lineArray[0].equals("health")) {
-                uc.health = Integer.parseInt(lineArray[1]);
+                uc.CURRENT_EXPERIENCE = Integer.parseInt(lineArray[1]);
+            } else if (lineArray[0].equals("MAX_HEALTH")) {
+                uc.MAX_HEALTH = Integer.parseInt(lineArray[1]);
             } else if (lineArray[0].equals("currenthealth")) {
-                uc.current_health = Integer.parseInt(lineArray[1]);
-            } else if (lineArray[0].equals("mana")) {
-                uc.mana = Integer.parseInt(lineArray[1]);
+                uc.CURRENT_HEALTH = Integer.parseInt(lineArray[1]);
+            } else if (lineArray[0].equals("MAX_MANA")) {
+                uc.MAX_MANA = Integer.parseInt(lineArray[1]);
             } else if (lineArray[0].equals("currentmana")) {
-                uc.current_mana = Integer.parseInt(lineArray[1]);
-            } else if (lineArray[0].equals("money")) {
-                uc.money = Integer.parseInt(lineArray[1]);
-            } else if (lineArray[0].equals("bag_size")) {
-                uc.bag_size = Integer.parseInt(lineArray[1]);
+                uc.CURRENT_MANA = Integer.parseInt(lineArray[1]);
+            } else if (lineArray[0].equals("MONEY")) {
+                uc.MONEY = Integer.parseInt(lineArray[1]);
+            } else if (lineArray[0].equals("BAG_SIZE")) {
+                uc.BAG_SIZE = Integer.parseInt(lineArray[1]);
             } else if (lineArray[0].equals("bag_content")) {
                 uc.bag = (lineArray.length >= 2) ? fillBag(lineArray[1]) : fillBag("");
             } else if (lineArray[0].equals("equipped")) {
                 uc.equippedItems = (lineArray.length >= 2) ? parseEquippedItems(lineArray[1]) : parseEquippedItems("");
             }
         }
-
         return uc;
     }
 
@@ -183,18 +205,23 @@ public class UserContent {
 
     public static UserContent createStandard() {
         UserContent uc = new UserContent();
-        uc.id = -1;
+        uc.ID = -1;
         uc.x = 10*Utils.TILEWIDTH;
         uc.y = 10*Utils.TILEHEIGHT;
-        uc.health = CharacterFactory.getHealthForLevel(1);
-        uc.current_health = CharacterFactory.getHealthForLevel(1);
-        uc.mana = 100;
-        uc.current_mana = 100;
-        uc.money = 100;
-        uc.level = 1;
-        uc.experience = 2;
-        uc.name = "ADMIN";
-        uc.bag_size = 10;
+        uc.VALUE_ATTACK = 1;
+        uc.VALUE_ATTACK_SPEED = 1000;
+        uc.VALUE_DEFENSE = 0;
+        uc.VALUE_MOVING_SPEED = 0.5f;
+        uc.VALUE_RANGE = 1;
+        uc.MAX_HEALTH = CharacterFactory.getHealthForLevel(1);
+        uc.CURRENT_HEALTH = CharacterFactory.getHealthForLevel(1);
+        uc.MAX_MANA = 100;
+        uc.CURRENT_MANA = 100;
+        uc.MONEY = 100;
+        uc.LEVEL = 1;
+        uc.CURRENT_EXPERIENCE = 0;
+        uc.NAME = "ADMIN";
+        uc.BAG_SIZE = 10;
         uc.bag = new HashMap();
         uc.bag.put(1,1);
         uc.bag.put(2,1);
@@ -219,7 +246,7 @@ public class UserContent {
 
     /* put item in bag */
     public boolean putInBag(int i) {
-        if(bag.size() > bag_size) {
+        if(bag.size() > BAG_SIZE) {
             return false;
         }
         if(bag.containsKey(i)) {
