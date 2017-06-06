@@ -26,7 +26,7 @@ public class MapRepresentation {
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                map2D[i][j] = tileLayer.getCell(i, j).getTile().getId();
+                //map2D[i][j] = tileLayer.getCell(i, j).getTile().getId();
                 for (int layer = 0; layer < map.getLayers().getCount(); layer++){
                     TiledMapTileLayer tmpLayer = (TiledMapTileLayer) map.getLayers().get(layer);
                     if(tmpLayer != null){
