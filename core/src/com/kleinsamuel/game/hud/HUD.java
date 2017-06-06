@@ -116,7 +116,7 @@ public class HUD {
 
         Utils.basicFont.getData().setScale(0.4f, 0.5f);
         Utils.basicFont.setColor(new Color(255.0f, 255.0f, 0.0f, 10.0f));
-        String s = ""+playScreen.player.content.money;
+        String s = ""+playScreen.player.content.MONEY;
         Vector3 dims = Utils.getWidthAndHeightOfString(Utils.basicFont, s);
         Utils.basicFont.draw(batch, s, MONEY_SKULL_BAR_X+25, MONEY_SKULL_BAR_Y+15);
 
