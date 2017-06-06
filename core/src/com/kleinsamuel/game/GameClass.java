@@ -21,7 +21,7 @@ import io.socket.emitter.Emitter;
 
 public class GameClass extends Game {
 
-	private String serverName = "87.160.48.33";
+	private String serverName = "87.160.50.18";
 	private String port = "8081";
 	private IO.Options socketOptions;
 
@@ -268,7 +268,7 @@ public class GameClass extends Game {
 			public void call(Object... args) {
 				JSONObject data = (JSONObject) args[0];
 				try {
-					String id = data.getString("ID");
+					String id = data.getString("id");
 					clientID = id;
 					DebugMessageFactory.printInfoMessage("Received ID: ["+id+"]");
 				} catch (JSONException e) {
@@ -293,7 +293,7 @@ public class GameClass extends Game {
 			public void call(Object... args) {
 				JSONObject data = (JSONObject) args[0];
 				try {
-					String id = data.getString("ID");
+					String id = data.getString("id");
 					DebugMessageFactory.printInfoMessage("New Player connected: ["+id+"]");
 
 					if(playScreen != null) {
@@ -309,7 +309,7 @@ public class GameClass extends Game {
                 JSONObject data = (JSONObject) args[0];
                 try {
 
-                    String id = data.getString("ID");
+                    String id = data.getString("id");
                     String name = data.getString("NAME");
                     int entityX = data.getInt("x");
                     int entityY = data.getInt("y");
@@ -329,7 +329,7 @@ public class GameClass extends Game {
 			public void call(Object... args) {
 				JSONObject data = (JSONObject) args[0];
 				try {
-					String id = data.getString("ID");
+					String id = data.getString("id");
 					DebugMessageFactory.printInfoMessage("Player disconnected: ["+id+"]");
 					if(playScreen != null) {
 						playScreen.removeOtherPlayer(id);
@@ -346,8 +346,8 @@ public class GameClass extends Game {
 
 					for(int i = 0; i < objects.length(); i++){
 
-						String id = objects.getJSONObject(i).getString("ID");
-						String name = objects.getJSONObject(i).getString("NAME");
+						String id = objects.getJSONObject(i).getString("id");
+						String name = objects.getJSONObject(i).getString("name");
 						int entityX = objects.getJSONObject(i).getInt("x");
 						int entityY = objects.getJSONObject(i).getInt("y");
 						int xMove = objects.getJSONObject(i).getInt("xMove");
@@ -368,8 +368,8 @@ public class GameClass extends Game {
 
 				JSONObject data = (JSONObject) args[0];
 				try {
-					String id = data.getString("ID");
-					String name = data.getString("NAME");
+					String id = data.getString("id");
+					String name = data.getString("name");
 					int entityX = data.getInt("x");
 					int entityY = data.getInt("y");
 					int xMove = data.getInt("xMove");
@@ -389,7 +389,7 @@ public class GameClass extends Game {
 
 				JSONObject data = (JSONObject) args[0];
 				try {
-					String id = data.getString("ID");
+					String id = data.getString("id");
 					int entityX = data.getInt("x");
 					int entityY = data.getInt("y");
 
@@ -423,9 +423,9 @@ public class GameClass extends Game {
 
 					for(int i = 0; i < objects.length(); i++) {
 
-						int id = objects.getJSONObject(i).getInt("ID");
+						int id = objects.getJSONObject(i).getInt("id");
 						int npc_key = objects.getJSONObject(i).getInt("npc_key");
-						int level = objects.getJSONObject(i).getInt("LEVEL");
+						int level = objects.getJSONObject(i).getInt("level");
 						float x = objects.getJSONObject(i).getInt("x");
 						float y = objects.getJSONObject(i).getInt("y");
 						float speed = (float)objects.getJSONObject(i).getDouble("speed");
@@ -447,7 +447,7 @@ public class GameClass extends Game {
 			public void call(Object... args) {
 				JSONObject data = (JSONObject) args[0];
 				try {
-					int id = data.getInt("ID");
+					int id = data.getInt("id");
                     float x = data.getInt("x");
                     float y = data.getInt("y");
 
@@ -456,7 +456,7 @@ public class GameClass extends Game {
                     }
 
 				} catch(JSONException e){
-                    DebugMessageFactory.printErrorMessage("ERROR UPDATING NPCS");
+                    DebugMessageFactory.printErrorMessage("ERROR UPDATING NPC MOVED");
 				}
 			}
 		}).on("npcMovedPoint", new Emitter.Listener() {
@@ -464,7 +464,7 @@ public class GameClass extends Game {
 			public void call(Object... args) {
 				JSONObject data = (JSONObject) args[0];
 				try {
-					int id = data.getInt("ID");
+					int id = data.getInt("id");
 					float x = data.getInt("pointX");
 					float y = data.getInt("pointY");
 
@@ -473,7 +473,7 @@ public class GameClass extends Game {
 					}
 
 				} catch(JSONException e){
-					DebugMessageFactory.printErrorMessage("ERROR UPDATING NPCS");
+					DebugMessageFactory.printErrorMessage("ERROR UPDATING NPC MOVED POINT");
 				}
 			}
 		});
@@ -483,13 +483,13 @@ public class GameClass extends Game {
 				JSONObject data = (JSONObject) args[0];
 				try {
 
-					int id = data.getInt("ID");
+					int id = data.getInt("id");
 					int npc_key = data.getInt("npc_key");
-					int level = data.getInt("LEVEL");
+					int level = data.getInt("level");
 					int x = data.getInt("x");
 					int y = data.getInt("y");
 					double speed = data.getDouble("speed");
-					int current_health = data.getInt("CURRENT_HEALTH");
+					int current_health = data.getInt("current_health");
 					int max_health = data.getInt("max_health");
 
 					if(playScreen != null) {
@@ -515,7 +515,7 @@ public class GameClass extends Game {
 					}
 
 				} catch(JSONException e){
-					DebugMessageFactory.printErrorMessage("ERROR UPDATING NPCS");
+					DebugMessageFactory.printErrorMessage("ERROR UPDATING DAMAGE TO NPCS");
 				}
 			}
 		});
@@ -527,7 +527,7 @@ public class GameClass extends Game {
 					int toId = data.getInt("to");
 					npcs.remove(toId);
 				} catch(JSONException e){
-					DebugMessageFactory.printErrorMessage("ERROR UPDATING NPCS");
+					DebugMessageFactory.printErrorMessage("ERROR UPDATING KILL NPCS");
 				}
 			}
 		});
@@ -536,13 +536,13 @@ public class GameClass extends Game {
 			public void call(Object... args) {
 				JSONObject data = (JSONObject) args[0];
 				try {
-					String fromId = data.getString("from");
+					int fromId = data.getInt("from");
 					String toId = data.getString("to");
 					int amount = data.getInt("amount");
 
 					if(playScreen != null) {
 						if (toId.equals(clientID)) {
-							playScreen.player.getDamage(amount);
+							playScreen.player.getDamage(fromId, amount);
 						} else {
 							playScreen.damageToOtherPlayer(toId, amount);
 						}
