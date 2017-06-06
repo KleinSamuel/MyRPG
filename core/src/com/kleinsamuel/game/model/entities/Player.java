@@ -12,6 +12,7 @@ import com.kleinsamuel.game.model.animations.DamageAnimation;
 import com.kleinsamuel.game.model.animations.EffectAnimation;
 import com.kleinsamuel.game.model.data.CharacterFactory;
 import com.kleinsamuel.game.model.data.UserContent;
+import com.kleinsamuel.game.model.data.UserMultiplier;
 import com.kleinsamuel.game.model.entities.npcs.NPC;
 import com.kleinsamuel.game.model.pathfinding.AStarPathFinder;
 import com.kleinsamuel.game.model.pathfinding.Path;
@@ -36,6 +37,7 @@ public class Player {
     public PlayScreen playScreen;
 
     public UserContent content;
+    public UserMultiplier multiplier;
 
     private int damage;
 
@@ -68,22 +70,23 @@ public class Player {
 
         damage = 10;
 
-        if(content.id == -1){
+        if(content.ID == -1){
             DebugMessageFactory.printInfoMessage("FIRST STARTUP!");
         }else{
             DebugMessageFactory.printInfoMessage("NOT FIRST STARTUP!");
         }
-
-        DebugMessageFactory.printInfoMessage("BAG SIZE: "+content.getBag().size());
-
     }
 
     private void loadContent() {
         this.content = UserContent.readFromFile();
     }
 
+    private void loadMultiplier(){
+        this.multiplier = UserMultiplier.readFromFile();
+    }
+
     public void checkIfDead(){
-        if(content.current_health <= 0){
+        if(content.CURRENT_HEALTH <= 0){
             content.x = 24;
             content.y = 24;
             following = null;
@@ -262,11 +265,11 @@ public class Player {
     }
 
     private void addExperience(int amount){
-        if(content.experience+amount >= CharacterFactory.getNeededXpForLevel(content.level)){
-            content.level += 1;
-            content.experience = 0;
+        if(content.CURRENT_EXPERIENCE +amount >= CharacterFactory.getNeededXpForLevel(content.LEVEL)){
+            content.LEVEL += 1;
+            content.CURRENT_EXPERIENCE = 0;
         }else{
-            content.experience += amount;
+            content.CURRENT_EXPERIENCE += amount;
         }
     }
 
@@ -322,10 +325,10 @@ public class Player {
     TODO add player death
      */
     public void getDamage(int amount){
-        if(content.current_health < amount){
-            content.current_health = 0;
+        if(content.CURRENT_HEALTH < amount){
+            content.CURRENT_HEALTH = 0;
         }else {
-            content.current_health -= amount;
+            content.CURRENT_HEALTH -= amount;
         }
         playScreen.animations.add(new EffectAnimation(AnimationFactory.getSpriteSheet(AnimationEnum.SLASH_SINGLE), 150, content.x, content.y));
         playScreen.animations.add(new DamageAnimation(false, true, amount, content.x, content.y));
@@ -353,15 +356,15 @@ public class Player {
     public void drawName(SpriteBatch batch) {
         Utils.testFont.getData().setScale(0.4f, 0.3f);
         Utils.testFont.setColor(Color.BLACK);
-        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.testFont, content.name);
-        Utils.testFont.draw(batch, content.name, content.x+Utils.TILEWIDTH/2-dims.x/2, content.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+5);
+        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.testFont, content.NAME);
+        Utils.testFont.draw(batch, content.NAME, content.x+Utils.TILEWIDTH/2-dims.x/2, content.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+5);
     }
 
     public void drawLevel(SpriteBatch batch){
         Utils.testFont.getData().setScale(0.3f, 0.2f);
         Utils.testFont.setColor(Color.BLACK);
-        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.testFont, "Lvl. "+content.level);
-        Utils.testFont.draw(batch, "Lvl. "+content.level, content.x+Utils.TILEWIDTH/2-dims.x/2, content.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+10);
+        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.testFont, "Lvl. "+content.LEVEL);
+        Utils.testFont.draw(batch, "Lvl. "+content.LEVEL, content.x+Utils.TILEWIDTH/2-dims.x/2, content.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+10);
     }
 
     private float HEALTHBAR_PADDING = 0.5f;
@@ -370,7 +373,7 @@ public class Player {
 
     public void drawSmallHealthbar(SpriteBatch batch){
 
-        PERC_HEALTH = (1.0f*content.current_health)/(1.0f*content.health);
+        PERC_HEALTH = (1.0f*content.CURRENT_HEALTH)/(1.0f*content.MAX_HEALTH);
 
         batch.draw(Assets.manager.get(Assets.rectangle_black, Texture.class), content.x, content.y + Utils.TILEHEIGHT, Utils.TILEWIDTH, HEALTHBAR_HEIGHT);
         batch.draw(Assets.manager.get(Assets.rectangle_gray, Texture.class), content.x+HEALTHBAR_PADDING, content.y+Utils.TILEHEIGHT+HEALTHBAR_PADDING, Utils.TILEWIDTH-2*HEALTHBAR_PADDING, HEALTHBAR_HEIGHT-2*HEALTHBAR_PADDING);
