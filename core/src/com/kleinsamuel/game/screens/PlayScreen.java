@@ -97,7 +97,7 @@ public class PlayScreen implements Screen{
         map = mapLoader.load("map_test/uf_map_1.tmx");
         mapRenderer = new OrthogonalTiledMapRenderer(map);
 
-        mapRepresentation = new MapRepresentation(map, new HashSet<Integer>(Arrays.asList(-1)));
+        mapRepresentation = new MapRepresentation(map, new HashSet<Integer>(Arrays.asList(153,154,155,178,179,180,131,138,145,203,204,205)));
 
         MapProperties prop = map.getProperties();
         int mapWidth = prop.get("width", Integer.class);
@@ -112,7 +112,7 @@ public class PlayScreen implements Screen{
         gameCam.position.set(500, 500, 0);
         gameCam.zoom = Utils.ZOOM_FACTOR;
 
-        player = new Player(this, new SpriteSheet(Assets.manager.get(Assets.test, Texture.class), 4, 3));
+        player = new Player(this, new SpriteSheet(Assets.manager.get(Assets.chara_23, Texture.class), 4, 3));
         game.sendInitialInfo(player);
 
         tilemarker = new Tilemarker();
@@ -279,7 +279,14 @@ public class PlayScreen implements Screen{
     }
 
     public boolean checkIfTileIsClickable(int arrayX, int arrayY){
-        return !mapRepresentation.walkableTiles.contains(mapRepresentation.map2D[arrayX][arrayY]);
+
+        for (int i = 0; i < mapRepresentation.map3D.length; i++) {
+            if(mapRepresentation.walkableTiles.contains(mapRepresentation.map3D[i][arrayX][arrayY])){
+                return false;
+            }
+        }
+        return true;
+        //return !mapRepresentation.walkableTiles.contains(mapRepresentation.map2D[arrayX][arrayY]);
     }
 
     public boolean checkIfClickedOnNPC(int arrayX, int arrayY){
