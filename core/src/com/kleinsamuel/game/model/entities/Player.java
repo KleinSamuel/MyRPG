@@ -11,10 +11,12 @@ import com.kleinsamuel.game.model.animations.AnimationEnum;
 import com.kleinsamuel.game.model.animations.AnimationFactory;
 import com.kleinsamuel.game.model.animations.DamageAnimation;
 import com.kleinsamuel.game.model.animations.EffectAnimation;
+import com.kleinsamuel.game.model.animations.ScreenSwitchAnimation;
 import com.kleinsamuel.game.model.data.CharacterFactory;
 import com.kleinsamuel.game.model.data.UserContent;
 import com.kleinsamuel.game.model.data.UserMultiplier;
 import com.kleinsamuel.game.model.entities.npcs.NPC;
+import com.kleinsamuel.game.model.maps.BeamableTile;
 import com.kleinsamuel.game.model.pathfinding.AStarPathFinder;
 import com.kleinsamuel.game.model.pathfinding.Path;
 import com.kleinsamuel.game.screens.PlayScreen;
@@ -55,6 +57,9 @@ public class Player {
     public boolean isAttacking;
     public long attackSpeed = 500;
     public long lastAttackTimestamp;
+
+    /* used to not catch player in beam loop */
+    public boolean isAbleToBeam = true;
 
     public Player(PlayScreen playScreen, SpriteSheet spriteSheet){
 
@@ -357,7 +362,21 @@ public class Player {
         return false;
     }
 
+    public void checkIfSteppedOnBeamableTile(){
+        Vector3 arrayCoords = Utils.getArrayCoordinates(content.x, content.y);
 
+        for(BeamableTile bt : playScreen.currentMapSection.beamableTiles){
+            Vector3 beamPosition = bt.getComplement((int)arrayCoords.x, (int)arrayCoords.y);
+            if(beamPosition != null){
+                if(isAbleToBeam) {
+                    isAbleToBeam = false;
+                    playScreen.animations.add(new ScreenSwitchAnimation(this, beamPosition));
+                }
+                return;
+            }
+        }
+        isAbleToBeam = true;
+    }
 
     public void updateOldCoordinates() {
         if(content.x % Utils.TILEWIDTH == 0 && content.x % Utils.TILEHEIGHT == 0) {
@@ -397,6 +416,8 @@ public class Player {
     public void update(){
 
         //checkIfDead();
+
+        checkIfSteppedOnBeamableTile();
 
         if(following != null){
             follow(Utils.getArrayCoordinates(following.data.x, following.data.y), new Vector3(content.x, content.y, 0));
