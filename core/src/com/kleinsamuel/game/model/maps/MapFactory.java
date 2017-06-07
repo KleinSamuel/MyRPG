@@ -18,13 +18,15 @@ public class MapFactory {
     public static String START_LAWN = "maps/start_lawn/uf_start_lawn.tmx";
 
     public static MapSection getMapSectionForIdentifier(String mapSectionIdentifier){
-        return new MapSection(mapLoader.load(mapSectionIdentifier), getBeamableTilesForIdentfier(mapSectionIdentifier));
+        return new MapSection(mapSectionIdentifier, mapLoader.load(mapSectionIdentifier), getBeamableTilesForIdentfier(mapSectionIdentifier));
     }
 
-    public static ArrayList<BeamableTile> getBeamableTilesForIdentfier(String mapSectionIdentifier){
-        ArrayList<BeamableTile> outputList = new ArrayList<BeamableTile>();
+    public static ArrayList<BeamableTilePair> getBeamableTilesForIdentfier(String mapSectionIdentifier){
+        ArrayList<BeamableTilePair> outputList = new ArrayList<BeamableTilePair>();
         if(mapSectionIdentifier.equals(START_HOUSE)){
-            outputList.add(new BeamableTile(12, 22, 50, 21));
+            outputList.add(new BeamableTilePair(START_HOUSE, 12, 22, START_HOUSE, 50, 21));
+            outputList.add(new BeamableTilePair(START_HOUSE, 50, 21, START_HOUSE, 12, 22));
+            outputList.add(new BeamableTilePair(START_HOUSE, 48, 8, START_LAWN, 11, 20));
         }else if(mapSectionIdentifier.equals(START_LAWN)){
             //outputList.add(new BeamableTile(48, 8, 11, 21));
         }

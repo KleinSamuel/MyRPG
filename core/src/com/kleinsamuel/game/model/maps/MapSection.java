@@ -18,8 +18,11 @@ import java.util.ArrayList;
 
 public class MapSection {
 
+    public String identifier;
+
     public TiledMap map;
-    public OrthogonalTiledMapRenderer mapRenderer;
+    //public OrthogonalTiledMapRenderer mapRenderer;
+    public MyOrthogonalTileMapRenderer mapRenderer;
 
     public MapProperties properties;
     public int mapWidth;
@@ -27,11 +30,12 @@ public class MapSection {
 
     public ArrayList<Rectangle> walkableRectangles;
 
-    public ArrayList<BeamableTile> beamableTiles;
+    public ArrayList<BeamableTilePair> beamableTiles;
 
-    public MapSection(TiledMap map, ArrayList<BeamableTile> beamableTiles){
+    public MapSection(String identifier, TiledMap map, ArrayList<BeamableTilePair> beamableTiles){
+        this.identifier = identifier;
         this.map = map;
-        this.mapRenderer = new OrthogonalTiledMapRenderer(map);
+        this.mapRenderer = new MyOrthogonalTileMapRenderer(map);
         this.beamableTiles = beamableTiles;
 
         properties = map.getProperties();
