@@ -70,6 +70,8 @@ public class PlayScreen implements Screen{
 
     private boolean wasClickedDown = false;
 
+    public static boolean ACCEPT_INPUT = true;
+
     public CopyOnWriteArrayList<Animation> animations;
 
     public PlayScreen(GameClass game){

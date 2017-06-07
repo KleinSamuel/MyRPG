@@ -2,6 +2,7 @@ package com.kleinsamuel.game.screens;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector3;
+import com.kleinsamuel.game.model.animations.ScreenSwitchAnimation;
 import com.kleinsamuel.game.util.DebugMessageFactory;
 import com.kleinsamuel.game.util.Utils;
 
@@ -34,6 +35,10 @@ public class MyInputProcessor implements InputProcessor {
     }
 
     public boolean touchUp (int x, int y, int pointer, int button) {
+
+        if(!PlayScreen.ACCEPT_INPUT){
+            return true;
+        }
 
         Vector3 v = playScreen.hud.stage.getCamera().unproject(new Vector3(x,y,0));
 
@@ -81,6 +86,7 @@ public class MyInputProcessor implements InputProcessor {
         }
         else if(playScreen.hud.clickOnShop((int)scaledX, (int)scaledY)){
             DebugMessageFactory.printNormalMessage("CLICK ON SHOP");
+            playScreen.animations.add(new ScreenSwitchAnimation());
             return true;
         }
         else if(playScreen.hud.clickOnBag((int)scaledX, (int)scaledY)){
