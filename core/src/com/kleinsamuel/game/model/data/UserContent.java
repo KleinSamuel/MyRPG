@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.kleinsamuel.game.model.maps.MapFactory;
 import com.kleinsamuel.game.util.DebugMessageFactory;
 import com.kleinsamuel.game.util.Utils;
 
@@ -22,6 +23,8 @@ public class UserContent {
     public String NAME;
     public float x;
     public float y;
+
+    public String mapIdentifier;
 
     public long VALUE_ATTACK;
     public long VALUE_ATTACK_SPEED;
@@ -72,6 +75,7 @@ public class UserContent {
         sb.append("NAME:"+ NAME +"\n");
         sb.append("x:"+(int)arrayPos.x+"\n");
         sb.append("y:"+(int)arrayPos.y+"\n");
+        sb.append("map:"+mapIdentifier+"\n");
         sb.append("stat_attack:"+VALUE_ATTACK+"\n");
         sb.append("stat_attack_speed:"+VALUE_ATTACK_SPEED+"\n");
         sb.append("stat_defense:"+VALUE_DEFENSE+"\n");
@@ -132,6 +136,8 @@ public class UserContent {
                 uc.x = Integer.parseInt(lineArray[1])*Utils.TILEWIDTH;
             } else if (lineArray[0].equals("y")) {
                 uc.y = Integer.parseInt(lineArray[1])*Utils.TILEHEIGHT;
+            } else if (lineArray[0].equals("map")) {
+                uc.mapIdentifier = lineArray[1];
             } else if (lineArray[0].equals("stat_attack")) {
                 uc.VALUE_ATTACK = Long.parseLong(lineArray[1]);
             } else if (lineArray[0].equals("stat_attack_speed")) {
@@ -207,7 +213,8 @@ public class UserContent {
         UserContent uc = new UserContent();
         uc.ID = -1;
         uc.x = 10*Utils.TILEWIDTH;
-        uc.y = 10*Utils.TILEHEIGHT;
+        uc.y = 9*Utils.TILEHEIGHT;
+        uc.mapIdentifier = MapFactory.START_HOUSE;
         uc.VALUE_ATTACK = 1;
         uc.VALUE_ATTACK_SPEED = 1000;
         uc.VALUE_DEFENSE = 0;
