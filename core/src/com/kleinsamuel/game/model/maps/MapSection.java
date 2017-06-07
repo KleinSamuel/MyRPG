@@ -4,6 +4,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 /**
@@ -24,10 +25,13 @@ public class MapSection {
     /* integer representation of all tiles in all layers */
     public int[][][] map3D;
 
-    public MapSection(TiledMap map, HashSet<Integer> notWalkableTiles){
+    public ArrayList<BeamableTile> beamableTiles;
+
+    public MapSection(TiledMap map, HashSet<Integer> notWalkableTiles, ArrayList<BeamableTile> beamableTiles){
         this.map = map;
         this.notWalkableTiles = notWalkableTiles;
         this.mapRenderer = new OrthogonalTiledMapRenderer(map);
+        this.beamableTiles = beamableTiles;
         computeMap3D();
     }
 
