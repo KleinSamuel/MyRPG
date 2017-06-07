@@ -8,9 +8,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapProperties;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -31,13 +28,12 @@ import com.kleinsamuel.game.model.entities.OtherPlayer;
 import com.kleinsamuel.game.model.entities.Player;
 import com.kleinsamuel.game.model.entities.npcs.NPC;
 import com.kleinsamuel.game.model.entities.npcs.NPCData;
-import com.kleinsamuel.game.model.pathfinding.MapRepresentation;
+import com.kleinsamuel.game.model.maps.MapFactory;
+import com.kleinsamuel.game.model.maps.MapSection;
 import com.kleinsamuel.game.sprites.SpriteSheet;
 import com.kleinsamuel.game.util.DebugMessageFactory;
 import com.kleinsamuel.game.util.Utils;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -62,10 +58,7 @@ public class PlayScreen implements Screen{
     public Stats stats;
     public Lexicon lexicon;
 
-    private TmxMapLoader mapLoader;
-    private TiledMap map;
-    private OrthogonalTiledMapRenderer mapRenderer;
-    public MapRepresentation mapRepresentation;
+    public MapSection currentMapSection;
 
     int mapPixelWidth;
     int mapPixelHeight;
@@ -77,7 +70,6 @@ public class PlayScreen implements Screen{
 
     private boolean wasClickedDown = false;
 
-    //public LinkedList<Animation> animations;
     public CopyOnWriteArrayList<Animation> animations;
 
     public PlayScreen(GameClass game){
@@ -90,24 +82,18 @@ public class PlayScreen implements Screen{
         batch = new SpriteBatch();
 
         gameCam = new OrthographicCamera();
-        //gamePort = new ScreenViewport(gameCam);
         gamePort = new FitViewport(V_WIDTH, V_HEIGHT, gameCam);
 
-        mapLoader = new TmxMapLoader();
-        map = mapLoader.load("map_test/uf_map_1.tmx");
-        mapRenderer = new OrthogonalTiledMapRenderer(map);
+        /* TODO add identifier to player content */
+        currentMapSection = MapFactory.getMapSectionForIdentifier(MapFactory.HOUSE_START);
 
-        mapRepresentation = new MapRepresentation(map, new HashSet<Integer>(Arrays.asList(153,154,155,178,179,180,131,138,145,203,204,205)));
-
-        MapProperties prop = map.getProperties();
+        MapProperties prop = currentMapSection.map.getProperties();
         int mapWidth = prop.get("width", Integer.class);
         int mapHeight = prop.get("height", Integer.class);
         int tilePixelWidth = prop.get("tilewidth", Integer.class);
         int tilePixelHeight = prop.get("tileheight", Integer.class);
         int mapPixelWidth = mapWidth * tilePixelWidth;
         int mapPixelHeight = mapHeight * tilePixelHeight;
-
-        DebugMessageFactory.printInfoMessage("MAP SIZE: "+mapPixelWidth+"-"+mapPixelHeight);
 
         gameCam.position.set(500, 500, 0);
         gameCam.zoom = Utils.ZOOM_FACTOR;
@@ -116,7 +102,6 @@ public class PlayScreen implements Screen{
         game.sendInitialInfo(player);
 
         tilemarker = new Tilemarker();
-        //animations = new LinkedList<Animation>();
         animations = new CopyOnWriteArrayList<Animation>();
 
         bag = new Bag(this);
@@ -125,9 +110,6 @@ public class PlayScreen implements Screen{
         lexicon = new Lexicon(this);
 
         font = new BitmapFont();
-
-        DebugMessageFactory.printInfoMessage("SCREEN SIZE: "+Gdx.graphics.getWidth()+":"+Gdx.graphics.getHeight());
-
     }
 
     private void updateMainBars(){
@@ -178,7 +160,7 @@ public class PlayScreen implements Screen{
         checkIfCameraIsInBounds();
         gameCam.update();
 
-        mapRenderer.setView(gameCam);
+        currentMapSection.mapRenderer.setView(gameCam);
     }
 
     @Override
@@ -191,7 +173,7 @@ public class PlayScreen implements Screen{
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         /* render map */
-        mapRenderer.render();
+        currentMapSection.mapRenderer.render();
         batch.setProjectionMatrix(gameCam.combined);
 
         batch.begin();
@@ -265,28 +247,27 @@ public class PlayScreen implements Screen{
             gameCam.position.x = (PlayScreen.V_WIDTH / 2) * Utils.ZOOM_FACTOR;
         }
         /* if cam is out of right side */
-        if(gameCam.position.x > (mapRepresentation.map2D.length*Utils.TILEWIDTH)-(PlayScreen.V_WIDTH/2)*Utils.ZOOM_FACTOR){
-            gameCam.position.x = (mapRepresentation.map2D.length*Utils.TILEWIDTH)-(PlayScreen.V_WIDTH/2)*Utils.ZOOM_FACTOR;
+        if(gameCam.position.x > (currentMapSection.map3D[0].length*Utils.TILEWIDTH)-(PlayScreen.V_WIDTH/2)*Utils.ZOOM_FACTOR){
+            gameCam.position.x = (currentMapSection.map3D[0].length*Utils.TILEWIDTH)-(PlayScreen.V_WIDTH/2)*Utils.ZOOM_FACTOR;
         }
         /* if cam is out of down side */
         if(gameCam.position.y < (PlayScreen.V_HEIGHT/2)*Utils.ZOOM_FACTOR){
             gameCam.position.y = (PlayScreen.V_HEIGHT/2)*Utils.ZOOM_FACTOR;
         }
         /* if cam is out of up side */
-        if(gameCam.position.y > (mapRepresentation.map2D[0].length*Utils.TILEHEIGHT)-(PlayScreen.V_HEIGHT/2)*Utils.ZOOM_FACTOR){
-            gameCam.position.y = (mapRepresentation.map2D[0].length*Utils.TILEHEIGHT)-(PlayScreen.V_HEIGHT/2)*Utils.ZOOM_FACTOR;
+        if(gameCam.position.y > (currentMapSection.map3D[0][0].length*Utils.TILEHEIGHT)-(PlayScreen.V_HEIGHT/2)*Utils.ZOOM_FACTOR){
+            gameCam.position.y = (currentMapSection.map3D[0][0].length*Utils.TILEHEIGHT)-(PlayScreen.V_HEIGHT/2)*Utils.ZOOM_FACTOR;
         }
     }
 
     public boolean checkIfTileIsClickable(int arrayX, int arrayY){
 
-        for (int i = 0; i < mapRepresentation.map3D.length; i++) {
-            if(mapRepresentation.walkableTiles.contains(mapRepresentation.map3D[i][arrayX][arrayY])){
+        for (int i = 0; i < currentMapSection.map3D.length; i++) {
+            if(currentMapSection.notWalkableTiles.contains(currentMapSection.map3D[i][arrayX][arrayY])){
                 return false;
             }
         }
         return true;
-        //return !mapRepresentation.walkableTiles.contains(mapRepresentation.map2D[arrayX][arrayY]);
     }
 
     public boolean checkIfClickedOnNPC(int arrayX, int arrayY){
