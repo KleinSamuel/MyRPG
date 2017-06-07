@@ -66,7 +66,7 @@ public class Player {
         pathToWalk = new Path();
         xMove = 0;
         yMove = 0;
-        pathFinder = new AStarPathFinder(playScreen.currentMapSection.notWalkableTiles, playScreen.currentMapSection.map3D, this);
+        pathFinder = new AStarPathFinder(playScreen.currentMapSection.walkableRectangles, this);
 
         this.playScreen = playScreen;
         this.spriteSheet = spriteSheet;

@@ -1,11 +1,13 @@
 package com.kleinsamuel.game.model.maps;
 
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 /**
  * The main map is represented by a lot of smaller map section which consist of different tilesets
@@ -19,42 +21,31 @@ public class MapSection {
     public TiledMap map;
     public OrthogonalTiledMapRenderer mapRenderer;
 
-    /* integer representation of tiles which can not be walked on */
-    public HashSet<Integer> notWalkableTiles;
+    public MapProperties properties;
+    public int mapWidth;
+    public int mapHeight;
 
-    /* integer representation of all tiles in all layers */
-    public int[][][] map3D;
+    public ArrayList<Rectangle> walkableRectangles;
 
     public ArrayList<BeamableTile> beamableTiles;
 
-    public MapSection(TiledMap map, HashSet<Integer> notWalkableTiles, ArrayList<BeamableTile> beamableTiles){
+    public MapSection(TiledMap map, ArrayList<BeamableTile> beamableTiles){
         this.map = map;
-        this.notWalkableTiles = notWalkableTiles;
         this.mapRenderer = new OrthogonalTiledMapRenderer(map);
         this.beamableTiles = beamableTiles;
-        computeMap3D();
-    }
 
-    private void computeMap3D(){
-        TiledMapTileLayer tileLayer = (TiledMapTileLayer) map.getLayers().get(0);
-        int width = tileLayer.getWidth();
-        int height = tileLayer.getHeight();
+        properties = map.getProperties();
+        mapWidth = properties.get("width", Integer.class);
+        mapHeight = properties.get("height", Integer.class);
 
-        map3D = new int[map.getLayers().getCount()][width][height];
+        this.walkableRectangles = new ArrayList<Rectangle>();
 
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                for (int layer = 0; layer < map.getLayers().getCount(); layer++){
-                    TiledMapTileLayer tmpLayer = (TiledMapTileLayer) map.getLayers().get(layer);
-                    if(tmpLayer != null){
-                        TiledMapTileLayer.Cell tmpCell = tmpLayer.getCell(i, j);
-                        if(tmpCell != null){
-                            map3D[layer][i][j] = tmpCell.getTile().getId();
-                        }
-                    }
-                }
+        for(MapObject mo : map.getLayers().get("objects").getObjects()){
+            if(mo instanceof RectangleMapObject){
+                Rectangle re = ((RectangleMapObject)mo).getRectangle();
+                walkableRectangles.add(re);
             }
         }
-    }
 
+    }
 }

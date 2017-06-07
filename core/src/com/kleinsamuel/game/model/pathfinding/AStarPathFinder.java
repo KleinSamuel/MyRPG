@@ -1,27 +1,26 @@
 package com.kleinsamuel.game.model.pathfinding;
 
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.kleinsamuel.game.model.entities.Player;
 import com.kleinsamuel.game.model.entities.npcs.NPC;
 import com.kleinsamuel.game.util.DebugMessageFactory;
 import com.kleinsamuel.game.util.Utils;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class AStarPathFinder {
 
-	private HashSet<Integer> walkableTiles;
-	private int[][][] map3D;
+    private ArrayList<Rectangle> walkableRectangles;
 
 	private LinkedList<PathFindingPoint> open;
 	private LinkedList<PathFindingPoint> closed;
 	private Player player;
 	
-	public AStarPathFinder(HashSet<Integer> walkableTiles, int[][][] map3D, Player owner) {
-		this.walkableTiles = walkableTiles;
+	public AStarPathFinder(ArrayList<Rectangle> walkableRectangles, Player owner) {
 		this.player = owner;
-		this.map3D = map3D;
+        this.walkableRectangles = walkableRectangles;
 	}
 	
 	public LinkedList<Vector3> findPath(int startX, int startY, int targetX, int targetY){
@@ -158,7 +157,7 @@ public class AStarPathFinder {
 	}
 	
 	private boolean checkPoint(int x, int y) {
-		if(x < 0 || y < 0 || x >= map3D[0].length || y >= map3D[0][0].length) {
+		if(x < 0 || y < 0 || x >= player.playScreen.currentMapSection.mapWidth || y >= player.playScreen.currentMapSection.mapHeight) {
 			return false;
 		}
 		if(contains(new PathFindingPoint(x, y), closed)) {
@@ -189,12 +188,12 @@ public class AStarPathFinder {
 			}
 		}
 
-		for (int i = 0; i < map3D.length; i++) {
-			if(walkableTiles.contains(map3D[i][x][y])){
-				return false;
-			}
-		}
-		return true;
+		for(Rectangle re : walkableRectangles){
+            if(re.contains(x*Utils.TILEWIDTH+(Utils.TILEWIDTH/2), y*Utils.TILEHEIGHT+(Utils.TILEHEIGHT/2))){
+                return true;
+            }
+        }
+		return false;
 	}
 	
 	private int getParent(int currentX, int currentY, int oldX, int oldY) {

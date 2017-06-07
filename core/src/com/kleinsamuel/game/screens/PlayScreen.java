@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -87,15 +87,7 @@ public class PlayScreen implements Screen{
         gamePort = new FitViewport(V_WIDTH, V_HEIGHT, gameCam);
 
         /* TODO add identifier to player content */
-        currentMapSection = MapFactory.getMapSectionForIdentifier(MapFactory.HOUSE_START);
-
-        MapProperties prop = currentMapSection.map.getProperties();
-        int mapWidth = prop.get("width", Integer.class);
-        int mapHeight = prop.get("height", Integer.class);
-        int tilePixelWidth = prop.get("tilewidth", Integer.class);
-        int tilePixelHeight = prop.get("tileheight", Integer.class);
-        int mapPixelWidth = mapWidth * tilePixelWidth;
-        int mapPixelHeight = mapHeight * tilePixelHeight;
+        currentMapSection = MapFactory.getMapSectionForIdentifier(MapFactory.START_HOUSE);
 
         gameCam.position.set(500, 500, 0);
         gameCam.zoom = Utils.ZOOM_FACTOR;
@@ -249,27 +241,34 @@ public class PlayScreen implements Screen{
             gameCam.position.x = (PlayScreen.V_WIDTH / 2) * Utils.ZOOM_FACTOR;
         }
         /* if cam is out of right side */
-        if(gameCam.position.x > (currentMapSection.map3D[0].length*Utils.TILEWIDTH)-(PlayScreen.V_WIDTH/2)*Utils.ZOOM_FACTOR){
-            gameCam.position.x = (currentMapSection.map3D[0].length*Utils.TILEWIDTH)-(PlayScreen.V_WIDTH/2)*Utils.ZOOM_FACTOR;
+        if(gameCam.position.x > (currentMapSection.mapWidth*Utils.TILEWIDTH)-(PlayScreen.V_WIDTH/2)*Utils.ZOOM_FACTOR){
+            gameCam.position.x = (currentMapSection.mapWidth*Utils.TILEWIDTH)-(PlayScreen.V_WIDTH/2)*Utils.ZOOM_FACTOR;
         }
         /* if cam is out of down side */
         if(gameCam.position.y < (PlayScreen.V_HEIGHT/2)*Utils.ZOOM_FACTOR){
             gameCam.position.y = (PlayScreen.V_HEIGHT/2)*Utils.ZOOM_FACTOR;
         }
         /* if cam is out of up side */
-        if(gameCam.position.y > (currentMapSection.map3D[0][0].length*Utils.TILEHEIGHT)-(PlayScreen.V_HEIGHT/2)*Utils.ZOOM_FACTOR){
-            gameCam.position.y = (currentMapSection.map3D[0][0].length*Utils.TILEHEIGHT)-(PlayScreen.V_HEIGHT/2)*Utils.ZOOM_FACTOR;
+        if(gameCam.position.y > (currentMapSection.mapHeight*Utils.TILEHEIGHT)-(PlayScreen.V_HEIGHT/2)*Utils.ZOOM_FACTOR){
+            gameCam.position.y = (currentMapSection.mapHeight*Utils.TILEHEIGHT)-(PlayScreen.V_HEIGHT/2)*Utils.ZOOM_FACTOR;
         }
     }
 
     public boolean checkIfTileIsClickable(int arrayX, int arrayY){
 
-        for (int i = 0; i < currentMapSection.map3D.length; i++) {
+        for(Rectangle re : currentMapSection.walkableRectangles){
+            if(re.contains(arrayX*Utils.TILEWIDTH+(Utils.TILEWIDTH/2), arrayY*Utils.TILEHEIGHT+(Utils.TILEHEIGHT/2))){
+                return true;
+            }
+        }
+        return false;
+
+        /*for (int i = 0; i < currentMapSection.map3D.length; i++) {
             if(currentMapSection.notWalkableTiles.contains(currentMapSection.map3D[i][arrayX][arrayY])){
                 return false;
             }
         }
-        return true;
+        return true;*/
     }
 
     public boolean checkIfClickedOnNPC(int arrayX, int arrayY){
