@@ -12,15 +12,13 @@ import java.util.LinkedList;
 public class AStarPathFinder {
 
 	private HashSet<Integer> walkableTiles;
-	private int[][] map;
 	private int[][][] map3D;
 
 	private LinkedList<PathFindingPoint> open;
 	private LinkedList<PathFindingPoint> closed;
 	private Player player;
 	
-	public AStarPathFinder(HashSet<Integer> walkableTiles, int[][] map, int[][][] map3D, Player owner) {
-		this.map = map;
+	public AStarPathFinder(HashSet<Integer> walkableTiles, int[][][] map3D, Player owner) {
 		this.walkableTiles = walkableTiles;
 		this.player = owner;
 		this.map3D = map3D;
@@ -160,7 +158,7 @@ public class AStarPathFinder {
 	}
 	
 	private boolean checkPoint(int x, int y) {
-		if(x < 0 || y < 0 || x >= map.length || y >= map[0].length) {
+		if(x < 0 || y < 0 || x >= map3D[0].length || y >= map3D[0][0].length) {
 			return false;
 		}
 		if(contains(new PathFindingPoint(x, y), closed)) {
