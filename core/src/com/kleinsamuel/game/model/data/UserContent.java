@@ -222,8 +222,8 @@ public class UserContent {
         uc.VALUE_RANGE = 1;
         uc.MAX_HEALTH = CharacterFactory.getHealthForLevel(1);
         uc.CURRENT_HEALTH = CharacterFactory.getHealthForLevel(1);
-        uc.MAX_MANA = 100;
-        uc.CURRENT_MANA = 100;
+        uc.MAX_MANA = 10;
+        uc.CURRENT_MANA = 10;
         uc.MONEY = 100;
         uc.LEVEL = 1;
         uc.CURRENT_EXPERIENCE = 0;
@@ -236,10 +236,10 @@ public class UserContent {
         uc.bag.put(3,1);
         uc.bag.put(4,1);
         uc.bag.put(5,1);
-        uc.bag.put(6,1);
-        uc.bag.put(7,1);
+        uc.bag.put(6,2);
+        uc.bag.put(7,3);
 
-        uc.bag.put(1001, 1);
+        uc.bag.put(1001, 31);
 
         uc.equippedItems = new HashMap();
         return uc;
@@ -260,6 +260,15 @@ public class UserContent {
             bag.put(i, 1);
         }
         return true;
+    }
+
+    public void removeFromBag(int item_key){
+        int amount = bag.get(item_key);
+        if(amount <= 1){
+            bag.remove(item_key);
+        }else{
+            bag.put(item_key, amount-1);
+        }
     }
 
     public HashMap<Integer, Integer> getEquippedItems() {
