@@ -47,6 +47,7 @@ public class Assets {
     public static final String bird_crow = "npcs/bird_crow.png";
     public static final String elemental_water = "npcs/elemental_water.png";
     public static final String eloa_war = "npcs/eloa_war.png";
+    public static final String musel = "npcs/musel24x24.png";
 
     /* bag */
     public static final String inventory_background = "bag/uf_inventory_background_2.png";
@@ -170,6 +171,9 @@ public class Assets {
      */
     public static final String hit_enemy = "sounds/hit_enemy.wav";
     public static final String hit_player = "sounds/hit_player.wav";
+    public static final String drink_potion = "sounds/drink_sound.mp3";
+    public static final String button_click_01 = "sounds/button_click_01.wav";
+    public static final String footsteps = "sounds/footsteps.mp3";
 
     public static void load() {
         manager.load(playerSprite, Texture.class);
@@ -222,6 +226,7 @@ public class Assets {
         manager.load(bird_crow, Texture.class);
         manager.load(elemental_water, Texture.class);
         manager.load(eloa_war, Texture.class);
+        manager.load(musel, Texture.class);
 
         /* items */
         manager.load(potion_red, Texture.class);
@@ -316,6 +321,9 @@ public class Assets {
 
         manager.load(hit_enemy, Sound.class);
         manager.load(hit_player, Sound.class);
+        manager.load(drink_potion, Sound.class);
+        manager.load(button_click_01, Sound.class);
+        manager.load(footsteps, Sound.class);
     }
 
     public static void dispose()     {
