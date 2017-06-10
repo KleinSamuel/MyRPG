@@ -1,12 +1,15 @@
 package com.kleinsamuel.game.util;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Vector3;
 import com.kleinsamuel.game.screens.PlayScreen;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -27,7 +30,16 @@ public class Utils {
     public static Random random = new Random();
 
     public static BitmapFont basicFont = new BitmapFont(Gdx.files.internal("font/8bitfont.fnt"));
-    public static BitmapFont testFont = new BitmapFont(Gdx.files.internal("font/editundo.fnt"));
+    public static BitmapFont testFont = new BitmapFont(Gdx.files.internal("font/wonder.fnt"));
+    //public static BitmapFont testFont = new BitmapFont(Gdx.files.internal("font/upheaval.fnt"));
+
+    public static ArrayList<String> turkroachNames;
+
+    static {
+        FileHandle roachHandle = Gdx.files.internal("turkroach_names.txt");
+        String[] tmp = roachHandle.readString().split("\n");
+        turkroachNames = new ArrayList<String>(Arrays.asList(tmp));
+    }
 
     public static Vector3 getArrayCoordinates(float screenX, float screenY){
         int x = (int)((screenX)/(TILEWIDTH));
@@ -69,7 +81,21 @@ public class Utils {
         return new Vector3(x, y, 0);
     }
 
+    public static float CameraPixel(final OrthographicCamera pCamera){
+        int width = Gdx.graphics.getWidth();
+        int height = Gdx.graphics.getHeight();
+        float CameraPixel;
 
+        float targetRatio = (float)width/(float)height;
+        float sourceRatio = pCamera.viewportWidth/pCamera.viewportHeight;
+
+        if(targetRatio > sourceRatio)
+            CameraPixel = height/pCamera.viewportHeight;
+        else
+            CameraPixel = width/pCamera.viewportWidth;
+
+        return (int)CameraPixel;
+    }
 
     private static GlyphLayout layout = new GlyphLayout();
 
