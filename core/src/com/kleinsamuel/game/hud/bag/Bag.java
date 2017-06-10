@@ -1,12 +1,16 @@
 package com.kleinsamuel.game.hud.bag;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.kleinsamuel.game.model.Assets;
+import com.kleinsamuel.game.model.items.ItemData;
 import com.kleinsamuel.game.model.items.ItemFactory;
 import com.kleinsamuel.game.screens.PlayScreen;
 import com.kleinsamuel.game.util.DebugMessageFactory;
+import com.kleinsamuel.game.util.Utils;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -111,6 +115,7 @@ public class Bag {
     public void handleClick(int screenX, int screenY) {
 
         if(SHOW_ITEM_INFO) {
+            itemInfoWindow.setUseButtonUnPressed();
             itemInfoWindow.handleClick(screenX, screenY);
             return;
         }
@@ -272,6 +277,13 @@ public class Bag {
         return false;
     }
 
+    private void renderAmount(SpriteBatch batch, int amount, float x, float y){
+        Utils.testFont.getData().setScale(0.9f, 0.9f);
+        Utils.testFont.setColor(Color.WHITE);
+        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.testFont, ""+amount);
+        Utils.testFont.draw(batch, ""+amount, (x+bag_container_width-3)-dims.x, y+dims.y);
+    }
+
     public void render(SpriteBatch batch){
 
         batch.draw(Assets.manager.get(Assets.inventory_background, Texture.class), 0, 0, PlayScreen.V_WIDTH, PlayScreen.V_HEIGHT);
@@ -281,18 +293,36 @@ public class Bag {
         int currentBagPosition = 0;
         for(Map.Entry<Integer, Integer> entry : playScreen.player.content.getBag().entrySet()) {
 
-            int isEquipped = playScreen.player.content.checkIfEquipped(entry.getKey());
-
-            if(isEquipped == -1) {
+            if(ItemFactory.isStackable(entry.getKey())){
                 Vector3 p = bag_content_positions.get(currentBagPosition);
                 assignedMap.put(currentBagPosition, entry.getKey());
                 batch.draw(Assets.manager.get(ItemFactory.getResourceStringForItemId(entry.getKey()), Texture.class), p.x+bag_padding_x, p.y+bag_padding_y, bag_container_width-(2*bag_padding_x), bag_container_height-(2*bag_padding_y));
+                if(ItemFactory.isStackable(entry.getKey())){
+                    renderAmount(batch, entry.getValue(), p.x+bag_padding_x, p.y+bag_padding_y);
+                }
                 currentBagPosition++;
             }else {
 
-                Vector3 p = getCoordinatesForSlotId(isEquipped);
-                if(p != null) {
-                    batch.draw(Assets.manager.get(ItemFactory.getResourceStringForItemId(entry.getKey()), Texture.class), p.x-(ITEM_PADDING_X/2), p.y-(ITEM_PADDING_Y/2), getWidthAndHeightOfSlot(isEquipped).x+ITEM_PADDING_X, getWidthAndHeightOfSlot(isEquipped).y+ITEM_PADDING_Y);
+                boolean alreadyEquipped = false;
+
+                for (int i = 0; i < entry.getValue(); i++) {
+
+                    int isEquipped = playScreen.player.content.checkIfEquipped(entry.getKey());
+
+                    if (isEquipped == -1 || alreadyEquipped) {
+                        Vector3 p = bag_content_positions.get(currentBagPosition);
+                        assignedMap.put(currentBagPosition, entry.getKey());
+                        batch.draw(Assets.manager.get(ItemFactory.getResourceStringForItemId(entry.getKey()), Texture.class), p.x + bag_padding_x, p.y + bag_padding_y, bag_container_width - (2 * bag_padding_x), bag_container_height - (2 * bag_padding_y));
+                        currentBagPosition++;
+                    } else {
+
+                        Vector3 p = getCoordinatesForSlotId(isEquipped);
+                        if (p != null) {
+                            batch.draw(Assets.manager.get(ItemFactory.getResourceStringForItemId(entry.getKey()), Texture.class), p.x - (ITEM_PADDING_X / 2), p.y - (ITEM_PADDING_Y / 2), getWidthAndHeightOfSlot(isEquipped).x + ITEM_PADDING_X, getWidthAndHeightOfSlot(isEquipped).y + ITEM_PADDING_Y);
+                        }
+                        alreadyEquipped = true;
+
+                    }
                 }
             }
         }
