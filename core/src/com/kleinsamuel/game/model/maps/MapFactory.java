@@ -33,4 +33,24 @@ public class MapFactory {
         return outputList;
     }
 
+    public static String parseIdentifierFromDetailToSmall(String mapIdentifierDetail){
+        if(mapIdentifierDetail.equals(START_HOUSE)){
+            return "start_house";
+        }
+        if(mapIdentifierDetail.equals(START_LAWN)){
+            return "start_lawn";
+        }
+        return null;
+    }
+
+    public static String parseIdentifierFromSmallToDetail(String mapIdentifierSmall){
+        if(mapIdentifierSmall.equals("start_house")){
+            return START_HOUSE;
+        }
+        if(mapIdentifierSmall.equals("start_lawn")){
+            return START_LAWN;
+        }
+        return null;
+    }
+
 }
