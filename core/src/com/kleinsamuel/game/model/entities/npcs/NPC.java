@@ -184,14 +184,14 @@ public class NPC {
 
     // TODO add specific NPC NAME
     public void drawName(SpriteBatch batch) {
-        Utils.testFont.getData().setScale(0.4f, 0.3f);
+        Utils.testFont.getData().setScale(0.6f, 0.5f);
         Utils.testFont.setColor(Color.BLACK);
-        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.testFont, "ENEMY");
-        Utils.testFont.draw(batch, "ENEMY", data.x+Utils.TILEWIDTH/2-dims.x/2, data.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+5);
+        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.testFont, data.name);
+        Utils.testFont.draw(batch, data.name, data.x+Utils.TILEWIDTH/2-dims.x/2, data.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+5);
     }
 
     public void drawLevel(SpriteBatch batch){
-        Utils.testFont.getData().setScale(0.3f, 0.2f);
+        Utils.testFont.getData().setScale(0.4f, 0.3f);
         Utils.testFont.setColor(Color.BLACK);
         Vector3 dims = Utils.getWidthAndHeightOfString(Utils.testFont, "Lvl. "+data.level);
         Utils.testFont.draw(batch, "Lvl. "+data.level, data.x+Utils.TILEWIDTH/2-dims.x/2, data.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+10);
@@ -200,6 +200,9 @@ public class NPC {
     public void drawSmallHealthbar(SpriteBatch batch){
 
         PERC_HEALTH = (1.0f*data.current_health)/(1.0f*data.max_health);
+        if(PERC_HEALTH < 0.0f){
+            PERC_HEALTH = 0.0f;
+        }
 
         batch.draw(Assets.manager.get(Assets.rectangle_black, Texture.class), data.x, data.y + Utils.TILEHEIGHT, Utils.TILEWIDTH, HEALTHBAR_HEIGHT);
         batch.draw(Assets.manager.get(Assets.rectangle_gray, Texture.class), data.x+HEALTHBAR_PADDING, data.y+Utils.TILEHEIGHT+HEALTHBAR_PADDING, Utils.TILEWIDTH-2*HEALTHBAR_PADDING, HEALTHBAR_HEIGHT-2*HEALTHBAR_PADDING);
@@ -207,12 +210,31 @@ public class NPC {
 
     }
 
+    boolean up = true;
+    float offset = 1;
+    int upCounter = 0;
+
     public void render(SpriteBatch batch){
-        batch.draw(currentTexture, data.x-offsetX, data.y-offsetY, WIDTH, HEIGHT);
+
+        if(xMove != 0 || yMove != 0){
+            if(up){
+                offset = 0.3f;
+            }else{
+                offset = -0.3f;
+            }
+            if(upCounter == 2){
+                up = !up;
+                upCounter = 0;
+            }
+            upCounter++;
+        }else{
+            offset = 0;
+        }
+
+        batch.draw(currentTexture, data.x-offsetX, data.y-offsetY+offset, WIDTH, HEIGHT);
     }
 
     public void renderAfter(SpriteBatch batch){
-        // TODO draw NAME, LEVEL and MAX_HEALTH
         drawSmallHealthbar(batch);
         drawName(batch);
         drawLevel(batch);
