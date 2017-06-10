@@ -16,7 +16,9 @@ import com.kleinsamuel.game.model.data.CharacterFactory;
 import com.kleinsamuel.game.model.data.UserContent;
 import com.kleinsamuel.game.model.data.UserMultiplier;
 import com.kleinsamuel.game.model.entities.npcs.NPC;
+import com.kleinsamuel.game.model.items.Item;
 import com.kleinsamuel.game.model.maps.BeamableTile;
+import com.kleinsamuel.game.model.maps.BeamableTilePair;
 import com.kleinsamuel.game.model.pathfinding.AStarPathFinder;
 import com.kleinsamuel.game.model.pathfinding.Path;
 import com.kleinsamuel.game.screens.PlayScreen;
@@ -42,8 +44,6 @@ public class Player {
     public UserContent content;
     public UserMultiplier multiplier;
 
-    private int damage;
-
     private SpriteSheet spriteSheet;
     private TextureRegion currentTexture;
 
@@ -55,18 +55,20 @@ public class Player {
 
     public NPC following;
     public boolean isAttacking;
-    public long attackSpeed = 500;
     public long lastAttackTimestamp;
 
     /* used to not catch player in beam loop */
     public boolean isAbleToBeam = true;
+
+    private Sound walkingSound;
+    private boolean isWalkingSound = false;
 
     public Player(PlayScreen playScreen, SpriteSheet spriteSheet){
 
         pathToWalk = new Path();
         xMove = 0;
         yMove = 0;
-        pathFinder = new AStarPathFinder(playScreen.currentMapSection.walkableRectangles, this);
+        pathFinder = new AStarPathFinder(this);
 
         this.playScreen = playScreen;
         this.spriteSheet = spriteSheet;
@@ -74,7 +76,7 @@ public class Player {
 
         loadContent();
 
-        damage = 10;
+        walkingSound = Assets.manager.get(Assets.footsteps, Sound.class);
 
         if(content.ID == -1){
             DebugMessageFactory.printInfoMessage("FIRST STARTUP!");
@@ -129,6 +131,8 @@ public class Player {
             if (xMove == 0 && yMove == 0) {
                 slow = 7;
                 setCurrentImage(0, 0, 1);
+                walkingSound.pause();
+                isWalkingSound = false;
 
                 if(directlyAfter) {
                     directlyAfter = false;
@@ -137,6 +141,12 @@ public class Player {
             } else {
 
                 directlyAfter = true;
+
+                if(!isWalkingSound){
+                    walkingSound.loop();
+                    walkingSound.play(0.4f);
+                    isWalkingSound = true;
+                }
 
                 slow = 0;
                 if (op == -1 && xPos <= 0) {
@@ -181,7 +191,6 @@ public class Player {
         if(pathToWalk.pathPoints.size() >= 1) {
             pathToWalk.pathPoints.removeFirst();
         }
-
         if (pathToWalk.pathPoints.size() >= 1) {
             pathToWalk.pathPoints.removeFirst();
         }
@@ -308,21 +317,20 @@ public class Player {
                 setCurrentImage(-1, 0, 1);
             }
 
-            if(System.currentTimeMillis()-lastAttackTimestamp > attackSpeed){
+            if(System.currentTimeMillis()-lastAttackTimestamp > content.VALUE_ATTACK_SPEED){
                 lastAttackTimestamp = System.currentTimeMillis();
                 boolean left = following.data.x < content.x;
 
-                if(damage >= following.data.current_health){
+                if(content.VALUE_ATTACK >= following.data.current_health){
                     playScreen.killNpc(following.data.id);
                     addExperience(CharacterFactory.getGainedXpForLevel(following.data.level));
                     following = null;
-                    return;
                 }else {
-                    playScreen.damageNpc(following.data.id, damage);
+                    playScreen.damageNpc("", following.data.id, (int)content.VALUE_ATTACK, true);
                 }
 
                 playScreen.animations.add(new EffectAnimation(AnimationFactory.getSpriteSheet(AnimationEnum.SLASH_SINGLE), 150, following.data.x, following.data.y));
-                playScreen.animations.add(new DamageAnimation(left, true, damage, following.data.x, following.data.y));
+                playScreen.animations.add(new DamageAnimation(left, true, (int)content.VALUE_ATTACK, following.data.x, following.data.y));
                 Assets.manager.get(Assets.hit_player, Sound.class).play();
             }
         }
@@ -365,17 +373,33 @@ public class Player {
     public void checkIfSteppedOnBeamableTile(){
         Vector3 arrayCoords = Utils.getArrayCoordinates(content.x, content.y);
 
-        for(BeamableTile bt : playScreen.currentMapSection.beamableTiles){
-            Vector3 beamPosition = bt.getComplement((int)arrayCoords.x, (int)arrayCoords.y);
-            if(beamPosition != null){
+        for(BeamableTilePair bt : playScreen.currentMapSection.beamableTiles){
+            BeamableTile beamTo = bt.getComplement(playScreen.currentMapSection.identifier, (int)arrayCoords.x, (int)arrayCoords.y);
+            if(beamTo != null){
                 if(isAbleToBeam) {
                     isAbleToBeam = false;
-                    playScreen.animations.add(new ScreenSwitchAnimation(this, beamPosition));
+                    playScreen.animations.add(new ScreenSwitchAnimation(this, beamTo));
                 }
                 return;
             }
         }
         isAbleToBeam = true;
+    }
+
+    public void checkIfSteppedOnItem(){
+        for(Item item : playScreen.game.items){
+            if(item.data.getOwnerId().equals(playScreen.game.clientID)){
+                Vector3 arrayCoordItem = Utils.getArrayCoordinates(item.data.getX(), item.data.getY());
+                Vector3 arrayCoordPlayer = Utils.getArrayCoordinates(content.x, content.y);
+                if(arrayCoordItem.x == arrayCoordPlayer.x && arrayCoordItem.y == arrayCoordPlayer.y) {
+                    DebugMessageFactory.printInfoMessage("STEPPED ON ITEM ("+item.data.getItem_key()+")");
+                    content.putInBag(item.data.getItem_key());
+                    playScreen.game.itemPicked(item);
+                    playScreen.removeItem(item.data.getItem_key(), item.data.getX(), item.data.getY());
+                    break;
+                }
+            }
+        }
     }
 
     public void updateOldCoordinates() {
@@ -386,14 +410,14 @@ public class Player {
     }
 
     public void drawName(SpriteBatch batch) {
-        Utils.testFont.getData().setScale(0.4f, 0.3f);
+        Utils.testFont.getData().setScale(0.6f, 0.5f);
         Utils.testFont.setColor(Color.BLACK);
         Vector3 dims = Utils.getWidthAndHeightOfString(Utils.testFont, content.NAME);
         Utils.testFont.draw(batch, content.NAME, content.x+Utils.TILEWIDTH/2-dims.x/2, content.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+5);
     }
 
     public void drawLevel(SpriteBatch batch){
-        Utils.testFont.getData().setScale(0.3f, 0.2f);
+        Utils.testFont.getData().setScale(0.4f, 0.3f);
         Utils.testFont.setColor(Color.BLACK);
         Vector3 dims = Utils.getWidthAndHeightOfString(Utils.testFont, "Lvl. "+content.LEVEL);
         Utils.testFont.draw(batch, "Lvl. "+content.LEVEL, content.x+Utils.TILEWIDTH/2-dims.x/2, content.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+10);
@@ -418,6 +442,8 @@ public class Player {
         //checkIfDead();
 
         checkIfSteppedOnBeamableTile();
+
+        checkIfSteppedOnItem();
 
         if(following != null){
             follow(Utils.getArrayCoordinates(following.data.x, following.data.y), new Vector3(content.x, content.y, 0));
@@ -449,13 +475,11 @@ public class Player {
         checkIfInAttackRange();
         attack();
 
-        updateOldCoordinates();
-
         playScreen.gameCam.position.set(content.x+(currentTexture.getRegionWidth()/2), content.y, 0);
     }
 
     public void render(SpriteBatch batch){
-        batch.draw(currentTexture, content.x, content.y, Utils.TILEWIDTH, Utils.TILEHEIGHT-3);
+        batch.draw(currentTexture, content.x-5, content.y-4, Utils.TILEWIDTH+10, Utils.TILEHEIGHT+8);
     }
 
     public void renderAfter(SpriteBatch batch){

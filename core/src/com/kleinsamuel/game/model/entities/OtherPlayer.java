@@ -1,9 +1,11 @@
 package com.kleinsamuel.game.model.entities;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
+import com.kleinsamuel.game.model.Assets;
 import com.kleinsamuel.game.sprites.SpriteSheet;
 import com.kleinsamuel.game.util.Utils;
 
@@ -13,7 +15,7 @@ import com.kleinsamuel.game.util.Utils;
 
 public class OtherPlayer {
 
-    private String name;
+    public String name;
     private int level;
     public int entityX;
     public int entityY;
@@ -31,24 +33,24 @@ public class OtherPlayer {
     private SpriteSheet spriteSheet;
     private TextureRegion currentTexture;
 
-    public OtherPlayer(SpriteSheet spriteSheet, String name, int x, int y){
+    public OtherPlayer(SpriteSheet spriteSheet, String name, int level, int x, int y, int currentHealth, int maxHealth){
         this.spriteSheet = spriteSheet;
         currentTexture = spriteSheet.getTextureRegion(0, 1);
         this.name = name;
+        this.level = level;
         this.entityX = x;
         this.entityY = y;
+        this.currentHealth = currentHealth;
+        this.maxHealth = maxHealth;
         xMove = 0;
         yMove = 0;
         xPos = 1;
     }
 
-    public void update(int x, int y, String name, int xMove, int yMove, int xPos){
+    public void update(int x, int y, String name){
         this.entityX = x;
         this.entityY = y;
         this.name = name;
-        this.xMove = xMove;
-        this.yMove = yMove;
-        this.xPos = xPos;
     }
 
     public void update(){
@@ -185,39 +187,42 @@ public class OtherPlayer {
         this.maxMana = maxMana;
     }
 
-    public void drawName(SpriteBatch batch) {
-        Utils.basicFont.getData().setScale(0.2f, 0.2f);
-        Utils.basicFont.setColor(Color.BLACK);
-        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.basicFont, name);
-        Utils.basicFont.draw(batch, name, entityX+Utils.TILEWIDTH/2-dims.x/2, entityY+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT*2);
-
-    }
-
-    private int HEALTHBAR_PADDING = 2;
-    private int HEALTHBAR_HEIGHT = 7;
-    private int PERC_HEALTH;
+    private float HEALTHBAR_PADDING = 0.5f;
+    private float HEALTHBAR_HEIGHT = 3;
+    private float PERC_HEALTH;
 
     public void drawSmallHealthbar(SpriteBatch batch){
 
-        if(currentHealth == 0 || maxHealth == 0){
-            PERC_HEALTH = 1;
-        }else{
-            PERC_HEALTH = currentHealth/maxHealth;
-        }
+        PERC_HEALTH = (1.0f*currentHealth)/(1.0f*maxHealth);
+        PERC_HEALTH = 1.0f;
 
-        //batch.draw(Assets.manager.get(Assets.rectangle_black, Texture.class), entityX, entityY + currentTexture.getRegionHeight(), currentTexture.getRegionWidth(), HEALTHBAR_HEIGHT);
-        //batch.draw(Assets.manager.get(Assets.rectangle_gray, Texture.class), entityX+HEALTHBAR_PADDING, entityY+currentTexture.getRegionHeight()+HEALTHBAR_PADDING, (currentTexture.getRegionWidth()-2*HEALTHBAR_PADDING)*PERC_HEALTH, HEALTHBAR_HEIGHT-2*HEALTHBAR_PADDING);
-        //batch.draw(Assets.manager.get(Assets.rectangle_red, Texture.class), entityX+HEALTHBAR_PADDING, entityY+currentTexture.getRegionHeight()+HEALTHBAR_PADDING, currentTexture.getRegionWidth()-2*HEALTHBAR_PADDING, HEALTHBAR_HEIGHT-2*HEALTHBAR_PADDING);
+        batch.draw(Assets.manager.get(Assets.rectangle_black, Texture.class), entityX, entityY + Utils.TILEHEIGHT, Utils.TILEWIDTH, HEALTHBAR_HEIGHT);
+        batch.draw(Assets.manager.get(Assets.rectangle_gray, Texture.class), entityX+HEALTHBAR_PADDING, entityY+Utils.TILEHEIGHT+HEALTHBAR_PADDING, Utils.TILEWIDTH-2*HEALTHBAR_PADDING, HEALTHBAR_HEIGHT-2*HEALTHBAR_PADDING);
+        batch.draw(Assets.manager.get(Assets.rectangle_red, Texture.class), entityX+HEALTHBAR_PADDING, entityY+Utils.TILEHEIGHT+HEALTHBAR_PADDING, (Utils.TILEWIDTH-2*HEALTHBAR_PADDING)*PERC_HEALTH, HEALTHBAR_HEIGHT-2*HEALTHBAR_PADDING);
+    }
 
+    public void drawName(SpriteBatch batch) {
+        Utils.testFont.getData().setScale(0.6f, 0.5f);
+        Utils.testFont.setColor(Color.BLACK);
+        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.testFont, name);
+        Utils.testFont.draw(batch, name, entityX+Utils.TILEWIDTH/2-dims.x/2, entityY+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+5);
+    }
+
+    public void drawLevel(SpriteBatch batch){
+        Utils.testFont.getData().setScale(0.4f, 0.3f);
+        Utils.testFont.setColor(Color.BLACK);
+        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.testFont, "Lvl. "+level);
+        Utils.testFont.draw(batch, "Lvl. "+level, entityX+Utils.TILEWIDTH/2-dims.x/2, entityY+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+10);
     }
 
     public void render(SpriteBatch batch){
-        batch.draw(currentTexture, entityX, entityY, Utils.TILEWIDTH, Utils.TILEHEIGHT);
+        batch.draw(currentTexture, entityX-5, entityY-4, Utils.TILEWIDTH+10, Utils.TILEHEIGHT+8);
     }
 
     public void renderAfter(SpriteBatch batch){
-        drawName(batch);
         drawSmallHealthbar(batch);
+        drawName(batch);
+        drawLevel(batch);
     }
 
 }
