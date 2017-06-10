@@ -4,9 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector3;
 import com.kleinsamuel.game.model.Assets;
 import com.kleinsamuel.game.model.entities.Player;
+import com.kleinsamuel.game.model.maps.BeamableTile;
+import com.kleinsamuel.game.model.maps.MapFactory;
 import com.kleinsamuel.game.screens.PlayScreen;
 import com.kleinsamuel.game.util.Utils;
 
@@ -24,9 +25,9 @@ public class ScreenSwitchAnimation extends Animation{
     private boolean beam = true;
 
     private Player toBeam;
-    private Vector3 beamPosition;
+    private BeamableTile beamPosition;
 
-    public ScreenSwitchAnimation(Player toBeam, Vector3 beamPosition){
+    public ScreenSwitchAnimation(Player toBeam, BeamableTile beamPosition){
         this.toBeam = toBeam;
         this.beamPosition = beamPosition;
         PlayScreen.ACCEPT_INPUT = false;
@@ -78,8 +79,15 @@ public class ScreenSwitchAnimation extends Animation{
         toBeam.isAttacking = false;
         toBeam.following = null;
 
-        toBeam.content.x = beamPosition.x * Utils.TILEWIDTH;
-        toBeam.content.y = beamPosition.y * Utils.TILEHEIGHT;
+        if(!toBeam.playScreen.currentMapSection.identifier.equals(beamPosition.mapIdentifier)){
+            toBeam.playScreen.currentMapSection = MapFactory.getMapSectionForIdentifier(beamPosition.mapIdentifier);
+        }
+
+        toBeam.content.x = beamPosition.arrayX * Utils.TILEWIDTH;
+        toBeam.content.y = beamPosition.arrayY * Utils.TILEHEIGHT;
+        toBeam.content.mapIdentifier = toBeam.playScreen.currentMapSection.identifier;
+
+        toBeam.playScreen.game.playerMovedToAnotherSection(toBeam);
     }
 
     @Override
