@@ -1,5 +1,6 @@
 package com.kleinsamuel.game.hud.bag;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -7,6 +8,7 @@ import com.kleinsamuel.game.model.Assets;
 import com.kleinsamuel.game.model.items.ItemFactory;
 import com.kleinsamuel.game.screens.PlayScreen;
 import com.kleinsamuel.game.util.DebugMessageFactory;
+import com.kleinsamuel.game.util.Utils;
 
 /**
  * Created by sam on 31.05.17.
@@ -32,9 +34,9 @@ public class ItemInfoWindow {
     private float close_x = item_info_x+ITEM_INFO_WIDTH-ITEM_INFO_CLOSE_WIDTH;
     private float close_y = item_info_y+ITEM_INFO_HEIGHT-(ITEM_INFO_CLOSE_HEIGHT);
 
-    private float IMAGE_PADDING = 0f;
-    private float IMAGE_WIDTH = 10f;
-    private float IMAGE_HEIGHT = 10f;
+    private float IMAGE_PADDING = 20.0f;
+    private float IMAGE_WIDTH = 4*Utils.TILEWIDTH;
+    private float IMAGE_HEIGHT = 4*Utils.TILEHEIGHT;
     private float IMAGE_X = item_info_x+IMAGE_PADDING;
     private float IMAGE_Y = item_info_y+ITEM_INFO_HEIGHT-IMAGE_HEIGHT-IMAGE_PADDING;
 
@@ -127,7 +129,8 @@ public class ItemInfoWindow {
                 return;
             }else{
                 // TODO handle different items
-                DebugMessageFactory.printInfoMessage("USED HEALTH POTION");
+                ItemFactory.useConsumable(itemId, playScreen.player);
+                Assets.manager.get(Assets.button_click_01, Sound.class).play(2.0f);
             }
         }
     }
