@@ -11,13 +11,15 @@ public class ItemData {
     private int x;
     private int y;
     private int amount;
+    private String ownerId;
 
-    public ItemData(int itemId, int item_key, int x, int y, int amount) {
+    public ItemData(int itemId, int item_key, int x, int y, int amount, String ownerId) {
         this.setId(itemId);
         this.setItem_key(item_key);
         this.setX(x);
         this.setY(y);
         this.setAmount(amount);
+        this.setOwnerId(ownerId);
     }
 
     public int getId() {
@@ -60,4 +62,11 @@ public class ItemData {
         this.item_key = item_key;
     }
 
+    public String getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(String ownerId) {
+        this.ownerId = ownerId;
+    }
 }

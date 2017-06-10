@@ -1,9 +1,13 @@
 package com.kleinsamuel.game.model.items;
 
+import com.badlogic.gdx.audio.Sound;
 import com.kleinsamuel.game.model.Assets;
+import com.kleinsamuel.game.model.entities.Player;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.TreeSet;
 
 /**
  * Created by sam on 31.05.17.
@@ -14,6 +18,8 @@ public class ItemFactory {
     public static final int ITEM_WIDTH = 32;
     public static final int ITEM_HEIGHT = 32;
     public static HashMap<Integer, ItemEnum> items;
+
+    private static TreeSet<Integer> stackableSet;
 
     static {
         items = new HashMap();
@@ -99,6 +105,12 @@ public class ItemFactory {
         items.put(70, ItemEnum.ARMOR_WILD_HAND_RIGHT);
 
         items.put(1001, ItemEnum.POTION_HEALTH);
+
+        stackableSet = new TreeSet<Integer>(Arrays.asList(1001));
+    }
+
+    public static boolean isStackable(int item_key){
+        return stackableSet.contains(item_key);
     }
 
     public static HashSet<ItemData> getItemDataFromString(String input) {
@@ -113,7 +125,7 @@ public class ItemFactory {
             int y = Integer.parseInt(data[3]);
             int amount = Integer.parseInt(data[4]);
 
-            ItemData itemData = new ItemData(id, item_key, x, y, amount);
+            ItemData itemData = new ItemData(id, item_key, x, y, amount, "");
             set.add(itemData);
         }
 
@@ -277,6 +289,22 @@ public class ItemFactory {
                 return Assets.potion_red;
         }
         return null;
+    }
+
+    public static void useConsumable(int item_key, Player p){
+        switch (item_key){
+
+            /* health potion */
+            case 1001:
+                p.content.removeFromBag(item_key);
+                if(p.content.MAX_HEALTH-p.content.CURRENT_HEALTH >= 10){
+                    p.content.CURRENT_HEALTH += 10;
+                }else{
+                    p.content.CURRENT_HEALTH = p.content.MAX_HEALTH;
+                }
+                Assets.manager.get(Assets.drink_potion, Sound.class).play(0.7f);
+                break;
+        }
     }
 
     public static String getNameOfItemById(int itemId) {
