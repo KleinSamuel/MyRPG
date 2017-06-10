@@ -31,6 +31,11 @@ public class MyInputProcessor implements InputProcessor {
     }
 
     public boolean touchDown (int x, int y, int pointer, int button) {
+
+        if(playScreen.bag.SHOW_ITEM_INFO){
+            playScreen.bag.itemInfoWindow.setUseButtonPressed();
+        }
+
         return false;
     }
 
