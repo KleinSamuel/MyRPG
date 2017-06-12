@@ -75,8 +75,9 @@ public class Player {
         this.currentTexture = spriteSheet.getTextureRegion(0, 1);
 
         loadContent();
+        loadMultiplier();
 
-        walkingSound = Assets.manager.get(Assets.footsteps, Sound.class);
+        //walkingSound = Assets.manager.get(Assets.footsteps, Sound.class);
 
         if(content.ID == -1){
             DebugMessageFactory.printInfoMessage("FIRST STARTUP!");
@@ -131,8 +132,8 @@ public class Player {
             if (xMove == 0 && yMove == 0) {
                 slow = 7;
                 setCurrentImage(0, 0, 1);
-                walkingSound.pause();
-                isWalkingSound = false;
+                //walkingSound.pause();
+                //isWalkingSound = false;
 
                 if(directlyAfter) {
                     directlyAfter = false;
@@ -142,11 +143,11 @@ public class Player {
 
                 directlyAfter = true;
 
-                if(!isWalkingSound){
+                /*if(!isWalkingSound){
                     walkingSound.loop();
                     walkingSound.play(0.4f);
                     isWalkingSound = true;
-                }
+                }*/
 
                 slow = 0;
                 if (op == -1 && xPos <= 0) {
@@ -281,11 +282,20 @@ public class Player {
 
     private void addExperience(int amount){
         if(content.CURRENT_EXPERIENCE +amount >= CharacterFactory.getNeededXpForLevel(content.LEVEL)){
-            content.LEVEL += 1;
-            content.CURRENT_EXPERIENCE = 0;
+            levelUp();
         }else{
             content.CURRENT_EXPERIENCE += amount;
         }
+    }
+
+    private void levelUp(){
+        playScreen.level_up.play();
+        content.LEVEL += 1;
+        content.CURRENT_EXPERIENCE = 0;
+        content.MAX_HEALTH = CharacterFactory.getHealthForLevel(content.LEVEL);
+        content.CURRENT_HEALTH = content.MAX_HEALTH;
+        content.MAX_MANA = CharacterFactory.getHealthForLevel(content.LEVEL);
+        content.CURRENT_MANA = content.MAX_MANA;
     }
 
     public void checkIfInAttackRange(){
@@ -321,6 +331,10 @@ public class Player {
                 lastAttackTimestamp = System.currentTimeMillis();
                 boolean left = following.data.x < content.x;
 
+                playScreen.animations.add(new EffectAnimation(AnimationFactory.getSpriteSheet(AnimationEnum.SLASH_SINGLE), 150, following.data.x, following.data.y));
+                playScreen.animations.add(new DamageAnimation(left, true, (int)content.VALUE_ATTACK, following.data.x, following.data.y));
+                playScreen.hit_player.play();
+
                 if(content.VALUE_ATTACK >= following.data.current_health){
                     playScreen.killNpc(following.data.id);
                     addExperience(CharacterFactory.getGainedXpForLevel(following.data.level));
@@ -328,10 +342,6 @@ public class Player {
                 }else {
                     playScreen.damageNpc("", following.data.id, (int)content.VALUE_ATTACK, true);
                 }
-
-                playScreen.animations.add(new EffectAnimation(AnimationFactory.getSpriteSheet(AnimationEnum.SLASH_SINGLE), 150, following.data.x, following.data.y));
-                playScreen.animations.add(new DamageAnimation(left, true, (int)content.VALUE_ATTACK, following.data.x, following.data.y));
-                Assets.manager.get(Assets.hit_player, Sound.class).play();
             }
         }
     }
@@ -357,7 +367,7 @@ public class Player {
 
         playScreen.animations.add(new EffectAnimation(AnimationFactory.getSpriteSheet(AnimationEnum.SLASH_SINGLE), 150, content.x, content.y));
         playScreen.animations.add(new DamageAnimation(left, false, amount, content.x, content.y));
-        Assets.manager.get(Assets.hit_enemy, Sound.class).play();
+        playScreen.hit_enemy.play();
     }
 
     public boolean checkIfPointIsEndpointOfCurrentPath(Vector3 v){
@@ -392,7 +402,6 @@ public class Player {
                 Vector3 arrayCoordItem = Utils.getArrayCoordinates(item.data.getX(), item.data.getY());
                 Vector3 arrayCoordPlayer = Utils.getArrayCoordinates(content.x, content.y);
                 if(arrayCoordItem.x == arrayCoordPlayer.x && arrayCoordItem.y == arrayCoordPlayer.y) {
-                    DebugMessageFactory.printInfoMessage("STEPPED ON ITEM ("+item.data.getItem_key()+")");
                     content.putInBag(item.data.getItem_key());
                     playScreen.game.itemPicked(item);
                     playScreen.removeItem(item.data.getItem_key(), item.data.getX(), item.data.getY());
@@ -410,14 +419,14 @@ public class Player {
     }
 
     public void drawName(SpriteBatch batch) {
-        Utils.testFont.getData().setScale(0.6f, 0.5f);
+        Utils.testFont.getData().setScale(0.4f, 0.3f);
         Utils.testFont.setColor(Color.BLACK);
         Vector3 dims = Utils.getWidthAndHeightOfString(Utils.testFont, content.NAME);
         Utils.testFont.draw(batch, content.NAME, content.x+Utils.TILEWIDTH/2-dims.x/2, content.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+5);
     }
 
     public void drawLevel(SpriteBatch batch){
-        Utils.testFont.getData().setScale(0.4f, 0.3f);
+        Utils.testFont.getData().setScale(0.3f, 0.2f);
         Utils.testFont.setColor(Color.BLACK);
         Vector3 dims = Utils.getWidthAndHeightOfString(Utils.testFont, "Lvl. "+content.LEVEL);
         Utils.testFont.draw(batch, "Lvl. "+content.LEVEL, content.x+Utils.TILEWIDTH/2-dims.x/2, content.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+10);
