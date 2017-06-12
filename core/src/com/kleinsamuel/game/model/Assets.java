@@ -1,5 +1,6 @@
 package com.kleinsamuel.game.model;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
@@ -65,6 +66,9 @@ public class Assets {
 
     /* stats */
     public static final String stats_background = "stats/uf_stats_background_filled.png";
+
+    /* popup */
+    public static final String popup_background = "popup_background.png";
 
     /* items */
     public static final String potion_red = "items/potions/potion_red.png";
@@ -172,8 +176,10 @@ public class Assets {
     public static final String hit_enemy = "sounds/hit_enemy.wav";
     public static final String hit_player = "sounds/hit_player.wav";
     public static final String drink_potion = "sounds/drink_sound.mp3";
-    public static final String button_click_01 = "sounds/button_click_01.wav";
+    public static final String button_click_01 = "sounds/button_click_01_48k.wav";
     public static final String footsteps = "sounds/footsteps.mp3";
+
+    public static Sound click_sound;
 
     public static void load() {
         manager.load(playerSprite, Texture.class);
@@ -216,6 +222,8 @@ public class Assets {
         manager.load(lexicon_background, Texture.class);
 
         manager.load(stats_background, Texture.class);
+
+        manager.load(popup_background, Texture.class);
 
         manager.load(empty_bar, Texture.class);
         manager.load(red_bar, Texture.class);
@@ -319,11 +327,13 @@ public class Assets {
         manager.load(slash_x_symmetrical, Texture.class);
         manager.load(slash_x_asymmetrical, Texture.class);
 
-        manager.load(hit_enemy, Sound.class);
-        manager.load(hit_player, Sound.class);
-        manager.load(drink_potion, Sound.class);
-        manager.load(button_click_01, Sound.class);
-        manager.load(footsteps, Sound.class);
+        //manager.load(hit_enemy, Sound.class);
+        //manager.load(hit_player, Sound.class);
+        //manager.load(drink_potion, Sound.class);
+        //manager.load(button_click_01, Sound.class);
+        //manager.load(footsteps, Sound.class);
+
+        //click_sound = Gdx.audio.newSound(Gdx.files.internal("sounds/button_click_01_48k.wav"));
     }
 
     public static void dispose()     {

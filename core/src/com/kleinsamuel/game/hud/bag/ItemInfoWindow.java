@@ -1,5 +1,6 @@
 package com.kleinsamuel.game.hud.bag;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -115,6 +116,7 @@ public class ItemInfoWindow {
     public void handleClick(int screenX, int screenY) {
         if(checkIfClickedOnClose(screenX, screenY)) {
             Bag.SHOW_ITEM_INFO = false;
+            playScreen.button_click.play();
             return;
         }
         if(checkIfClickedOnUse(screenX, screenY)) {
@@ -130,7 +132,6 @@ public class ItemInfoWindow {
             }else{
                 // TODO handle different items
                 ItemFactory.useConsumable(itemId, playScreen.player);
-                Assets.manager.get(Assets.button_click_01, Sound.class).play(2.0f);
             }
         }
     }

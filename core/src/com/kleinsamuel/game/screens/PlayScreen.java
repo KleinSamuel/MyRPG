@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kleinsamuel.game.GameClass;
 import com.kleinsamuel.game.hud.HUD;
+import com.kleinsamuel.game.hud.PopupWindow;
 import com.kleinsamuel.game.hud.Tilemarker;
 import com.kleinsamuel.game.hud.bag.Bag;
 import com.kleinsamuel.game.hud.lexicon.Lexicon;
@@ -66,11 +67,15 @@ public class PlayScreen implements Screen{
     public Player player;
     public Tilemarker tilemarker;
 
+    public PopupWindow popupWindow;
+
     BitmapFont font;
 
     public static boolean ACCEPT_INPUT = true;
 
     public CopyOnWriteArrayList<Animation> animations;
+
+    public Sound button_click, drink_potion, level_up, hit_player, hit_enemy;
 
     public PlayScreen(GameClass game){
         this.game = game;
@@ -92,6 +97,11 @@ public class PlayScreen implements Screen{
         /* TODO add identifier to player content */
         currentMapSection = MapFactory.getMapSectionForIdentifier(player.content.mapIdentifier);
 
+        DebugMessageFactory.printInfoMessage("RECTANGLES: ");
+        for(Rectangle rec : currentMapSection.walkableRectangles){
+            DebugMessageFactory.printInfoMessage(rec.toString());
+        }
+
         game.sendInitialInfo(player);
 
         tilemarker = new Tilemarker();
@@ -103,6 +113,13 @@ public class PlayScreen implements Screen{
         lexicon = new Lexicon(this);
 
         font = new BitmapFont();
+
+        button_click = Gdx.audio.newSound(Gdx.files.internal("sounds/button_click_01.wav"));
+        drink_potion = Gdx.audio.newSound(Gdx.files.internal("sounds/drink_sound_48k.wav"));
+        level_up = Gdx.audio.newSound(Gdx.files.internal("sounds/yey.wav"));
+        hit_player = Gdx.audio.newSound(Gdx.files.internal("sounds/hit_player.wav"));
+        hit_enemy = Gdx.audio.newSound(Gdx.files.internal("sounds/hit_enemy.wav"));
+
     }
 
     private void updateMainBars(){
@@ -198,6 +215,11 @@ public class PlayScreen implements Screen{
         }else if(lexicon.SHOW_LEXICON){
             lexicon.render(hud.batch);
         }
+
+        if(popupWindow != null){
+            popupWindow.render(hud.batch);
+        }
+
         hud.batch.end();
 
     }
@@ -421,9 +443,7 @@ public class PlayScreen implements Screen{
     public void show() {}
 
     @Override
-    public void pause() {
-        DebugMessageFactory.printNormalMessage("PAUSE PLAY CLASS");
-    }
+    public void pause() {}
 
     @Override
     public void resume() {}
@@ -433,8 +453,8 @@ public class PlayScreen implements Screen{
 
     @Override
     public void dispose() {
-        DebugMessageFactory.printNormalMessage("DISPOSE PLAY CLASS");
         batch.dispose();
+        Assets.dispose();
         player.content.writeToFile();
     }
 

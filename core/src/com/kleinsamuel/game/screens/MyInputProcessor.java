@@ -2,6 +2,7 @@ package com.kleinsamuel.game.screens;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector3;
+import com.kleinsamuel.game.hud.PopupWindow;
 import com.kleinsamuel.game.model.animations.ScreenSwitchAnimation;
 import com.kleinsamuel.game.util.DebugMessageFactory;
 import com.kleinsamuel.game.util.Utils;
@@ -33,7 +34,7 @@ public class MyInputProcessor implements InputProcessor {
     public boolean touchDown (int x, int y, int pointer, int button) {
 
         if(playScreen.bag.SHOW_ITEM_INFO){
-            playScreen.bag.itemInfoWindow.setUseButtonPressed();
+            //playScreen.bag.itemInfoWindow.setUseButtonPressed();
         }
 
         return false;
@@ -45,65 +46,81 @@ public class MyInputProcessor implements InputProcessor {
             return true;
         }
 
-        Vector3 v = playScreen.hud.stage.getCamera().unproject(new Vector3(x,y,0));
+        Vector3 hudCamUnprojected = playScreen.hud.stage.getCamera().unproject(new Vector3(x,y,0));
 
-        int scaledX = (int)v.x;
-        int scaledY = (int)v.y;
+        int hudCamUnprojected_scaledX = (int)hudCamUnprojected.x;
+        int hudCamUnprojected_scaledY = (int)hudCamUnprojected.y;
+
+        Vector3 playscreenCamUnprojected = playScreen.gameCam.unproject(new Vector3(x, y, 0f));
+        Vector3 arrayCoord = Utils.getArrayCoordinates(playscreenCamUnprojected.x, playscreenCamUnprojected.y);
+
+        if(playScreen.popupWindow != null){
+            if(playScreen.popupWindow.handleClick(hudCamUnprojected_scaledX, hudCamUnprojected_scaledY)){
+                playScreen.button_click.play();
+                playScreen.popupWindow = null;
+            }
+            return true;
+        }
 
         if(playScreen.bag.SHOW_BAG){
-            playScreen.bag.handleClick(scaledX, scaledY);
+            playScreen.bag.handleClick(hudCamUnprojected_scaledX, hudCamUnprojected_scaledY);
             return true;
         }else if(playScreen.stats.SHOW_STATS){
-            playScreen.stats.handleClick(scaledX, scaledY);
+            playScreen.stats.handleClick(hudCamUnprojected_scaledX, hudCamUnprojected_scaledY);
             return true;
         }else if(playScreen.lexicon.SHOW_LEXICON){
-            playScreen.lexicon.handleClick(scaledX, scaledY);
+            playScreen.lexicon.handleClick(hudCamUnprojected_scaledX, hudCamUnprojected_scaledY);
             return true;
         }
 
-        if(playScreen.hud.clickOnSettings((int)scaledX, (int)scaledY)){
+        if(playScreen.hud.clickOnSettings((int)hudCamUnprojected_scaledX, (int)hudCamUnprojected_scaledY)){
             DebugMessageFactory.printNormalMessage("CLICK ON SETTINGS");
+            playScreen.button_click.play();
+            playScreen.popupWindow = new PopupWindow("this is a motherfucking long test text to see if line wrapping works in this motherfucking popup window to display some text to peaople. Also this is a tesst to see how breaking works and if it breaks up words properly or just fucks them up like i do your mom.");
             return true;
         }
-        else if(playScreen.hud.clickOnSocial((int)scaledX, (int)scaledY)){
+        else if(playScreen.hud.clickOnSocial((int)hudCamUnprojected_scaledX, (int)hudCamUnprojected_scaledY)){
             DebugMessageFactory.printNormalMessage("CLICK ON SOCIAL");
+            playScreen.button_click.play();
             return true;
         }
-        else if(playScreen.hud.clickOnNews((int)scaledX, (int)scaledY)){
+        else if(playScreen.hud.clickOnNews((int)hudCamUnprojected_scaledX, (int)hudCamUnprojected_scaledY)){
             DebugMessageFactory.printNormalMessage("CLICK ON NEWS");
+            playScreen.button_click.play();
             return true;
         }
-        else if(playScreen.hud.clickOnStat((int)scaledX, (int)scaledY)){
+        else if(playScreen.hud.clickOnStat((int)hudCamUnprojected_scaledX, (int)hudCamUnprojected_scaledY)){
             DebugMessageFactory.printNormalMessage("CLICK ON STAT");
+            playScreen.button_click.play();
             playScreen.bag.SHOW_BAG = false;
             playScreen.bag.SHOW_ITEM_INFO = false;
             playScreen.lexicon.SHOW_LEXICON = false;
             playScreen.stats.SHOW_STATS = true;
             return true;
         }
-        else if(playScreen.hud.clickOnLexicon((int)scaledX, (int)scaledY)){
+        else if(playScreen.hud.clickOnLexicon((int)hudCamUnprojected_scaledX, (int)hudCamUnprojected_scaledY)){
             DebugMessageFactory.printNormalMessage("CLICK ON LEXICON");
+            playScreen.button_click.play();
             playScreen.bag.SHOW_BAG = false;
             playScreen.bag.SHOW_ITEM_INFO = false;
             playScreen.stats.SHOW_STATS = false;
             playScreen.lexicon.SHOW_LEXICON = true;
             return true;
         }
-        else if(playScreen.hud.clickOnShop((int)scaledX, (int)scaledY)){
+        else if(playScreen.hud.clickOnShop((int)hudCamUnprojected_scaledX, (int)hudCamUnprojected_scaledY)){
             DebugMessageFactory.printNormalMessage("CLICK ON SHOP");
+            playScreen.button_click.play();
             playScreen.animations.add(new ScreenSwitchAnimation());
             return true;
         }
-        else if(playScreen.hud.clickOnBag((int)scaledX, (int)scaledY)){
+        else if(playScreen.hud.clickOnBag((int)hudCamUnprojected_scaledX, (int)hudCamUnprojected_scaledY)){
             DebugMessageFactory.printNormalMessage("CLICK ON BAG");
+            playScreen.button_click.play();
             playScreen.stats.SHOW_STATS = false;
             playScreen.lexicon.SHOW_LEXICON = false;
             playScreen.bag.SHOW_BAG = true;
             return true;
         }
-
-        Vector3 v3 = playScreen.gameCam.unproject(new Vector3(x, y, 0f));
-        Vector3 arrayCoord = Utils.getArrayCoordinates(v3.x, v3.y);
 
         /* check if player clicked on npc to follow */
         if(playScreen.checkIfClickedOnNPC((int)arrayCoord.x, (int)arrayCoord.y)){
