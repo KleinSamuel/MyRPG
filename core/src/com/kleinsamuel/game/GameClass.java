@@ -1,6 +1,7 @@
 package com.kleinsamuel.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.audio.AudioDevice;
 import com.kleinsamuel.game.model.Assets;
 import com.kleinsamuel.game.model.entities.OtherPlayer;
 import com.kleinsamuel.game.model.entities.Player;
@@ -26,7 +27,7 @@ import io.socket.emitter.Emitter;
 
 public class GameClass extends Game {
 
-	private String serverName = "87.160.60.137";
+	private String serverName = "87.160.50.83";
 	private String port = "8081";
 	private IO.Options socketOptions;
 
