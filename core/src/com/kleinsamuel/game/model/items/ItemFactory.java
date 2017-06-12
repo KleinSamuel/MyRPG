@@ -3,6 +3,7 @@ package com.kleinsamuel.game.model.items;
 import com.badlogic.gdx.audio.Sound;
 import com.kleinsamuel.game.model.Assets;
 import com.kleinsamuel.game.model.entities.Player;
+import com.kleinsamuel.game.util.DebugMessageFactory;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -296,13 +297,16 @@ public class ItemFactory {
 
             /* health potion */
             case 1001:
-                p.content.removeFromBag(item_key);
-                if(p.content.MAX_HEALTH-p.content.CURRENT_HEALTH >= 10){
-                    p.content.CURRENT_HEALTH += 10;
-                }else{
-                    p.content.CURRENT_HEALTH = p.content.MAX_HEALTH;
+                if(p.content.getBag().containsKey(item_key)) {
+                    p.content.removeFromBag(item_key);
+                    if (p.content.MAX_HEALTH - p.content.CURRENT_HEALTH >= 10) {
+                        p.content.CURRENT_HEALTH += 10;
+                    } else {
+                        p.content.CURRENT_HEALTH = p.content.MAX_HEALTH;
+                    }
+                    p.playScreen.drink_potion.play();
+                    DebugMessageFactory.printInfoMessage("PLAY DRINK SOUND!");
                 }
-                Assets.manager.get(Assets.drink_potion, Sound.class).play(0.7f);
                 break;
         }
     }
