@@ -6,9 +6,9 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
 
-    <uses-sdk android:minSdkVersion="14" android:targetSdkVersion="25" />
+    <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="25" />
 
     <application
         android:allowBackup="true"
