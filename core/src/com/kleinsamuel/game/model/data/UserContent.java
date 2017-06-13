@@ -123,7 +123,11 @@ public class UserContent {
 
         String[] tmp = handle.readString().split("\n");
 
+        DebugMessageFactory.printInfoMessage("USER CONTENT:");
+
         for (int i = 0; i < tmp.length; i++) {
+
+            DebugMessageFactory.printInfoMessage(tmp[i]);
 
             String line = tmp[i];
             String[] lineArray = line.split(":");
@@ -227,7 +231,7 @@ public class UserContent {
         uc.MONEY = 100;
         uc.LEVEL = 1;
         uc.CURRENT_EXPERIENCE = 0;
-        uc.NAME = "ADMIN";
+        uc.NAME = "unknown";
         uc.BAG_SIZE = 10;
         uc.bag = new HashMap();
 
