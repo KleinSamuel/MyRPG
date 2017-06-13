@@ -32,18 +32,19 @@ public class StartScreen implements Screen{
     private SpriteBatch batch;
     private Viewport menuPort;
     private Stage stage;
-    private Skin skin;
+    public Skin skin;
 
     private Texture backGround;
     private StartScreen startScreen;
     public SignUpScreen signUpScreen;
     public LogInScreen logInScreen;
+    public RaceChooseScreen raceChooseScreen;
 
-    private boolean connecting = false;
     private Label onlineStatusLabel;
     TextButton logInButton;
     TextButton signUpButton;
 
+    public boolean isAlreadyCreated = false;
     private boolean FIRST_STARTUP = true;
 
     public static final int START_WIDTH = 1920/2;
@@ -66,82 +67,92 @@ public class StartScreen implements Screen{
 
         logInScreen = new LogInScreen(this);
         signUpScreen = new SignUpScreen(this);
+        raceChooseScreen = new RaceChooseScreen(this);
 
-        game.connect();
     }
 
     @Override
     public void show() {
 
-        DebugMessageFactory.printInfoMessage("SHOW THIS SHIT!");
+        game.playScreen = null;
 
-        Table mainTable = new Table();
-        mainTable.setFillParent(true);
-        mainTable.top();
+        if(!isAlreadyCreated) {
 
-        logInButton = new TextButton("LOG IN", skin);
-        signUpButton = new TextButton("SIGN UP", skin);
+            Table mainTable = new Table();
+            mainTable.setFillParent(true);
+            mainTable.top();
 
-        //Add listeners to buttons
-        logInButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
+            logInButton = new TextButton("LOG IN", skin);
+            signUpButton = new TextButton("SIGN UP", skin);
 
-                game.setScreen(new PlayScreen(game));
-                /*if(game.CONNECTED) {
-                    onlineStatusLabel.clear();
-                    game.setScreen(logInScreen);
-                }*/
-            }
-        });
+            //Add listeners to buttons
+            logInButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
 
-        signUpButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                DebugMessageFactory.printInfoMessage("CLICKED: "+game.CONNECTED);
-                if(game.CONNECTED) {
-                    onlineStatusLabel.clear();
-                    game.setScreen(signUpScreen);
+                    //game.setScreen(new PlayScreen(game));
+                    //game.setScreen(raceChooseScreen);
+
+                    if (game.CONNECTED) {
+                        if(!game.IS_FIRST_STARTUP){
+                            game.main_menu_music.stop();
+                            game.setScreen(new PlayScreen(game));
+                        }else {
+                            onlineStatusLabel.clear();
+                            game.setScreen(logInScreen);
+                        }
+                    }
                 }
+            });
+
+            signUpButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    if (game.CONNECTED) {
+                        onlineStatusLabel.clear();
+                        game.setScreen(signUpScreen);
+                    }
+                }
+            });
+
+            Label testLabel = new Label("Clash Of RPG Brawl Online", skin);
+            testLabel.setColor(Color.ROYAL);
+            testLabel.setFontScale(StartScreen.START_WIDTH * 0.002f, StartScreen.START_WIDTH * 0.002f);
+
+            if (FIRST_STARTUP) {
+                onlineStatusLabel = new Label("ONLINE STATUS: OFFLINE", skin);
+                onlineStatusLabel.setColor(Color.RED);
+                onlineStatusLabel.setFontScale(StartScreen.START_WIDTH * 0.0015f, StartScreen.START_WIDTH * 0.0015f);
+                FIRST_STARTUP = false;
             }
-        });
 
-        Label testLabel = new Label("Clash Of RPG Brawl Online", skin);
-        testLabel.setColor(Color.ROYAL);
-        testLabel.setFontScale(StartScreen.START_WIDTH * 0.002f, StartScreen.START_WIDTH * 0.002f);
+            Image img = new Image(new Texture(Gdx.files.internal("ui/refresh_button.png")));
 
-        if(FIRST_STARTUP) {
-            onlineStatusLabel = new Label("ONLINE STATUS: OFFLINE", skin);
-            onlineStatusLabel.setColor(Color.RED);
-            onlineStatusLabel.setFontScale(StartScreen.START_WIDTH * 0.0015f, StartScreen.START_WIDTH * 0.0015f);
-            FIRST_STARTUP = false;
+            img.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    if (!game.CONNECTED) {
+                        game.connect();
+                    }
+                }
+            });
+
+            //Add buttons to table
+            mainTable.add(testLabel).padTop(StartScreen.START_HEIGHT * 0.05f);
+            mainTable.row();
+            mainTable.add(logInButton).padTop(StartScreen.START_HEIGHT * 0.1f);
+            mainTable.row();
+            mainTable.add(signUpButton).padTop(StartScreen.START_HEIGHT * 0.01f);
+            mainTable.row();
+            mainTable.add(onlineStatusLabel).padTop(StartScreen.START_HEIGHT * 0.1f);
+            mainTable.add(img).padTop(StartScreen.START_HEIGHT * 0.1f).left().width(50).height(50);
+
+            //Add table to stage
+            stage.addActor(mainTable);
+
         }
-
-        Image img = new Image(new Texture(Gdx.files.internal("ui/refresh_button.png")));
-
-        img.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (!game.CONNECTED) {
-                    game.connect();
-                }
-            }
-        });
-
-        //Add buttons to table
-        mainTable.add(testLabel).padTop(StartScreen.START_HEIGHT * 0.05f);
-        mainTable.row();
-        mainTable.add(logInButton).padTop(StartScreen.START_HEIGHT * 0.1f);
-        mainTable.row();
-        mainTable.add(signUpButton).padTop(StartScreen.START_HEIGHT * 0.01f);
-        mainTable.row();
-        mainTable.add(onlineStatusLabel).padTop(StartScreen.START_HEIGHT * 0.1f);
-        mainTable.add(img).padTop(StartScreen.START_HEIGHT * 0.1f).left().width(50).height(50);
-
-        //Add table to stage
-        stage.addActor(mainTable);
+        isAlreadyCreated = true;
         Gdx.input.setInputProcessor(stage);
-
     }
 
     @Override
@@ -172,27 +183,17 @@ public class StartScreen implements Screen{
     }
 
     @Override
-    public void resize(int width, int height) {
-
-    }
+    public void resize(int width, int height) {}
 
     @Override
-    public void pause() {
-
-    }
+    public void pause() {}
 
     @Override
-    public void resume() {
-
-    }
+    public void resume() {}
 
     @Override
-    public void hide() {
-
-    }
+    public void hide() {}
 
     @Override
-    public void dispose() {
-
-    }
+    public void dispose() {}
 }
