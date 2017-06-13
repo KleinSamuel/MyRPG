@@ -1,14 +1,20 @@
 package com.kleinsamuel.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.AudioDevice;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Texture;
 import com.kleinsamuel.game.model.Assets;
+import com.kleinsamuel.game.model.data.UserContent;
 import com.kleinsamuel.game.model.entities.OtherPlayer;
 import com.kleinsamuel.game.model.entities.Player;
 import com.kleinsamuel.game.model.entities.npcs.NPC;
 import com.kleinsamuel.game.model.items.Item;
 import com.kleinsamuel.game.model.maps.MapFactory;
 import com.kleinsamuel.game.screens.PlayScreen;
+import com.kleinsamuel.game.sprites.SpriteSheet;
 import com.kleinsamuel.game.startscreen.StartScreen;
 import com.kleinsamuel.game.util.DebugMessageFactory;
 
@@ -33,6 +39,8 @@ public class GameClass extends Game {
 
 	public String clientID;
 
+	public boolean IS_FIRST_STARTUP = true;
+
 	private final float UPDATE_TIMER = 1/40f;
 	private float timer;
 
@@ -47,9 +55,14 @@ public class GameClass extends Game {
 	public PlayScreen playScreen;
 	public GameClass game;
 
+	public Music main_menu_music;
+	public Sound button_click;
+
 	public ConcurrentHashMap<String, OtherPlayer> otherPlayers;
 	public ConcurrentHashMap<Integer, NPC> npcs;
 	public CopyOnWriteArrayList<Item> items;
+
+	public String userName;
 
 	@Override
 	public void create() {
@@ -63,16 +76,39 @@ public class GameClass extends Game {
 		Assets.manager.finishLoading();
 		Assets.manager.update();
 
+		game = this;
+
 		otherPlayers = new ConcurrentHashMap<String, OtherPlayer>();
 		npcs = new ConcurrentHashMap<Integer, NPC>();
 		items = new CopyOnWriteArrayList<Item>();
 
-		//startScreen = new StartScreen(this);
-		//setScreen(startScreen);
-		game = this;
+		startScreen = new StartScreen(this);
+
+		main_menu_music = Gdx.audio.newMusic(Gdx.files.internal("music/main_menu_music.mp3"));
+		main_menu_music.setLooping(true);
+
+		button_click = Gdx.audio.newSound(Gdx.files.internal("sounds/button_click_01.wav"));
 
 		connect();
-		setScreen(new PlayScreen(this));
+
+		if(UserContent.readFromFile().ID != -1){
+			IS_FIRST_STARTUP = false;
+			DebugMessageFactory.printInfoMessage("GAMECLASS: NOT FIRST STARTUP");
+		}else{
+			IS_FIRST_STARTUP = true;
+			DebugMessageFactory.printInfoMessage("GAMECLASS: FIRST STARTUP");
+		}
+
+		/* check if it is first startup of app, if yes start in main menu if no start in game */
+		if(IS_FIRST_STARTUP){
+			main_menu_music.play();
+			setScreen(startScreen);
+		}else if(CONNECTED){
+			setScreen(new PlayScreen(this));
+		}else{
+			main_menu_music.play();
+			setScreen(startScreen);
+		}
 	}
 
 	public void connect(){
@@ -287,11 +323,12 @@ public class GameClass extends Game {
 			@Override
 			public void call(Object... args) {
 				CONNECTED = false;
-				startScreen = new StartScreen(game);
+				DebugMessageFactory.printInfoMessage("SET START SCREEN!");
+				if(playScreen != null) playScreen.hide();
+				if(!main_menu_music.isPlaying()){
+					main_menu_music.play();
+				}
 				setScreen(startScreen);
-				playScreen = null;
-				startScreen.signUpScreen = null;
-				startScreen.logInScreen = null;
 			}
 		}).on(Socket.EVENT_CONNECT_TIMEOUT, new Emitter.Listener() {
 			@Override
