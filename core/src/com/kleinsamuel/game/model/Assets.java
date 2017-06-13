@@ -49,6 +49,7 @@ public class Assets {
     public static final String elemental_water = "npcs/elemental_water.png";
     public static final String eloa_war = "npcs/eloa_war.png";
     public static final String musel = "npcs/musel24x24.png";
+    public static final String moth_black = "npcs/moth_black.png";
 
     /* bag */
     public static final String inventory_background = "bag/uf_inventory_background_2.png";
@@ -60,6 +61,9 @@ public class Assets {
     public static final String equip_button_2 = "bag/equip_button_2.png";
     public static final String unequip_button_1 = "bag/unequip_button_1.png";
     public static final String unequip_button_2 = "bag/unequip_button_2.png";
+
+    public static final String yes_button = "buttons/yes_button.png";
+    public static final String no_button = "buttons/no_button.png";
 
     /* lexicon */
     public static final String lexicon_background = "lexicon/uf_lexicon_background_filled.png";
@@ -162,9 +166,19 @@ public class Assets {
     public static final String slash_x_symmetrical = "animations/slash_x_symmetrical.png";
     public static final String slash_x_asymmetrical = "animations/slash_x_asymmetrical.png";
 
+    /* player sprites */
     public static final String test = "player/goblin.png";
     public static final String chara_23 = "player/chara23_battle_walk.png";
     public static final String chara_24 = "player/chara24_battle_walk.png";
+
+    /* player portraits */
+    public static final String portrait_human = "portraits/human_portrait.png";
+    public static final String portrait_halfling = "portraits/halfling_portrait.png";
+    public static final String portrait_dwarf = "portraits/dwarf_portrait.png";
+    public static final String portrait_elb = "portraits/elb_portrait.png";
+    public static final String portrait_orc = "portraits/orc_portrait.png";
+    public static final String portrait_wiedergaenger = "portraits/wiedergaenger_portrait.png";
+    public static final String portrait_murony = "portraits/murony_portrait.png";
 
     /*
         MUSIC
@@ -196,6 +210,14 @@ public class Assets {
         manager.load(chara_24, Texture.class);
         manager.load(test, Texture.class);
 
+        manager.load(portrait_human, Texture.class);
+        manager.load(portrait_halfling, Texture.class);
+        manager.load(portrait_dwarf, Texture.class);
+        manager.load(portrait_elb, Texture.class);
+        manager.load(portrait_orc, Texture.class);
+        manager.load(portrait_wiedergaenger, Texture.class);
+        manager.load(portrait_murony, Texture.class);
+
         manager.load(uf_healthbar, Texture.class);
         manager.load(uf_manabar, Texture.class);
         manager.load(uf_experiencebar, Texture.class);
@@ -219,6 +241,9 @@ public class Assets {
         manager.load(unequip_button_1, Texture.class);
         manager.load(unequip_button_2, Texture.class);
 
+        manager.load(yes_button, Texture.class);
+        manager.load(no_button, Texture.class);
+
         manager.load(lexicon_background, Texture.class);
 
         manager.load(stats_background, Texture.class);
@@ -235,6 +260,7 @@ public class Assets {
         manager.load(elemental_water, Texture.class);
         manager.load(eloa_war, Texture.class);
         manager.load(musel, Texture.class);
+        manager.load(moth_black, Texture.class);
 
         /* items */
         manager.load(potion_red, Texture.class);
