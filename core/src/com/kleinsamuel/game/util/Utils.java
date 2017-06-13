@@ -31,7 +31,6 @@ public class Utils {
 
     public static BitmapFont basicFont = new BitmapFont(Gdx.files.internal("font/8bitfont.fnt"));
     public static BitmapFont testFont = new BitmapFont(Gdx.files.internal("font/editundo.fnt"));
-    //public static BitmapFont testFont = new BitmapFont(Gdx.files.internal("font/upheaval.fnt"));
 
     public static ArrayList<String> turkroachNames;
 
