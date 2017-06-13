@@ -26,14 +26,6 @@ public class AndroidLauncher extends AndroidApplication {
 				| View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 		decorView.setSystemUiVisibility(uiOptions);
 
-		AudioAttributes attr = new AudioAttributes.Builder()
-				.setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-				.setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED)
-				.setUsage(AudioAttributes.USAGE_GAME)
-				.build();
-
-		SoundPool soundPool = new SoundPool.Builder().setAudioAttributes(attr).build();
-
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
