@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.kleinsamuel.game.screens.PlayScreen;
 import com.kleinsamuel.game.util.DebugMessageFactory;
 
 /**
@@ -35,10 +36,9 @@ public class LogInScreen implements Screen {
     private Skin skin;
     private Texture backGround;
 
-    private Vector3 camPosition;
-    private boolean moveCam = true;
-
     private MessageDialog dialog;
+
+    public boolean isAlreadyCreated = false;
 
     public LogInScreen(StartScreen startScreen) {
         this.startScreen = startScreen;
@@ -47,102 +47,108 @@ public class LogInScreen implements Screen {
         batch = new SpriteBatch();
         menuPort = new FitViewport(StartScreen.START_WIDTH, StartScreen.START_HEIGHT, camera);
         stage = new Stage(menuPort, batch);
-        skin = new Skin(Gdx.files.internal("skins/pixthulhu-ui.json"));
+        skin = startScreen.skin;
         backGround = new Texture(Gdx.files.internal("bg_menu_1.png"));
-
-        camPosition = new Vector3(camera.position.x, camera.position.y, camera.position.z);
     }
 
     @Override
     public void show() {
 
-        Table mainTable = new Table();
-        mainTable.setFillParent(true);
-        mainTable.top();
+        if(!isAlreadyCreated) {
+            Table mainTable = new Table();
+            mainTable.setFillParent(true);
+            mainTable.top();
 
-        Label testLabel = new Label("LOG IN", skin);
-        testLabel.setColor(Color.BLACK);
+            Label testLabel = new Label("LOG IN", skin);
+            testLabel.setColor(Color.BLACK);
 
-        testLabel.setFontScale(2f, 3f);
+            testLabel.setFontScale(2f, 3f);
 
-        Label usernameLabel = new Label("USERNAME:", skin);
-        usernameLabel.setColor(Color.WHITE);
-        usernameLabel.setFontScale(1.5f, 1.5f);
+            Label usernameLabel = new Label("USERNAME:", skin);
+            usernameLabel.setColor(Color.WHITE);
+            usernameLabel.setFontScale(1.5f, 1.5f);
 
-        final TextField usernameField = new TextField("", skin);
-        usernameField.setMessageText("username");
+            final TextField usernameField = new TextField("", skin);
+            usernameField.setMessageText("username");
 
-        Label passwordLabel = new Label("PASSWORD:", skin);
-        passwordLabel.setColor(Color.WHITE);
-        passwordLabel.setFontScale(1.5f, 1.5f);
+            Label passwordLabel = new Label("PASSWORD:", skin);
+            passwordLabel.setColor(Color.WHITE);
+            passwordLabel.setFontScale(1.5f, 1.5f);
 
-        final TextField passwordField = new TextField("", skin);
-        passwordField.setMessageText("password");
-        passwordField.setPosition(500, 30);
-        passwordField.setPasswordCharacter('*');
-        passwordField.setPasswordMode(true);
+            final TextField passwordField = new TextField("", skin);
+            passwordField.setMessageText("password");
+            passwordField.setPosition(500, 30);
+            passwordField.setPasswordCharacter('*');
+            passwordField.setPasswordMode(true);
 
-        TextButton backButton = new TextButton("BACK", skin);
-        TextButton sendButton = new TextButton("SEND", skin);
+            TextButton backButton = new TextButton("BACK", skin);
+            TextButton sendButton = new TextButton("SEND", skin);
 
-        backButton.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                startScreen.game.setScreen(startScreen);
-            }
-        });
-
-        sendButton.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                //startScreen.game.setScreen(new PlayScreen(startScreen.game));
-
-                startScreen.game.LOG_IN_ANSWER = false;
-                startScreen.game.LOG_IN_SUCCESS = false;
-
-                dialog = new MessageDialog("LOG IN STATUS:", skin);
-                dialog.setSize(StartScreen.START_WIDTH*0.7f, StartScreen.START_HEIGHT*0.6f);
-                dialog.text("WAITING FOR ANSWER..");
-                dialog.show(stage);
-
-                startScreen.game.logInUser(usernameField.getText(), passwordField.getText());
-                while(!startScreen.game.LOG_IN_ANSWER){
-                    DebugMessageFactory.printInfoMessage("WAITING FOR RESPONSE");
-                    try {
-                        Thread.sleep(1500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+            backButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    startScreen.game.setScreen(startScreen);
                 }
-                DebugMessageFactory.printInfoMessage("GOT ANSWER: "+startScreen.game.LOG_IN_SUCCESS);
+            });
 
-                dialog.hide();
-                dialog = null;
-
-                if(startScreen.game.LOG_IN_SUCCESS){
+            sendButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
                     //startScreen.game.setScreen(new PlayScreen(startScreen.game));
-                }else{
+
+                    startScreen.game.LOG_IN_ANSWER = false;
+                    startScreen.game.LOG_IN_SUCCESS = false;
+
                     dialog = new MessageDialog("LOG IN STATUS:", skin);
-                    dialog.setSize(StartScreen.START_WIDTH*0.7f, StartScreen.START_HEIGHT*0.6f);
-                    dialog.text("FAILED! No such user or wrong password!");
+                    dialog.setSize(StartScreen.START_WIDTH * 0.7f, StartScreen.START_HEIGHT * 0.6f);
+                    dialog.text("WAITING FOR ANSWER..");
                     dialog.show(stage);
+
+                    startScreen.game.logInUser(usernameField.getText(), passwordField.getText());
+                    while (!startScreen.game.LOG_IN_ANSWER) {
+                        DebugMessageFactory.printInfoMessage("WAITING FOR RESPONSE");
+                        try {
+                            Thread.sleep(1500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    DebugMessageFactory.printInfoMessage("GOT ANSWER: " + startScreen.game.LOG_IN_SUCCESS);
+
+                    dialog.hide();
+                    dialog = null;
+
+                    if (startScreen.game.LOG_IN_SUCCESS) {
+                        //startScreen.game.main_menu_music.stop();
+                        //startScreen.game.setScreen(new PlayScreen(startScreen.game));
+
+                        startScreen.game.userName = usernameField.getText();
+                        startScreen.game.setScreen(startScreen.raceChooseScreen);
+
+                    } else {
+                        dialog = new MessageDialog("LOG IN STATUS:", skin);
+                        dialog.setSize(StartScreen.START_WIDTH * 0.7f, StartScreen.START_HEIGHT * 0.6f);
+                        dialog.text("FAILED! No such user or wrong password!");
+                        dialog.show(stage);
+                    }
+
                 }
+            });
 
-            }
-        });
+            mainTable.add(testLabel).colspan(2).padTop(20);
+            mainTable.row();
+            mainTable.add(usernameLabel).expandX().padTop(30).right();
+            mainTable.add(usernameField).expandX().padTop(30).padLeft(10).width(300);
+            mainTable.row();
+            mainTable.add(passwordLabel).expandX().padTop(20).right();
+            mainTable.add(passwordField).expandX().padTop(20).padLeft(10).width(300);
+            mainTable.row();
+            mainTable.add(backButton).expandX().padTop(20);
+            mainTable.add(sendButton).expandX().padTop(20);
 
-        mainTable.add(testLabel).colspan(2).padTop(20);
-        mainTable.row();
-        mainTable.add(usernameLabel).expandX().padTop(30).right();
-        mainTable.add(usernameField).expandX().padTop(30).padLeft(10).width(300);
-        mainTable.row();
-        mainTable.add(passwordLabel).expandX().padTop(20).right();
-        mainTable.add(passwordField).expandX().padTop(20).padLeft(10).width(300);
-        mainTable.row();
-        mainTable.add(backButton).expandX().padTop(20);
-        mainTable.add(sendButton).expandX().padTop(20);
-
-        stage.addActor(mainTable);
+            stage.addActor(mainTable);
+        }
+        isAlreadyCreated = true;
         Gdx.input.setInputProcessor(stage);
     }
 
@@ -156,8 +162,6 @@ public class LogInScreen implements Screen {
 
         batch.begin();
         batch.draw(backGround, 0, 0, StartScreen.START_WIDTH, StartScreen.START_HEIGHT);
-
-        //drawStatus(batch);
         batch.end();
 
         stage.act();
