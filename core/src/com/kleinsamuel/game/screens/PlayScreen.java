@@ -80,6 +80,11 @@ public class PlayScreen implements Screen{
     public PlayScreen(GameClass game){
         this.game = game;
 
+        /* reset main menu screens */
+        game.startScreen.isAlreadyCreated = false;
+        game.startScreen.logInScreen.isAlreadyCreated = false;
+        game.startScreen.signUpScreen.isAlreadyCreated = false;
+
         game.playScreen = this;
 
         Gdx.input.setInputProcessor(new MyInputProcessor(this));
@@ -93,14 +98,12 @@ public class PlayScreen implements Screen{
         gameCam.zoom = Utils.ZOOM_FACTOR;
 
         player = new Player(this, new SpriteSheet(Assets.manager.get(Assets.chara_24, Texture.class), 4, 3));
-
-        /* TODO add identifier to player content */
-        currentMapSection = MapFactory.getMapSectionForIdentifier(player.content.mapIdentifier);
-
-        DebugMessageFactory.printInfoMessage("RECTANGLES: ");
-        for(Rectangle rec : currentMapSection.walkableRectangles){
-            DebugMessageFactory.printInfoMessage(rec.toString());
+        if(player.content.ID == -1) {
+            player.content.ID = 1;
+            player.content.NAME = game.userName;
         }
+
+        currentMapSection = MapFactory.getMapSectionForIdentifier(player.content.mapIdentifier);
 
         game.sendInitialInfo(player);
 
@@ -353,7 +356,7 @@ public class PlayScreen implements Screen{
         if (game.npcs.containsKey(id)) {
             game.npcs.get(id).data = data;
         } else {
-            game.npcs.put(id, new NPC(new SpriteSheet(Assets.manager.get(Assets.musel, Texture.class), 1, 1), data));
+            game.npcs.put(id, new NPC(new SpriteSheet(Assets.manager.get(Assets.moth_black, Texture.class), 1, 4), data));
         }
     }
 
@@ -396,7 +399,7 @@ public class PlayScreen implements Screen{
                 }
                 animations.add(new EffectAnimation(AnimationFactory.getSpriteSheet(AnimationEnum.SLASH_SINGLE), 150, npc.data.x, npc.data.y));
                 animations.add(new DamageAnimation(left, true, amount, npc.data.x, npc.data.y));
-                Assets.manager.get(Assets.hit_player, Sound.class).play();
+                //Assets.manager.get(Assets.hit_player, Sound.class).play();
             }
         }
     }
@@ -414,7 +417,7 @@ public class PlayScreen implements Screen{
             op.currentHealth -= amount;
             animations.add(new EffectAnimation(AnimationFactory.getSpriteSheet(AnimationEnum.SLASH_SINGLE), 150, op.entityX, op.entityY));
             animations.add(new DamageAnimation(false, true, amount, op.entityX, op.entityY));
-            Assets.manager.get(Assets.hit_enemy, Sound.class).play();
+            //Assets.manager.get(Assets.hit_enemy, Sound.class).play();
         }
     }
 
