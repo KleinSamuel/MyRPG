@@ -6,6 +6,7 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.kleinsamuel.game.util.DebugMessageFactory;
 
 import java.util.ArrayList;
 
@@ -21,7 +22,6 @@ public class MapSection {
     public String identifier;
 
     public TiledMap map;
-    //public OrthogonalTiledMapRenderer mapRenderer;
     public MyOrthogonalTileMapRenderer mapRenderer;
 
     public MapProperties properties;
@@ -48,6 +48,14 @@ public class MapSection {
             if(mo instanceof RectangleMapObject){
                 Rectangle re = ((RectangleMapObject)mo).getRectangle();
                 walkableRectangles.add(re);
+            }
+        }
+
+        DebugMessageFactory.printInfoMessage("RECTANGLES NPC:");
+        for(MapObject mo : map.getLayers().get("objects_npc").getObjects()){
+            if(mo instanceof RectangleMapObject){
+                Rectangle re = ((RectangleMapObject)mo).getRectangle();
+                DebugMessageFactory.printInfoMessage(re.toString());
             }
         }
 
