@@ -7,20 +7,16 @@ import com.kleinsamuel.game.model.entities.npcs.NPC;
 import com.kleinsamuel.game.util.DebugMessageFactory;
 import com.kleinsamuel.game.util.Utils;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class AStarPathFinder {
-
-    private ArrayList<Rectangle> walkableRectangles;
 
 	private LinkedList<PathFindingPoint> open;
 	private LinkedList<PathFindingPoint> closed;
 	private Player player;
 	
-	public AStarPathFinder(ArrayList<Rectangle> walkableRectangles, Player owner) {
+	public AStarPathFinder(Player owner) {
 		this.player = owner;
-        this.walkableRectangles = walkableRectangles;
 	}
 	
 	public LinkedList<Vector3> findPath(int startX, int startY, int targetX, int targetY){
@@ -188,8 +184,9 @@ public class AStarPathFinder {
 			}
 		}
 
-		for(Rectangle re : walkableRectangles){
+		for(Rectangle re : player.playScreen.currentMapSection.walkableRectangles){
             if(re.contains(x*Utils.TILEWIDTH+(Utils.TILEWIDTH/2), y*Utils.TILEHEIGHT+(Utils.TILEHEIGHT/2))){
+            //if(re.contains(x*Utils.TILEWIDTH, y*Utils.TILEHEIGHT)){
                 return true;
             }
         }
