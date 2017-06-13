@@ -110,7 +110,6 @@ public class MyInputProcessor implements InputProcessor {
         else if(playScreen.hud.clickOnShop((int)hudCamUnprojected_scaledX, (int)hudCamUnprojected_scaledY)){
             DebugMessageFactory.printNormalMessage("CLICK ON SHOP");
             playScreen.button_click.play();
-            playScreen.animations.add(new ScreenSwitchAnimation());
             return true;
         }
         else if(playScreen.hud.clickOnBag((int)hudCamUnprojected_scaledX, (int)hudCamUnprojected_scaledY)){
