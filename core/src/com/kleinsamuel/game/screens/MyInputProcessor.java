@@ -4,6 +4,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector3;
 import com.kleinsamuel.game.hud.PopupWindow;
 import com.kleinsamuel.game.model.animations.ScreenSwitchAnimation;
+import com.kleinsamuel.game.model.maps.InteractiveTile;
 import com.kleinsamuel.game.util.DebugMessageFactory;
 import com.kleinsamuel.game.util.Utils;
 
@@ -42,10 +43,6 @@ public class MyInputProcessor implements InputProcessor {
 
     public boolean touchUp (int x, int y, int pointer, int button) {
 
-        if(!PlayScreen.ACCEPT_INPUT){
-            return true;
-        }
-
         Vector3 hudCamUnprojected = playScreen.hud.stage.getCamera().unproject(new Vector3(x,y,0));
 
         int hudCamUnprojected_scaledX = (int)hudCamUnprojected.x;
@@ -62,6 +59,34 @@ public class MyInputProcessor implements InputProcessor {
             return true;
         }
 
+        /* TODO handle click of interactive tiles */
+        for(InteractiveTile interactiveTile : playScreen.currentMapSection.interactiveTiles){
+            if(interactiveTile.interactive.IS_TRIGGERED){
+                if(interactiveTile.handleClick(hudCamUnprojected_scaledX, hudCamUnprojected_scaledY)){
+                    PlayScreen.ACCEPT_INPUT = true;
+                    playScreen.button_click.play();
+                    return true;
+                }
+            }
+        }
+
+        if(!PlayScreen.ACCEPT_INPUT){
+            return true;
+        }
+
+        /* check if player clicked on interactive tile */
+        for(InteractiveTile interactiveTile : playScreen.currentMapSection.interactiveTiles){
+            if(interactiveTile.arrayX == arrayCoord.x && interactiveTile.arrayY == arrayCoord.y){
+                Vector3 playerArrayCoords = Utils.getArrayCoordinates(playScreen.player.content.x, playScreen.player.content.y);
+                if(interactiveTile.checkIfTriggered(playerArrayCoords.x, playerArrayCoords.y)){
+                    playScreen.ACCEPT_INPUT = false;
+                    interactiveTile.interactive.checkIfOwnsNeededItem(playScreen.player);
+                }
+                return true;
+            }
+        }
+
+        /* handle click if HUD element is visible */
         if(playScreen.bag.SHOW_BAG){
             playScreen.bag.handleClick(hudCamUnprojected_scaledX, hudCamUnprojected_scaledY);
             return true;
@@ -76,7 +101,7 @@ public class MyInputProcessor implements InputProcessor {
         if(playScreen.hud.clickOnSettings((int)hudCamUnprojected_scaledX, (int)hudCamUnprojected_scaledY)){
             DebugMessageFactory.printNormalMessage("CLICK ON SETTINGS");
             playScreen.button_click.play();
-            playScreen.popupWindow = new PopupWindow("this is a motherfucking long test text to see if line wrapping works in this motherfucking popup window to display some text to peaople. Also this is a tesst to see how breaking works and if it breaks up words properly or just fucks them up like i do your mom.");
+            //playScreen.popupWindow = new PopupWindow("this is a motherfucking long test text to see if line wrapping works in this motherfucking popup window to display some text to peaople. Also this is a tesst to see how breaking works and if it breaks up words properly or just fucks them up like i do your mom.");
             return true;
         }
         else if(playScreen.hud.clickOnSocial((int)hudCamUnprojected_scaledX, (int)hudCamUnprojected_scaledY)){
