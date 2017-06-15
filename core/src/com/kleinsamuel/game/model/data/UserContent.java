@@ -216,8 +216,8 @@ public class UserContent {
     public static UserContent createStandard() {
         UserContent uc = new UserContent();
         uc.ID = -1;
-        uc.x = 10*Utils.TILEWIDTH;
-        uc.y = 9*Utils.TILEHEIGHT;
+        uc.x = 5*Utils.TILEWIDTH;
+        uc.y = 17*Utils.TILEHEIGHT;
         uc.mapIdentifier = MapFactory.START_HOUSE;
         uc.VALUE_ATTACK = 1;
         uc.VALUE_ATTACK_SPEED = 1000;
@@ -228,7 +228,7 @@ public class UserContent {
         uc.CURRENT_HEALTH = CharacterFactory.getHealthForLevel(1);
         uc.MAX_MANA = 10;
         uc.CURRENT_MANA = 10;
-        uc.MONEY = 100;
+        uc.MONEY = 12345678;
         uc.LEVEL = 1;
         uc.CURRENT_EXPERIENCE = 0;
         uc.NAME = "unknown";
