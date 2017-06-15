@@ -62,8 +62,14 @@ public class Assets {
     public static final String unequip_button_1 = "bag/unequip_button_1.png";
     public static final String unequip_button_2 = "bag/unequip_button_2.png";
 
+    /* buttons */
     public static final String yes_button = "buttons/yes_button.png";
     public static final String no_button = "buttons/no_button.png";
+    public static final String ok_button = "buttons/ok_button.png";
+    public static final String equip_button = "buttons/equip_button.png";
+    public static final String unequip_button = "buttons/unequip_button.png";
+    public static final String drop_button = "buttons/drop_button.png";
+    public static final String use_button = "buttons/use_button.png";
 
     /* lexicon */
     public static final String lexicon_background = "lexicon/uf_lexicon_background_filled.png";
@@ -75,6 +81,9 @@ public class Assets {
     public static final String popup_background = "popup_background.png";
 
     /* items */
+    public static final String key_gray = "items/key_gray.png";
+
+    /* consumables */
     public static final String potion_red = "items/potions/potion_red.png";
 
     /* equipment */
@@ -243,6 +252,11 @@ public class Assets {
 
         manager.load(yes_button, Texture.class);
         manager.load(no_button, Texture.class);
+        manager.load(ok_button, Texture.class);
+        manager.load(equip_button, Texture.class);
+        manager.load(unequip_button, Texture.class);
+        manager.load(drop_button, Texture.class);
+        manager.load(use_button, Texture.class);
 
         manager.load(lexicon_background, Texture.class);
 
@@ -255,14 +269,17 @@ public class Assets {
         manager.load(blue_bar, Texture.class);
         manager.load(green_bar, Texture.class);
 
+        manager.load(moth_black, Texture.class);
         manager.load(bug_small, Texture.class);
         manager.load(bird_crow, Texture.class);
         manager.load(elemental_water, Texture.class);
         manager.load(eloa_war, Texture.class);
         manager.load(musel, Texture.class);
-        manager.load(moth_black, Texture.class);
 
         /* items */
+        manager.load(key_gray, Texture.class);
+
+        /* consumables */
         manager.load(potion_red, Texture.class);
 
         /* equipment */
