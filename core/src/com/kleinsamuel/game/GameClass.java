@@ -33,7 +33,7 @@ import io.socket.emitter.Emitter;
 
 public class GameClass extends Game {
 
-	private String serverName = "87.160.50.83";
+	private String serverName = "87.160.61.101";
 	private String port = "8081";
 	private IO.Options socketOptions;
 
@@ -66,7 +66,6 @@ public class GameClass extends Game {
 
 	@Override
 	public void create() {
-		DebugMessageFactory.printNormalMessage("STARTED GAME INSTANCE.");
 
 		socketOptions = new IO.Options();
 		socketOptions.timeout = 5000;
