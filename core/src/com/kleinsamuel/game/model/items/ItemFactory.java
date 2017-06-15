@@ -1,9 +1,12 @@
 package com.kleinsamuel.game.model.items;
 
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.math.Vector3;
 import com.kleinsamuel.game.model.Assets;
 import com.kleinsamuel.game.model.entities.Player;
 import com.kleinsamuel.game.util.DebugMessageFactory;
+import com.kleinsamuel.game.util.Utils;
+import com.sun.corba.se.impl.javax.rmi.CORBA.Util;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -105,6 +108,7 @@ public class ItemFactory {
         items.put(69, ItemEnum.ARMOR_WILD_HAND_LEFT);
         items.put(70, ItemEnum.ARMOR_WILD_HAND_RIGHT);
 
+        items.put(100, ItemEnum.KEY_GRAY);
         items.put(1001, ItemEnum.POTION_HEALTH);
 
         stackableSet = new TreeSet<Integer>(Arrays.asList(1001));
@@ -286,10 +290,25 @@ public class ItemFactory {
             case 70:
                 return Assets.armor_wild_hand_right;
 
+            case 1000:
+                return Assets.key_gray;
             case 1001:
                 return Assets.potion_red;
         }
         return null;
+    }
+
+    public static Vector3 getWidthAndHeight(int item_key){
+        Vector3 v = new Vector3(Utils.TILEWIDTH, Utils.TILEHEIGHT, 0);
+
+        switch (item_key){
+            case -1:
+                v.x = 13;
+                v.y = 10;
+                break;
+        }
+
+        return v;
     }
 
     public static void useConsumable(int item_key, Player p){

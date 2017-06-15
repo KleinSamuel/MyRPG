@@ -6,6 +6,7 @@ package com.kleinsamuel.game.model.items;
 
 public enum ItemEnum {
 
+    KEY_GRAY,
     POTION_HEALTH,
 
     ARMOR_BLOOD_TORSO,
