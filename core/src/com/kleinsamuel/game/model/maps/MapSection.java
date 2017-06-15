@@ -1,11 +1,14 @@
 package com.kleinsamuel.game.model.maps;
 
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.kleinsamuel.game.model.items.Item;
 import com.kleinsamuel.game.util.DebugMessageFactory;
 
 import java.util.ArrayList;
@@ -31,12 +34,16 @@ public class MapSection {
     public ArrayList<Rectangle> walkableRectangles;
 
     public ArrayList<BeamableTilePair> beamableTiles;
+    public ArrayList<InteractiveTile> interactiveTiles;
+    public ArrayList<Item> items;
 
-    public MapSection(String identifier, TiledMap map, ArrayList<BeamableTilePair> beamableTiles){
+    public MapSection(String identifier, TiledMap map, ArrayList<BeamableTilePair> beamableTiles, ArrayList<InteractiveTile> interactiveTiles, ArrayList<Item> items){
         this.identifier = identifier;
         this.map = map;
         this.mapRenderer = new MyOrthogonalTileMapRenderer(map);
         this.beamableTiles = beamableTiles;
+        this.interactiveTiles = interactiveTiles;
+        this.items = items;
 
         properties = map.getProperties();
         mapWidth = properties.get("width", Integer.class);
@@ -44,7 +51,7 @@ public class MapSection {
 
         this.walkableRectangles = new ArrayList<Rectangle>();
 
-        for(MapObject mo : map.getLayers().get("objects").getObjects()){
+        for(MapObject mo : map.getLayers().get("objects_players").getObjects()){
             if(mo instanceof RectangleMapObject){
                 Rectangle re = ((RectangleMapObject)mo).getRectangle();
                 walkableRectangles.add(re);
@@ -52,10 +59,13 @@ public class MapSection {
         }
 
         DebugMessageFactory.printInfoMessage("RECTANGLES NPC:");
-        for(MapObject mo : map.getLayers().get("objects_npc").getObjects()){
-            if(mo instanceof RectangleMapObject){
-                Rectangle re = ((RectangleMapObject)mo).getRectangle();
-                DebugMessageFactory.printInfoMessage(re.toString());
+        MapLayer npcLayer = map.getLayers().get("objects_npcs");
+        if(npcLayer != null) {
+            for (MapObject mo : map.getLayers().get("objects_npcs").getObjects()) {
+                if (mo instanceof RectangleMapObject) {
+                    Rectangle re = ((RectangleMapObject) mo).getRectangle();
+                    DebugMessageFactory.printInfoMessage(re.toString());
+                }
             }
         }
 
