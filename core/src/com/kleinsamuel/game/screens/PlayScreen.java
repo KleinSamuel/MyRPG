@@ -30,10 +30,13 @@ import com.kleinsamuel.game.model.entities.OtherPlayer;
 import com.kleinsamuel.game.model.entities.Player;
 import com.kleinsamuel.game.model.entities.npcs.NPC;
 import com.kleinsamuel.game.model.entities.npcs.NPCData;
+import com.kleinsamuel.game.model.entities.npcs.NPCFactory;
 import com.kleinsamuel.game.model.items.Item;
 import com.kleinsamuel.game.model.items.ItemData;
+import com.kleinsamuel.game.model.maps.InteractiveTile;
 import com.kleinsamuel.game.model.maps.MapFactory;
 import com.kleinsamuel.game.model.maps.MapSection;
+import com.kleinsamuel.game.model.maps.interactive.Interactive;
 import com.kleinsamuel.game.sprites.SpriteSheet;
 import com.kleinsamuel.game.util.DebugMessageFactory;
 import com.kleinsamuel.game.util.Utils;
@@ -104,6 +107,7 @@ public class PlayScreen implements Screen{
         }
 
         currentMapSection = MapFactory.getMapSectionForIdentifier(player.content.mapIdentifier);
+        game.items.addAll(currentMapSection.items);
 
         game.sendInitialInfo(player);
 
@@ -217,6 +221,10 @@ public class PlayScreen implements Screen{
             stats.render(hud.batch);
         }else if(lexicon.SHOW_LEXICON){
             lexicon.render(hud.batch);
+        }
+
+        for(InteractiveTile interactiveTile : currentMapSection.interactiveTiles){
+            interactiveTile.interactive.render(hud.batch);
         }
 
         if(popupWindow != null){
@@ -356,7 +364,7 @@ public class PlayScreen implements Screen{
         if (game.npcs.containsKey(id)) {
             game.npcs.get(id).data = data;
         } else {
-            game.npcs.put(id, new NPC(new SpriteSheet(Assets.manager.get(Assets.moth_black, Texture.class), 1, 4), data));
+            game.npcs.put(id, new NPC(new SpriteSheet(Assets.manager.get(NPCFactory.getResourceStringForId(npc_key), Texture.class), 1, 4), data));
         }
     }
 
