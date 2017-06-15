@@ -19,6 +19,7 @@ import com.kleinsamuel.game.model.entities.npcs.NPC;
 import com.kleinsamuel.game.model.items.Item;
 import com.kleinsamuel.game.model.maps.BeamableTile;
 import com.kleinsamuel.game.model.maps.BeamableTilePair;
+import com.kleinsamuel.game.model.maps.InteractiveTile;
 import com.kleinsamuel.game.model.pathfinding.AStarPathFinder;
 import com.kleinsamuel.game.model.pathfinding.Path;
 import com.kleinsamuel.game.screens.PlayScreen;
@@ -398,7 +399,7 @@ public class Player {
 
     public void checkIfSteppedOnItem(){
         for(Item item : playScreen.game.items){
-            if(item.data.getOwnerId().equals(playScreen.game.clientID)){
+            if(item.data.getOwnerId().equals("") || item.data.getOwnerId().equals(playScreen.game.clientID)){
                 Vector3 arrayCoordItem = Utils.getArrayCoordinates(item.data.getX(), item.data.getY());
                 Vector3 arrayCoordPlayer = Utils.getArrayCoordinates(content.x, content.y);
                 if(arrayCoordItem.x == arrayCoordPlayer.x && arrayCoordItem.y == arrayCoordPlayer.y) {
@@ -419,10 +420,10 @@ public class Player {
     }
 
     public void drawName(SpriteBatch batch) {
-        Utils.testFont.getData().setScale(0.4f, 0.3f);
-        Utils.testFont.setColor(Color.BLACK);
-        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.testFont, content.NAME);
-        Utils.testFont.draw(batch, content.NAME, content.x+Utils.TILEWIDTH/2-dims.x/2, content.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+5);
+        Utils.font10.getData().setScale(0.5f, 0.5f);
+        Utils.font10.setColor(Color.BLACK);
+        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.font10, content.NAME);
+        Utils.font10.draw(batch, content.NAME, content.x+Utils.TILEWIDTH/2-dims.x/2, content.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+5);
     }
 
     public void drawLevel(SpriteBatch batch){
