@@ -293,10 +293,12 @@ public class Player {
         playScreen.level_up.play();
         content.LEVEL += 1;
         content.CURRENT_EXPERIENCE = 0;
-        content.MAX_HEALTH = CharacterFactory.getHealthForLevel(content.LEVEL);
+        content.MAX_HEALTH = CharacterFactory.getHealthForLevelLinear(content.LEVEL, multiplier.MULTIPLIER_HEALTH);
         content.CURRENT_HEALTH = content.MAX_HEALTH;
-        content.MAX_MANA = CharacterFactory.getHealthForLevel(content.LEVEL);
+        content.MAX_MANA = CharacterFactory.getManaForLevelLinear(content.LEVEL, multiplier.MULTIPLIER_MANA);
         content.CURRENT_MANA = content.MAX_MANA;
+        content.VALUE_ATTACK = (int)(multiplier.MULTIPLIER_ATTACK * CharacterFactory.getDamageForLevel(content.LEVEL));
+        content.VALUE_DEFENSE = CharacterFactory.getDefenseForLevel(content.LEVEL);
     }
 
     public void checkIfInAttackRange(){
