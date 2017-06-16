@@ -5,6 +5,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Vector3;
 import com.kleinsamuel.game.screens.PlayScreen;
 
@@ -34,7 +35,19 @@ public class Utils {
 
     public static ArrayList<String> turkroachNames;
 
+    public static FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/editundo.ttf"));
+    public static FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+    public static BitmapFont font10;
+
     static {
+
+        parameter.size = 14;
+        parameter.gamma = 10;
+        parameter.mono = true;
+        parameter.spaceX = 1;
+        font10 = generator.generateFont(parameter);
+        font10.setUseIntegerPositions(false);
+
         FileHandle roachHandle = Gdx.files.internal("turkroach_names.txt");
         String[] tmp = roachHandle.readString().split("\n");
         turkroachNames = new ArrayList<String>(Arrays.asList(tmp));
