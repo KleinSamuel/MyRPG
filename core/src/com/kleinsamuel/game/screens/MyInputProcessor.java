@@ -59,7 +59,7 @@ public class MyInputProcessor implements InputProcessor {
             return true;
         }
 
-        /* TODO handle click of interactive tiles */
+        /* handle click of interactive tile dialog */
         for(InteractiveTile interactiveTile : playScreen.currentMapSection.interactiveTiles){
             if(interactiveTile.interactive.IS_TRIGGERED){
                 if(interactiveTile.handleClick(hudCamUnprojected_scaledX, hudCamUnprojected_scaledY)){
