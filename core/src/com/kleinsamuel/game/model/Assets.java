@@ -77,6 +77,10 @@ public class Assets {
     /* stats */
     public static final String stats_background = "stats/uf_stats_background_filled.png";
 
+    /* merchant */
+    public static final String merchant_1 = "merchant/merchant_1.png";
+    public static final String merchant_background = "merchant/merchant_background.png";
+
     /* popup */
     public static final String popup_background = "popup_background.png";
 
@@ -261,6 +265,9 @@ public class Assets {
         manager.load(lexicon_background, Texture.class);
 
         manager.load(stats_background, Texture.class);
+
+        manager.load(merchant_background, Texture.class);
+        manager.load(merchant_1, Texture.class);
 
         manager.load(popup_background, Texture.class);
 
