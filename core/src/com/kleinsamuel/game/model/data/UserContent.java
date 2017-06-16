@@ -224,8 +224,8 @@ public class UserContent {
         uc.VALUE_DEFENSE = 0;
         uc.VALUE_MOVING_SPEED = 0.5f;
         uc.VALUE_RANGE = 1;
-        uc.MAX_HEALTH = CharacterFactory.getHealthForLevel(1);
-        uc.CURRENT_HEALTH = CharacterFactory.getHealthForLevel(1);
+        uc.MAX_HEALTH = CharacterFactory.getHealthForLevelLinear(1, 1.0);
+        uc.CURRENT_HEALTH = CharacterFactory.getHealthForLevelLinear(1, 1.0);
         uc.MAX_MANA = 10;
         uc.CURRENT_MANA = 10;
         uc.MONEY = 12345678;

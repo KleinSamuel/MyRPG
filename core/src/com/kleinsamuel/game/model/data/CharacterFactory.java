@@ -7,28 +7,31 @@ package com.kleinsamuel.game.model.data;
 public class CharacterFactory {
 
     private static int computeFormula(int x) {
-        return (int)(5*(Math.pow(x*1.0, 3)))/(4);
+        return (int)(3*(Math.pow(x*1.0, 3)))/(4);
+    }
+
+    public static int getHealthForLevelLinear(int level, double mutliplier) {
+        return 10+(level-1)*(int)(7*mutliplier);
+    }
+
+    public static int getManaForLevelLinear(int level, double mutliplier) {
+        return 10+(level-1)*(int)(7*mutliplier);
     }
 
     public static int getNeededXpForLevel(int level) {
-        if(level <= 3){
-            return level * 20;
-        }
-        return computeFormula(level);
+        return computeFormula(level+3);
     }
 
     public static int getGainedXpForLevel(int level) {
-        if(level < 30){
-            return 1;
-        }
-        return getNeededXpForLevel(level)/30;
+        return getHealthForLevelLinear(level, 1.0)*(level)/4;
     }
 
-    public static int getHealthForLevel(int level) {
-
-        if(level <= 3){
-            return level * 10;
-        }
-        return computeFormula(level)/2;
+    public static int getDamageForLevel(int level) {
+        return getHealthForLevelLinear(level, 1.0)/10;
     }
+
+    public static int getDefenseForLevel(int level) {
+        return getDamageForLevel(level)/5;
+    }
+
 }
