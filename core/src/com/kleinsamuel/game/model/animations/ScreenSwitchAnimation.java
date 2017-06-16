@@ -94,7 +94,7 @@ public class ScreenSwitchAnimation extends Animation{
     public void render(SpriteBatch batch) {
         Color colorBefore = batch.getColor();
         batch.setColor(new Color(colorBefore.r, colorBefore.g, colorBefore.b, opacity));
-        batch.draw(Assets.manager.get(Assets.rectangle_black, Texture.class), 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.draw(Assets.manager.get(Assets.rectangle_black, Texture.class), 0, 0, toBeam.playScreen.currentMapSection.mapWidth*Utils.TILEWIDTH, toBeam.playScreen.currentMapSection.mapHeight*Utils.TILEHEIGHT);
         batch.setColor(new Color(colorBefore.r, colorBefore.g, colorBefore.b, 1.0f));
     }
 }
