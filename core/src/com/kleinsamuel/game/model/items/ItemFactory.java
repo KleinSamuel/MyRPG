@@ -6,7 +6,6 @@ import com.kleinsamuel.game.model.Assets;
 import com.kleinsamuel.game.model.entities.Player;
 import com.kleinsamuel.game.util.DebugMessageFactory;
 import com.kleinsamuel.game.util.Utils;
-import com.sun.corba.se.impl.javax.rmi.CORBA.Util;
 
 import java.util.Arrays;
 import java.util.HashMap;
