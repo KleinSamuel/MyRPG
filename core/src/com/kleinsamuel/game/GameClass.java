@@ -98,8 +98,10 @@ public class GameClass extends Game {
 			DebugMessageFactory.printInfoMessage("GAMECLASS: FIRST STARTUP");
 		}
 
+		setScreen(new PlayScreen(this));
+
 		/* check if it is first startup of app, if yes start in main menu if no start in game */
-		if(IS_FIRST_STARTUP){
+		/*if(IS_FIRST_STARTUP){
 			main_menu_music.play();
 			setScreen(startScreen);
 		}else if(CONNECTED){
@@ -107,7 +109,7 @@ public class GameClass extends Game {
 		}else{
 			main_menu_music.play();
 			setScreen(startScreen);
-		}
+		}*/
 	}
 
 	public void connect(){
