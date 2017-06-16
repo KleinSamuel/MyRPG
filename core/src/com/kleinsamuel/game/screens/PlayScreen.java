@@ -28,6 +28,7 @@ import com.kleinsamuel.game.model.animations.EffectAnimation;
 import com.kleinsamuel.game.model.data.CharacterFactory;
 import com.kleinsamuel.game.model.entities.OtherPlayer;
 import com.kleinsamuel.game.model.entities.Player;
+import com.kleinsamuel.game.model.entities.npcs.InteractiveNPC;
 import com.kleinsamuel.game.model.entities.npcs.NPC;
 import com.kleinsamuel.game.model.entities.npcs.NPCData;
 import com.kleinsamuel.game.model.entities.npcs.NPCFactory;
@@ -78,7 +79,7 @@ public class PlayScreen implements Screen{
 
     public CopyOnWriteArrayList<Animation> animations;
 
-    public Sound button_click, drink_potion, level_up, hit_player, hit_enemy;
+    public Sound button_click, drink_potion, level_up, hit_player, hit_enemy, coin_toss;
 
     public PlayScreen(GameClass game){
         this.game = game;
@@ -126,6 +127,7 @@ public class PlayScreen implements Screen{
         level_up = Gdx.audio.newSound(Gdx.files.internal("sounds/yey.wav"));
         hit_player = Gdx.audio.newSound(Gdx.files.internal("sounds/hit_player.wav"));
         hit_enemy = Gdx.audio.newSound(Gdx.files.internal("sounds/hit_enemy.wav"));
+        coin_toss = Gdx.audio.newSound(Gdx.files.internal("sounds/coin_toss.wav"));
 
     }
 
@@ -168,6 +170,10 @@ public class PlayScreen implements Screen{
 
         updateNPCs();
 
+        for(InteractiveNPC interactiveNpc : currentMapSection.interactiveNpcs){
+            interactiveNpc.update();
+        }
+
         updateOtherPlayers();
         player.update();
 
@@ -202,11 +208,21 @@ public class PlayScreen implements Screen{
         renderNPCs(batch);
         player.render(batch);
 
+        for(InteractiveNPC interactiveNPC : currentMapSection.interactiveNpcs){
+            interactiveNPC.render(batch);
+        }
+
         /* render names and healthbars */
         renderOtherPlayersAfter(batch);
         renderNPCsAfter(batch);
         player.renderAfter(batch);
+
+        for(InteractiveNPC interactiveNPC : currentMapSection.interactiveNpcs){
+            interactiveNPC.renderAfter(batch);
+        }
+
         renderAnimations(batch);
+
         batch.end();
 
         /* render HUD */
