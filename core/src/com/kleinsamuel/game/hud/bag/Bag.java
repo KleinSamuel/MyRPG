@@ -115,7 +115,6 @@ public class Bag {
     public void handleClick(int screenX, int screenY) {
 
         if(SHOW_ITEM_INFO) {
-            itemInfoWindow.setUseButtonUnPressed();
             itemInfoWindow.handleClick(screenX, screenY);
             return;
         }

@@ -1,7 +1,5 @@
 package com.kleinsamuel.game.hud.bag;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -53,12 +51,15 @@ public class ItemInfoWindow {
 
     private float USE_BUTTON_WIDTH = PlayScreen.V_WIDTH*0.1f;
     private float USE_BUTTON_HEIGHT = PlayScreen.V_WIDTH*0.05f;
-    private float USE_BUTTON_X = (PlayScreen.V_WIDTH/2)-(USE_BUTTON_WIDTH/2);
+    private float USE_BUTTON_X = (PlayScreen.V_WIDTH/2)-(USE_BUTTON_WIDTH)-3;
     private float USE_BUTTON_Y = item_info_y+(USE_BUTTON_HEIGHT);
 
-    private boolean use_button_pressed = false;
-    private String resourceStringPressed;
-    private String resourceStringUnpressed;
+    private float DROP_BUTTON_WIDTH = PlayScreen.V_WIDTH*0.1f;
+    private float DROP_BUTTON_HEIGHT = PlayScreen.V_WIDTH*0.05f;
+    private float DROP_BUTTON_X = (PlayScreen.V_WIDTH/2)+3;
+    private float DROP_BUTTON_Y = item_info_y+(USE_BUTTON_HEIGHT);
+
+    private String useButtonString;
     private boolean equip;
 
     public ItemInfoWindow(PlayScreen playScreen, int itemId, boolean equip) {
@@ -69,18 +70,15 @@ public class ItemInfoWindow {
         int equipmentSlot = Equipment.getEquipmentSlotByItemId(itemId);
         if(equipmentSlot != -1) {
             if(equip) {
-                resourceStringUnpressed = Assets.equip_button_1;
-                resourceStringPressed = Assets.equip_button_2;
-                USE_BUTTON_WIDTH += PlayScreen.V_WIDTH*0.05f;
+                useButtonString = Assets.equip_button;
+                USE_BUTTON_WIDTH += PlayScreen.V_WIDTH*0.03f;
             }else{
-                resourceStringUnpressed = Assets.unequip_button_1;
-                resourceStringPressed = Assets.unequip_button_2;
-                USE_BUTTON_WIDTH += PlayScreen.V_WIDTH*0.07f;
+                useButtonString = Assets.unequip_button;
+                USE_BUTTON_WIDTH += PlayScreen.V_WIDTH*0.05f;
             }
-            USE_BUTTON_X = (PlayScreen.V_WIDTH/2)-(USE_BUTTON_WIDTH/2);
+            USE_BUTTON_X = (PlayScreen.V_WIDTH/2)-(USE_BUTTON_WIDTH)-3;
         }else {
-            resourceStringUnpressed = Assets.use_button_1;
-            resourceStringPressed = Assets.use_button_2;
+            useButtonString = Assets.use_button;
         }
     }
 
@@ -104,11 +102,8 @@ public class ItemInfoWindow {
             //g.drawString(descArray[i], DESC_X, DESC_Y+(i*DESC_PADDING));
         }
 
-        if(use_button_pressed) {
-            batch.draw(Assets.manager.get(resourceStringPressed, Texture.class), USE_BUTTON_X, USE_BUTTON_Y, USE_BUTTON_WIDTH, USE_BUTTON_HEIGHT);
-        }else {
-            batch.draw(Assets.manager.get(resourceStringUnpressed, Texture.class), USE_BUTTON_X, USE_BUTTON_Y, USE_BUTTON_WIDTH, USE_BUTTON_HEIGHT);
-        }
+        batch.draw(Assets.manager.get(useButtonString, Texture.class), USE_BUTTON_X, USE_BUTTON_Y, USE_BUTTON_WIDTH, USE_BUTTON_HEIGHT);
+        batch.draw(Assets.manager.get(Assets.drop_button, Texture.class), DROP_BUTTON_X, DROP_BUTTON_Y, DROP_BUTTON_WIDTH, DROP_BUTTON_HEIGHT);
 
         //g.setFont(Utils.playerNameFont);
     }
@@ -130,9 +125,15 @@ public class ItemInfoWindow {
                 Bag.SHOW_ITEM_INFO = false;
                 return;
             }else{
-                // TODO handle different items
                 ItemFactory.useConsumable(itemId, playScreen.player);
             }
+            playScreen.button_click.play();
+        }
+        if(checkIfClickedOnDrop(screenX, screenY)){
+            playScreen.player.content.removeFromBag(itemId);
+            Bag.SHOW_ITEM_INFO = false;
+            playScreen.button_click.play();
+            return;
         }
     }
 
@@ -150,12 +151,11 @@ public class ItemInfoWindow {
         return false;
     }
 
-    public void setUseButtonPressed() {
-        use_button_pressed = true;
-    }
-
-    public void setUseButtonUnPressed() {
-        use_button_pressed = false;
+    public boolean checkIfClickedOnDrop(int screenX, int screenY) {
+        if(screenX >= DROP_BUTTON_X && screenX <= DROP_BUTTON_X+DROP_BUTTON_WIDTH && screenY >= DROP_BUTTON_Y && screenY <= DROP_BUTTON_Y+DROP_BUTTON_HEIGHT) {
+            return true;
+        }
+        return false;
     }
 
 }
