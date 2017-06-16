@@ -8,6 +8,8 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.kleinsamuel.game.model.entities.npcs.InteractiveNPC;
+import com.kleinsamuel.game.model.entities.npcs.NPC;
 import com.kleinsamuel.game.model.items.Item;
 import com.kleinsamuel.game.util.DebugMessageFactory;
 
@@ -36,14 +38,16 @@ public class MapSection {
     public ArrayList<BeamableTilePair> beamableTiles;
     public ArrayList<InteractiveTile> interactiveTiles;
     public ArrayList<Item> items;
+    public ArrayList<InteractiveNPC> interactiveNpcs;
 
-    public MapSection(String identifier, TiledMap map, ArrayList<BeamableTilePair> beamableTiles, ArrayList<InteractiveTile> interactiveTiles, ArrayList<Item> items){
+    public MapSection(String identifier, TiledMap map, ArrayList<BeamableTilePair> beamableTiles, ArrayList<InteractiveTile> interactiveTiles, ArrayList<Item> items, ArrayList<InteractiveNPC> interactiveNpcs){
         this.identifier = identifier;
         this.map = map;
         this.mapRenderer = new MyOrthogonalTileMapRenderer(map);
         this.beamableTiles = beamableTiles;
         this.interactiveTiles = interactiveTiles;
         this.items = items;
+        this.interactiveNpcs = interactiveNpcs;
 
         properties = map.getProperties();
         mapWidth = properties.get("width", Integer.class);
