@@ -70,7 +70,6 @@ public class MessageInteraction extends Interactive {
             }
 
             batch.draw(Assets.manager.get(Assets.ok_button, Texture.class), OK_X, OK_Y, OK_WIDTH, OK_HEIGHT);
-
         }
     }
 

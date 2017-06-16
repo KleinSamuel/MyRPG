@@ -15,7 +15,9 @@ public class MessageFactory {
             case 0:
                 return "THIS DRAWER IS LOCKED!";
             case 1:
-                return "YOU UNLOCKED THE DRAWE!";
+                return "YOU UNLOCKED THE DRAWER!";
+            case 2:
+                return "THIS IS A CONFIRMATION DIALOG. DO YOU WANT TO ACCEPT THE NON SPECIFIED CONDITIONS?";
 
         }
 

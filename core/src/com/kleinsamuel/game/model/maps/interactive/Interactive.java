@@ -25,7 +25,12 @@ public abstract class Interactive {
 
     public void checkIfOwnsNeededItem(Player p){
         if(NEEDED_ITEM_IDENTIFIER != -1) {
-            GOT_NEEDED_ITEM = p.content.getBag().containsKey(NEEDED_ITEM_IDENTIFIER);
+            if(p.content.getBag().containsKey(NEEDED_ITEM_IDENTIFIER)){
+                GOT_NEEDED_ITEM = true;
+                p.content.removeFromBag(NEEDED_ITEM_IDENTIFIER);
+            }else{
+                GOT_NEEDED_ITEM = false;
+            }
         }
     }
 
