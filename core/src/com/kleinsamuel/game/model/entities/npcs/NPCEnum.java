@@ -6,6 +6,8 @@ package com.kleinsamuel.game.model.entities.npcs;
 
 public enum NPCEnum {
 
+    MOTH_BLACK,
+    BIRD_CROW,
     BUG_SMALL;
 
 }
