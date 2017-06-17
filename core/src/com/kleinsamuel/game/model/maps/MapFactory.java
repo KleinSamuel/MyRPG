@@ -13,6 +13,7 @@ import com.kleinsamuel.game.model.items.ItemFactory;
 import com.kleinsamuel.game.model.maps.interactive.ConfirmationInteraction;
 import com.kleinsamuel.game.model.maps.interactive.MerchantInteraction;
 import com.kleinsamuel.game.model.maps.interactive.MessageInteraction;
+import com.kleinsamuel.game.screens.PlayScreen;
 import com.kleinsamuel.game.sprites.SpriteSheet;
 import com.kleinsamuel.game.util.Utils;
 
@@ -28,8 +29,9 @@ public class MapFactory {
 
     public static String START_HOUSE = "maps/start_house/uf_start_house.tmx";
     public static String START_LAWN = "maps/start_lawn/uf_start_lawn.tmx";
+    public static String START_FOREST = "maps/start_forest/uf_start_forest.tmx";
     public static String UNDERGROUND_TREE = "maps/underground_tree/uf_underground_tree.tmx";
-
+    public static String DUNGEON_FOREST_START = "maps/dungeon_forest_start/uf_dungeon_forest_start.tmx";
 
     public static MapSection getMapSectionForIdentifier(String mapSectionIdentifier){
         return new MapSection(mapSectionIdentifier, mapLoader.load(mapSectionIdentifier), getBeamableTilesForIdentfier(mapSectionIdentifier), getInteractiveTilesForIdentifier(mapSectionIdentifier), getItemsForIdentifier(mapSectionIdentifier), getInteractiveNpcsForIdentifier(mapSectionIdentifier));
@@ -45,9 +47,23 @@ public class MapFactory {
         }else if(mapSectionIdentifier.equals(START_LAWN)){
             outputList.add(new BeamableTilePair(START_LAWN, 79, 5, UNDERGROUND_TREE, 25, 20));
             outputList.add(new BeamableTilePair(START_LAWN, 128, 31, UNDERGROUND_TREE, 63, 24));
+            outputList.add(new BeamableTilePair(START_LAWN, 116, 3, START_FOREST, 86, 65));
+            outputList.add(new BeamableTilePair(START_LAWN, 117, 3, START_FOREST, 87, 65));
         }else if(mapSectionIdentifier.equals(UNDERGROUND_TREE)){
-            outputList.add(new BeamableTilePair(UNDERGROUND_TREE, 25, 20, START_LAWN, 79, 5));
-            outputList.add(new BeamableTilePair(UNDERGROUND_TREE, 62, 24, START_LAWN, 128, 30));
+            outputList.add(new BeamableTilePair(UNDERGROUND_TREE, 40, 20, START_LAWN, 79, 5));
+            outputList.add(new BeamableTilePair(UNDERGROUND_TREE, 77, 24, START_LAWN, 128, 30));
+            outputList.add(new BeamableTilePair(UNDERGROUND_TREE, 60, 0, DUNGEON_FOREST_START, 71, 35));
+            outputList.add(new BeamableTilePair(UNDERGROUND_TREE, 61, 0, DUNGEON_FOREST_START, 72, 35));
+        }else if(mapSectionIdentifier.equals(START_FOREST)){
+            outputList.add(new BeamableTilePair(START_FOREST, 86, 66, START_LAWN, 116, 4));
+            outputList.add(new BeamableTilePair(START_FOREST, 87, 66, START_LAWN, 117, 4));
+            outputList.add(new BeamableTilePair(START_FOREST, 6, 23, DUNGEON_FOREST_START, 6, 34));
+            outputList.add(new BeamableTilePair(START_FOREST, 7, 23, DUNGEON_FOREST_START, 6, 34));
+        }else if(mapSectionIdentifier.equals(DUNGEON_FOREST_START)){
+            outputList.add(new BeamableTilePair(DUNGEON_FOREST_START, 71, 36, UNDERGROUND_TREE, 60, 1));
+            outputList.add(new BeamableTilePair(DUNGEON_FOREST_START, 72, 36, UNDERGROUND_TREE, 61, 1));
+            outputList.add(new BeamableTilePair(DUNGEON_FOREST_START, 5, 34, START_FOREST, 5, 23));
+            outputList.add(new BeamableTilePair(DUNGEON_FOREST_START, 5, 35, START_FOREST, 5, 23));
         }
         return outputList;
     }
@@ -58,7 +74,7 @@ public class MapFactory {
             outputList.add(new InteractiveTile(5, 20, new MessageInteraction(1000, 0, 1)));
             outputList.add(new InteractiveTile(4, 20, new ConfirmationInteraction(2)));
         }else if(mapSectionIdentifier.equals(START_LAWN)){
-            outputList.add(new InteractiveTile(130, 26, new MerchantInteraction(0)));
+            outputList.add(new InteractiveTile(130, 26, new MerchantInteraction(PlayScreen.getPlayscreen(), 0)));
         }else if(mapSectionIdentifier.equals(UNDERGROUND_TREE)){
 
         }
@@ -96,8 +112,14 @@ public class MapFactory {
         if(mapIdentifierDetail.equals(START_LAWN)){
             return "start_lawn";
         }
+        if(mapIdentifierDetail.equals(START_FOREST)){
+            return "start_forest";
+        }
         if(mapIdentifierDetail.equals(UNDERGROUND_TREE)){
             return "underground_tree";
+        }
+        if(mapIdentifierDetail.equals(DUNGEON_FOREST_START)){
+            return "dungeon_forest_start";
         }
         return null;
     }
@@ -109,8 +131,14 @@ public class MapFactory {
         if(mapIdentifierSmall.equals("start_lawn")){
             return START_LAWN;
         }
+        if(mapIdentifierSmall.equals("start_forest")){
+            return START_FOREST;
+        }
         if(mapIdentifierSmall.equals("underground_tree")){
             return UNDERGROUND_TREE;
+        }
+        if(mapIdentifierSmall.equals("dungeon_forest_start")){
+            return DUNGEON_FOREST_START;
         }
         return null;
     }
