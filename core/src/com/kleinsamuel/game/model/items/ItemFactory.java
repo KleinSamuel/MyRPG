@@ -24,6 +24,10 @@ public class ItemFactory {
 
     private static TreeSet<Integer> stackableSet;
 
+    private static HashSet<Integer> consumables;
+    private static HashSet<Integer> equipment;
+    private static HashSet<Integer> weapons;
+
     static {
         items = new HashMap();
 
@@ -107,10 +111,14 @@ public class ItemFactory {
         items.put(69, ItemEnum.ARMOR_WILD_HAND_LEFT);
         items.put(70, ItemEnum.ARMOR_WILD_HAND_RIGHT);
 
-        items.put(100, ItemEnum.KEY_GRAY);
+        items.put(1000, ItemEnum.KEY_GRAY);
         items.put(1001, ItemEnum.POTION_HEALTH);
 
         stackableSet = new TreeSet<Integer>(Arrays.asList(1001));
+
+        consumables = new HashSet<Integer>(Arrays.asList(1001));
+        equipment = new HashSet<Integer>(Arrays.asList(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70));
+        weapons = new HashSet<Integer>(Arrays.asList(-1));
     }
 
     public static boolean isStackable(int item_key){
@@ -134,6 +142,21 @@ public class ItemFactory {
         }
 
         return set;
+    }
+
+    public static boolean isConsumable(int item_id){
+        return (item_id >= 1000 && item_id < 2000);
+        //return consumables.contains(item_id);
+    }
+
+    public static boolean isEquipment(int item_id){
+        return (item_id >= 1 && item_id < 1000);
+        //return equipment.contains(item_id);
+    }
+
+    public static boolean isWeapon(int item_id){
+        return (item_id >= 2000 && item_id < 3000);
+        //return weapons.contains(item_id);
     }
 
     public static String getResourceStringForItemId(int id) {
