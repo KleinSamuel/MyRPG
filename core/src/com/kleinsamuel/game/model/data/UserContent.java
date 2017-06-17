@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.StringBuilder;
+import com.kleinsamuel.game.model.items.ItemFactory;
 import com.kleinsamuel.game.model.maps.MapFactory;
 import com.kleinsamuel.game.util.DebugMessageFactory;
 import com.kleinsamuel.game.util.Utils;
@@ -232,7 +233,7 @@ public class UserContent {
         uc.LEVEL = 1;
         uc.CURRENT_EXPERIENCE = 0;
         uc.NAME = "unknown";
-        uc.BAG_SIZE = 10;
+        uc.BAG_SIZE = 30;
         uc.bag = new HashMap();
 
         uc.bag.put(1,1);
@@ -264,6 +265,22 @@ public class UserContent {
             bag.put(i, 1);
         }
         return true;
+    }
+
+    public int getCurrentBagSize(){
+        int size = 0;
+
+        for(Map.Entry<Integer, Integer> entry : bag.entrySet()){
+            if(checkIfEquipped(entry.getKey()) == -1) {
+                if (ItemFactory.isStackable(entry.getKey())) {
+                    size += 1;
+                } else {
+                    size += entry.getValue();
+                }
+            }
+        }
+
+        return size;
     }
 
     public void removeFromBag(int item_key){
