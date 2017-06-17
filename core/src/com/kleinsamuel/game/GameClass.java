@@ -33,7 +33,7 @@ import io.socket.emitter.Emitter;
 
 public class GameClass extends Game {
 
-	private String serverName = "87.160.61.101";
+	private String serverName = "87.160.63.253";
 	private String port = "8081";
 	private IO.Options socketOptions;
 
@@ -92,16 +92,14 @@ public class GameClass extends Game {
 
 		if(UserContent.readFromFile().ID != -1){
 			IS_FIRST_STARTUP = false;
-			DebugMessageFactory.printInfoMessage("GAMECLASS: NOT FIRST STARTUP");
 		}else{
 			IS_FIRST_STARTUP = true;
-			DebugMessageFactory.printInfoMessage("GAMECLASS: FIRST STARTUP");
 		}
 
-		setScreen(new PlayScreen(this));
+		//setScreen(new PlayScreen(this));
 
 		/* check if it is first startup of app, if yes start in main menu if no start in game */
-		/*if(IS_FIRST_STARTUP){
+		if(IS_FIRST_STARTUP){
 			main_menu_music.play();
 			setScreen(startScreen);
 		}else if(CONNECTED){
@@ -109,7 +107,7 @@ public class GameClass extends Game {
 		}else{
 			main_menu_music.play();
 			setScreen(startScreen);
-		}*/
+		}
 	}
 
 	public void connect(){

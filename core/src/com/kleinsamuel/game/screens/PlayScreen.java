@@ -55,6 +55,7 @@ public class PlayScreen implements Screen{
     public static final int V_HEIGHT = 1080/3;
 
     public GameClass game;
+    private static PlayScreen playScreen;
 
     public SpriteBatch batch;
 
@@ -79,7 +80,7 @@ public class PlayScreen implements Screen{
 
     public CopyOnWriteArrayList<Animation> animations;
 
-    public Sound button_click, drink_potion, level_up, hit_player, hit_enemy, coin_toss;
+    public Sound button_click, drink_potion, level_up, hit_player, hit_enemy, coin_toss, cash_register, error_beep;
 
     public PlayScreen(GameClass game){
         this.game = game;
@@ -90,6 +91,7 @@ public class PlayScreen implements Screen{
         game.startScreen.signUpScreen.isAlreadyCreated = false;
 
         game.playScreen = this;
+        playScreen = this;
 
         Gdx.input.setInputProcessor(new MyInputProcessor(this));
 
@@ -128,7 +130,13 @@ public class PlayScreen implements Screen{
         hit_player = Gdx.audio.newSound(Gdx.files.internal("sounds/hit_player.wav"));
         hit_enemy = Gdx.audio.newSound(Gdx.files.internal("sounds/hit_enemy.wav"));
         coin_toss = Gdx.audio.newSound(Gdx.files.internal("sounds/coin_toss.wav"));
+        cash_register = Gdx.audio.newSound(Gdx.files.internal("sounds/cha_ching.mp3"));
+        error_beep = Gdx.audio.newSound(Gdx.files.internal("sounds/error_blop.wav"));
 
+    }
+
+    public static PlayScreen getPlayscreen(){
+        return playScreen;
     }
 
     private void updateMainBars(){

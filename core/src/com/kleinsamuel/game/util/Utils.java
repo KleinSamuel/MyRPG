@@ -2,6 +2,7 @@ package com.kleinsamuel.game.util;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -37,7 +38,7 @@ public class Utils {
 
     public static FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/editundo.ttf"));
     public static FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-    public static BitmapFont font10;
+    public static BitmapFont font10, moneyFont;
 
     static {
 
@@ -47,6 +48,11 @@ public class Utils {
         parameter.spaceX = 1;
         font10 = generator.generateFont(parameter);
         font10.setUseIntegerPositions(false);
+
+        parameter.borderWidth = 2;
+        parameter.borderColor = Color.BLACK;
+        moneyFont = generator.generateFont(parameter);
+        moneyFont.setUseIntegerPositions(false);
 
         FileHandle roachHandle = Gdx.files.internal("turkroach_names.txt");
         String[] tmp = roachHandle.readString().split("\n");
