@@ -70,6 +70,8 @@ public class Assets {
     public static final String unequip_button = "buttons/unequip_button.png";
     public static final String drop_button = "buttons/drop_button.png";
     public static final String use_button = "buttons/use_button.png";
+    public static final String buy_button = "buttons/buy_button.png";
+    public static final String sell_button = "buttons/sell_button.png";
 
     /* lexicon */
     public static final String lexicon_background = "lexicon/uf_lexicon_background_filled.png";
@@ -79,13 +81,16 @@ public class Assets {
 
     /* merchant */
     public static final String merchant_1 = "merchant/merchant_1.png";
-    public static final String merchant_background = "merchant/merchant_background.png";
+    public static final String merchant_background_buy = "merchant/merchant_background_buy.png";
+    public static final String merchant_background_sell = "merchant/merchant_background_sell.png";
 
     /* popup */
     public static final String popup_background = "popup_background.png";
 
     /* items */
     public static final String key_gray = "items/key_gray.png";
+
+    public static final String locked = "locked.png";
 
     /* consumables */
     public static final String potion_red = "items/potions/potion_red.png";
@@ -261,12 +266,15 @@ public class Assets {
         manager.load(unequip_button, Texture.class);
         manager.load(drop_button, Texture.class);
         manager.load(use_button, Texture.class);
+        manager.load(buy_button, Texture.class);
+        manager.load(sell_button, Texture.class);
 
         manager.load(lexicon_background, Texture.class);
 
         manager.load(stats_background, Texture.class);
 
-        manager.load(merchant_background, Texture.class);
+        manager.load(merchant_background_buy, Texture.class);
+        manager.load(merchant_background_sell, Texture.class);
         manager.load(merchant_1, Texture.class);
 
         manager.load(popup_background, Texture.class);
@@ -282,6 +290,8 @@ public class Assets {
         manager.load(elemental_water, Texture.class);
         manager.load(eloa_war, Texture.class);
         manager.load(musel, Texture.class);
+
+        manager.load(locked, Texture.class);
 
         /* items */
         manager.load(key_gray, Texture.class);
