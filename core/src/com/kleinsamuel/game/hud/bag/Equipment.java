@@ -32,13 +32,13 @@ public class Equipment {
     public static HashSet<Integer> itemsForNecklace;
 
     static {
-        itemsForHelmet = new HashSet<Integer>(Arrays.asList(2));
-        itemsForTorso = new HashSet<Integer>(Arrays.asList(1));
-        itemsForLeftHand = new HashSet<Integer>(Arrays.asList(6));
-        itemsForRightHand = new HashSet<Integer>(Arrays.asList(7));
-        itemsForLegs = new HashSet<Integer>(Arrays.asList(3));
-        itemsForLeftFoot = new HashSet<Integer>(Arrays.asList(4));
-        itemsForRightFoot = new HashSet<Integer>(Arrays.asList(5));
+        itemsForHelmet = new HashSet<Integer>(Arrays.asList(2, 9, 16, 23 ,30, 37, 44, 51, 58, 65));
+        itemsForTorso = new HashSet<Integer>(Arrays.asList(1, 8, 15, 22, 29, 36, 43, 50, 57, 64));
+        itemsForLeftHand = new HashSet<Integer>(Arrays.asList(6, 13, 20, 27, 34, 41, 48, 55, 62, 69));
+        itemsForRightHand = new HashSet<Integer>(Arrays.asList(7, 14, 21, 28, 35, 42, 49, 56, 63, 70));
+        itemsForLegs = new HashSet<Integer>(Arrays.asList(3, 10, 17, 24, 31, 38, 45, 52, 59, 66));
+        itemsForLeftFoot = new HashSet<Integer>(Arrays.asList(4, 11, 18, 25, 32, 39, 46, 53, 60, 67));
+        itemsForRightFoot = new HashSet<Integer>(Arrays.asList(5, 12, 19, 26, 33, 40, 47, 54, 61, 68));
         itemsForLeftRing = new HashSet<Integer>(Arrays.asList(0));
         itemsForRightRing = new HashSet<Integer>(Arrays.asList(0));
         itemsForNecklace = new HashSet<Integer>(Arrays.asList(0));
