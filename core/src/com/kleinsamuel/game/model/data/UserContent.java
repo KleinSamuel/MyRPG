@@ -47,6 +47,7 @@ public class UserContent {
     public int CURRENT_MANA;
     /* users MONEY */
     public int MONEY;
+    public int SKULLS;
     /* users max carry amount */
     public int BAG_SIZE;
     /* users bag containing items */
@@ -89,6 +90,7 @@ public class UserContent {
         sb.append("MAX_MANA:"+ MAX_MANA +"\n");
         sb.append("currentmana:"+ CURRENT_MANA +"\n");
         sb.append("MONEY:"+ MONEY +"\n");
+        sb.append("SKULLS:"+SKULLS +"\n");
         sb.append("BAG_SIZE:"+ BAG_SIZE +"\n");
         sb.append("bag_content:");
         for(Map.Entry<Integer, Integer> e : bag.entrySet()) {
@@ -167,6 +169,8 @@ public class UserContent {
                 uc.CURRENT_MANA = Integer.parseInt(lineArray[1]);
             } else if (lineArray[0].equals("MONEY")) {
                 uc.MONEY = Integer.parseInt(lineArray[1]);
+            } else if (lineArray[0].equals("SKULLS")) {
+                uc.SKULLS = Integer.parseInt(lineArray[1]);
             } else if (lineArray[0].equals("BAG_SIZE")) {
                 uc.BAG_SIZE = Integer.parseInt(lineArray[1]);
             } else if (lineArray[0].equals("bag_content")) {
@@ -230,8 +234,9 @@ public class UserContent {
         uc.MAX_MANA = 10;
         uc.CURRENT_MANA = 10;
         uc.MONEY = 12345678;
+        uc.SKULLS = 31;
         uc.LEVEL = 1;
-        uc.CURRENT_EXPERIENCE = 0;
+        uc.CURRENT_EXPERIENCE = 40;
         uc.NAME = "unknown";
         uc.BAG_SIZE = 30;
         uc.bag = new HashMap();
