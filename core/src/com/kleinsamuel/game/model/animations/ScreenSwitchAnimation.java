@@ -28,6 +28,7 @@ public class ScreenSwitchAnimation extends Animation{
     private BeamableTile beamPosition;
 
     public ScreenSwitchAnimation(Player toBeam, BeamableTile beamPosition){
+        isHUD = false;
         this.toBeam = toBeam;
         this.beamPosition = beamPosition;
         PlayScreen.ACCEPT_INPUT = false;

@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public abstract class Animation {
 
     public boolean delete;
+    public boolean isHUD;
 
     public abstract void update();
 

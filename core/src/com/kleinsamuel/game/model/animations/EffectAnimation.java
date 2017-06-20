@@ -22,6 +22,7 @@ public class EffectAnimation extends Animation{
     private long timestamp;
 
     public EffectAnimation(SpriteSheet spriteSheet, long speed, float x, float y){
+        isHUD = false;
         this.spriteSheet = spriteSheet;
         this.currentTextureIndex = 0;
         this.speed = speed;

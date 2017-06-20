@@ -24,6 +24,7 @@ public class DamageAnimation extends Animation{
     private double fac;
 
     public DamageAnimation(boolean left, boolean toEnemy, int damage, float x, float y){
+        isHUD = false;
         this.left = left;
         this.toEnemy = toEnemy;
         this.damage = damage;
