@@ -2,10 +2,8 @@ package com.kleinsamuel.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.AudioDevice;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Texture;
 import com.kleinsamuel.game.model.Assets;
 import com.kleinsamuel.game.model.data.UserContent;
 import com.kleinsamuel.game.model.entities.OtherPlayer;
@@ -14,7 +12,6 @@ import com.kleinsamuel.game.model.entities.npcs.NPC;
 import com.kleinsamuel.game.model.items.Item;
 import com.kleinsamuel.game.model.maps.MapFactory;
 import com.kleinsamuel.game.screens.PlayScreen;
-import com.kleinsamuel.game.sprites.SpriteSheet;
 import com.kleinsamuel.game.startscreen.StartScreen;
 import com.kleinsamuel.game.util.DebugMessageFactory;
 
@@ -24,7 +21,6 @@ import org.json.JSONObject;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import io.socket.client.IO;
@@ -33,7 +29,7 @@ import io.socket.emitter.Emitter;
 
 public class GameClass extends Game {
 
-	private String serverName = "87.160.63.253";
+	private String serverName = "87.160.57.158";
 	private String port = "8081";
 	private IO.Options socketOptions;
 
@@ -225,10 +221,8 @@ public class GameClass extends Game {
 
 	public void updateServer_Level(Player p){
 		JSONObject data = new JSONObject();
-
 		try {
-			data.put("LEVEL", p.content.LEVEL);
-
+			data.put("level", p.content.LEVEL);
 			socket.emit("levelUpdate", data);
 		} catch (JSONException e){
 			DebugMessageFactory.printErrorMessage("SOCKET:IO ERROR SENDING LEVEL UPDATE");
@@ -256,6 +250,20 @@ public class GameClass extends Game {
 		}
 	}
 
+	public void itemDropped(Item item){
+		JSONObject data = new JSONObject();
+		try {
+			data.put("item_key", item.data.getItem_key());
+			data.put("x", item.data.getX());
+			data.put("y", item.data.getY());
+			data.put("amount", 1);
+
+			socket.emit("itemDropped", data);
+		} catch (JSONException e){
+			DebugMessageFactory.printErrorMessage("SOCKET:IO ERROR SENDING ITEM DROPPED UPDATE");
+		}
+	}
+
 	public void itemPicked(Item item){
 		JSONObject data = new JSONObject();
 		try {
@@ -266,6 +274,18 @@ public class GameClass extends Game {
 			socket.emit("itemPicked", data);
 		} catch (JSONException e){
 			DebugMessageFactory.printErrorMessage("SOCKET:IO ERROR SENDING ITEM PICKED UPDATE");
+		}
+	}
+
+	public void sendMessageGlobal(String identifier, String message){
+		JSONObject data = new JSONObject();
+		try {
+			data.put("identifier", identifier);
+			data.put("sender", playScreen.player.content.NAME);
+			data.put("message", message);
+			socket.emit("sendMessageGlobal", data);
+		} catch (JSONException e){
+			DebugMessageFactory.printErrorMessage("SOCKET:IO ERROR SENDING GLOBAL MESSAGE");
 		}
 	}
 
@@ -402,6 +422,41 @@ public class GameClass extends Game {
 					DebugMessageFactory.printInfoMessage("OtherPlayers Size: "+otherPlayers.size());
 					for(Map.Entry<String, OtherPlayer> entry : otherPlayers.entrySet()){
 						DebugMessageFactory.printInfoMessage("KEY: "+entry.getKey());
+					}
+
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		socket.on("playerLevelUp", new Emitter.Listener(){
+			@Override
+			public void call(Object... args) {
+				JSONObject data = (JSONObject) args[0];
+				try {
+					String id = data.getString("id");
+					int level = data.getInt("level");
+
+					if(playScreen != null) {
+						playScreen.playerLevelUp(id, level);
+					}
+
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		socket.on("playerHealthUpdate", new Emitter.Listener(){
+			@Override
+			public void call(Object... args) {
+				JSONObject data = (JSONObject) args[0];
+				try {
+					String id = data.getString("id");
+					int currentHealth = data.getInt("currHealth");
+					int maxHealth = data.getInt("maxHealth");
+
+					if(playScreen != null) {
+						playScreen.playerHealthUpdate(id, currentHealth, maxHealth);
 					}
 
 				} catch (JSONException e) {
@@ -663,6 +718,31 @@ public class GameClass extends Game {
 				}
 			}
 		});
+
+		socket.on("getItems", new Emitter.Listener() {
+			@Override
+			public void call(Object... args) {
+				JSONArray objects = (JSONArray) args[0];
+				try {
+					for(int i = 0; i < objects.length(); i++) {
+						int item_key = objects.getJSONObject(i).getInt("item_key");
+						int x = objects.getJSONObject(i).getInt("x");
+						int y = objects.getJSONObject(i).getInt("y");
+						int amount = objects.getJSONObject(i).getInt("amount");
+						String owner = objects.getJSONObject(i).getString("ownerId");
+
+						if(playScreen != null) {
+							DebugMessageFactory.printInfoMessage("ADD ITEM #"+item_key+" @ "+x+":"+y);
+							playScreen.addItem(item_key, x, y, amount, owner);
+						}
+					}
+				} catch(JSONException e){
+					DebugMessageFactory.printErrorMessage("ERROR GETTING ITEMS");
+					e.printStackTrace();
+				}
+			}
+		});
+
 		socket.on("itemDropped", new Emitter.Listener() {
 			@Override
 			public void call(Object... args) {
@@ -698,6 +778,25 @@ public class GameClass extends Game {
 
 				} catch(JSONException e){
 					DebugMessageFactory.printErrorMessage("ERROR GETTING ITEM DROP");
+				}
+			}
+		});
+		socket.on("sendMessageGlobal", new Emitter.Listener() {
+			@Override
+			public void call(Object... args) {
+				JSONObject data = (JSONObject) args[0];
+				try {
+					String identifier = data.getString("identifier");
+					String sender = data.getString("sender");
+					String message = data.getString("message");
+					if(playScreen != null){
+						playScreen.chatFactory.addMessageIncoming(identifier, sender, message);
+						playScreen.hud.chatWindowSmall.handleNewMessages();
+						playScreen.chatWindowBig.updateMessages();
+					}
+
+				} catch(JSONException e){
+					DebugMessageFactory.printErrorMessage("ERROR GETTING MESSAGES GLOBAL");
 				}
 			}
 		});
