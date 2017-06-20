@@ -8,6 +8,7 @@ public enum ItemEnum {
 
     KEY_GRAY,
     POTION_HEALTH,
+    POTION_MANA,
 
     ARMOR_BLOOD_TORSO,
     ARMOR_BLOOD_HELMET,

@@ -3,6 +3,7 @@ package com.kleinsamuel.game.model.items;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.math.Vector3;
 import com.kleinsamuel.game.model.Assets;
+import com.kleinsamuel.game.model.animations.InfoAnimation;
 import com.kleinsamuel.game.model.entities.Player;
 import com.kleinsamuel.game.util.DebugMessageFactory;
 import com.kleinsamuel.game.util.Utils;
@@ -23,10 +24,6 @@ public class ItemFactory {
     public static HashMap<Integer, ItemEnum> items;
 
     private static TreeSet<Integer> stackableSet;
-
-    private static HashSet<Integer> consumables;
-    private static HashSet<Integer> equipment;
-    private static HashSet<Integer> weapons;
 
     static {
         items = new HashMap();
@@ -113,12 +110,9 @@ public class ItemFactory {
 
         items.put(1000, ItemEnum.KEY_GRAY);
         items.put(1001, ItemEnum.POTION_HEALTH);
+        items.put(1002, ItemEnum.POTION_MANA);
 
         stackableSet = new TreeSet<Integer>(Arrays.asList(1001));
-
-        consumables = new HashSet<Integer>(Arrays.asList(1001));
-        equipment = new HashSet<Integer>(Arrays.asList(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70));
-        weapons = new HashSet<Integer>(Arrays.asList(-1));
     }
 
     public static boolean isStackable(int item_key){
@@ -316,6 +310,8 @@ public class ItemFactory {
                 return Assets.key_gray;
             case 1001:
                 return Assets.potion_red;
+            case 1002:
+                return Assets.potion_blue;
         }
         return null;
     }
@@ -333,7 +329,7 @@ public class ItemFactory {
         return v;
     }
 
-    public static void useConsumable(int item_key, Player p){
+    public static boolean useConsumable(int item_key, Player p){
         switch (item_key){
 
             /* health potion */
@@ -346,10 +342,31 @@ public class ItemFactory {
                         p.content.CURRENT_HEALTH = p.content.MAX_HEALTH;
                     }
                     p.playScreen.drink_potion.play();
-                    DebugMessageFactory.printInfoMessage("PLAY DRINK SOUND!");
+                    p.playScreen.game.updateServer_Health(p);
+                }else{
+                    p.playScreen.error_beep.play();
+                    p.playScreen.animations.add(new InfoAnimation("YOU DO NOT HAVE ANY HEALTH POTIONS!"));
+                    return false;
+                }
+                break;
+            /* mana potion */
+            case 1002:
+                if(p.content.getBag().containsKey(item_key)){
+                    p.content.removeFromBag(item_key);
+                    if(p.content.MAX_MANA - p.content.CURRENT_MANA >= 10){
+                        p.content.CURRENT_MANA += 10;
+                    }else{
+                        p.content.CURRENT_MANA = p.content.MAX_MANA;
+                    }
+                    p.playScreen.drink_potion.play();
+                }else{
+                    p.playScreen.error_beep.play();
+                    p.playScreen.animations.add(new InfoAnimation("YOU DO NOT HAVE ANY MANA POTIONS!"));
+                    return false;
                 }
                 break;
         }
+        return true;
     }
 
     public static String getNameOfItemById(int itemId) {
