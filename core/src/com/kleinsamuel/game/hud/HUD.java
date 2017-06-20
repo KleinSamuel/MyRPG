@@ -14,6 +14,8 @@ import com.kleinsamuel.game.hud.bars.Experiencebar;
 import com.kleinsamuel.game.hud.bars.Healthbar;
 import com.kleinsamuel.game.hud.bars.Manabar;
 import com.kleinsamuel.game.model.Assets;
+import com.kleinsamuel.game.model.miscellaneous.chat.ChatWindowBig;
+import com.kleinsamuel.game.model.miscellaneous.chat.ChatWindowSmall;
 import com.kleinsamuel.game.screens.PlayScreen;
 import com.kleinsamuel.game.util.Utils;
 
@@ -34,6 +36,7 @@ public class HUD {
     public Healthbar healthbar;
     public Manabar manabar;
     public Experiencebar experiencebar;
+    public ChatWindowSmall chatWindowSmall;
 
     private PlayScreen playScreen;
 
@@ -48,12 +51,13 @@ public class HUD {
         healthbar = new Healthbar();
         manabar = new Manabar();
         experiencebar = new com.kleinsamuel.game.hud.bars.Experiencebar();
+        chatWindowSmall = new ChatWindowSmall(playScreen);
 
         Table table = new Table();
         table.top();
         table.setFillParent(true);
 
-        //testLabel = new Label("HEIL HITLER DU NUTTE!", new Label.LabelStyle(Utils.basicFont, Color.FIREBRICK));
+        //testLabel = new Label("HELLO WORLD!", new Label.LabelStyle(Utils.basicFont, Color.FIREBRICK));
         //table.add(testLabel).expandX().padTop(10);
 
         stage.addActor(table);
@@ -87,8 +91,17 @@ public class HUD {
     private final int social_button_x = PlayScreen.V_WIDTH-button_width-button_padding_right;
     private final int social_button_y = PlayScreen.V_HEIGHT-4*button_height-4*button_padding_top;
 
+    private final float notification_bullet_width = 28 * Utils.FACTOR;
+    private final float notification_bullet_height = 28 * Utils.FACTOR;
+
     private final int lexicon_button_x = PlayScreen.V_WIDTH-button_width-button_padding_right;
     private final int lexicon_button_y = PlayScreen.V_HEIGHT-5*button_height-5*button_padding_top;
+
+    private final float potion_red_button_x = 10;
+    private final float potion_red_button_y = PlayScreen.V_HEIGHT*0.4f+10+button_height;
+
+    private final float potion_blue_button_x = 10;
+    private final float potion_blue_button_y = PlayScreen.V_HEIGHT*0.4f;
 
     public boolean clickOnSettings(int screenX, int screenY){
         return (screenX >= settings_button_x && screenX <= settings_button_x+button_width && screenY >= settings_button_y && screenY <= settings_button_y+button_height);
@@ -112,13 +125,26 @@ public class HUD {
         return (screenX >= bag_button_x && screenX <= bag_button_x+button_width && screenY >= bag_button_y && screenY <= bag_button_y+button_height);
     }
 
+    public boolean clickOnPotionRed(float screenX, float screenY){
+        return (screenX >= potion_red_button_x && screenX <= potion_red_button_x+button_width && screenY >= potion_red_button_y && screenY <= potion_red_button_y+button_height);
+    }
+    public boolean clickOnPotionBlue(float screenX, float screenY){
+        return (screenX >= potion_blue_button_x && screenX <= potion_blue_button_x+button_width && screenY >= potion_blue_button_y && screenY <= potion_blue_button_y+button_height);
+    }
+
     public void drawMoneyString(SpriteBatch batch){
 
-        Utils.basicFont.getData().setScale(0.4f, 0.5f);
-        Utils.basicFont.setColor(new Color(255.0f, 255.0f, 0.0f, 10.0f));
+        Utils.font10.getData().setScale(1.2f, 1.4f);
+        Utils.font10.setColor(new Color(255.0f, 255.0f, 0.0f, 10.0f));
         String s = ""+playScreen.player.content.MONEY;
-        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.basicFont, s);
-        Utils.basicFont.draw(batch, s, MONEY_SKULL_BAR_X+25, MONEY_SKULL_BAR_Y+15);
+        //Vector3 dims = Utils.getWidthAndHeightOfString(Utils.basicFont, s);
+        Utils.font10.draw(batch, s, MONEY_SKULL_BAR_X+27, MONEY_SKULL_BAR_Y+20);
+
+        Utils.font10.getData().setScale(1.2f, 1.4f);
+        Utils.font10.setColor(new Color(255.0f, 255.0f, 0.0f, 10.0f));
+        String skulls = ""+playScreen.player.content.SKULLS;
+        //Vector3 dimsSkull = Utils.getWidthAndHeightOfString(Utils.font10, skulls);
+        Utils.font10.draw(batch, skulls, MONEY_SKULL_BAR_X+150, MONEY_SKULL_BAR_Y+20);
 
     }
 
@@ -132,11 +158,24 @@ public class HUD {
         drawMoneyString(batch);
 
         batch.draw(Assets.manager.get(Assets.settings_button, Texture.class), settings_button_x, settings_button_y, button_width, button_height);
+
         batch.draw(Assets.manager.get(Assets.social_button, Texture.class), social_button_x, social_button_y, button_width, button_height);
+        if(playScreen.chatFactory.UNREAD_MESSAGES){
+            batch.draw(Assets.manager.get(Assets.notification_bullet, Texture.class), social_button_x+button_width-(notification_bullet_width*0.7f), social_button_y+button_height-(notification_bullet_height*0.7f), notification_bullet_width, notification_bullet_height);
+        }
+
         batch.draw(Assets.manager.get(Assets.news_button, Texture.class), news_button_x, news_button_y, button_width, button_height);
         batch.draw(Assets.manager.get(Assets.shop_button, Texture.class), shop_button_x, shop_button_y, button_width, button_height);
         batch.draw(Assets.manager.get(Assets.bag_button, Texture.class), bag_button_x, bag_button_y, button_width, button_height);
         batch.draw(Assets.manager.get(Assets.lexicon_button, Texture.class), lexicon_button_x, lexicon_button_y, button_width, button_height);
         batch.draw(Assets.manager.get(Assets.stats_button, Texture.class), stat_button_x, stat_button_y, button_width, button_height);
+
+        batch.draw(Assets.manager.get(Assets.potion_red_button, Texture.class), potion_red_button_x, potion_red_button_y, button_width, button_height);
+        batch.draw(Assets.manager.get(Assets.potion_blue_button, Texture.class), potion_blue_button_x, potion_blue_button_y, button_width, button_height);
+
+        if(chatWindowSmall != null){
+            chatWindowSmall.render(batch);
+        }
+
     }
 }
