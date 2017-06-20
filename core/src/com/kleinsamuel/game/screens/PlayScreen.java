@@ -91,8 +91,6 @@ public class PlayScreen implements Screen{
     public PlayScreen(GameClass game){
         this.game = game;
 
-        DebugMessageFactory.printInfoMessage("START PLAY");
-
         /* reset main menu screens */
         game.startScreen.isAlreadyCreated = false;
         game.startScreen.logInScreen.isAlreadyCreated = false;
@@ -384,8 +382,17 @@ public class PlayScreen implements Screen{
 
     public void addOtherPlayer(String id, String name, int level, int entityX, int entityY, int currentHealth, int maxHealth){
         game.otherPlayers.put(id, new OtherPlayer(new SpriteSheet(Assets.manager.get(Assets.chara_24, Texture.class), 4, 3), name, level, entityX, entityY, currentHealth, maxHealth));
-        chatFactory.getMessagesMap().put(name, new TreeMap<Integer, ChatMessage>());
-        chatWindowBig.updateMessages();
+
+        DebugMessageFactory.printInfoMessage("ADD OTHER PLAYER: "+name);
+
+        if(chatFactory != null && chatWindowBig != null) {
+            chatFactory.getMessagesMap().put(name, new TreeMap<Integer, ChatMessage>());
+            chatWindowBig.updateMessages();
+            DebugMessageFactory.printInfoMessage("NOT NULL");
+        }else{
+            DebugMessageFactory.printInfoMessage("FACTORY NULL ? "+(chatFactory==null));
+            DebugMessageFactory.printInfoMessage("WINDOW NULL? "+(chatWindowBig==null));
+        }
     }
 
     public void setOtherPlayerPoint(String id, int x, int y){

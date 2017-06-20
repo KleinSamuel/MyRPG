@@ -27,7 +27,9 @@ public class ChatFactory {
         messagesMap.put("global", new TreeMap<Integer, ChatMessage>());
         messagesMap.put("local", new TreeMap<Integer, ChatMessage>());
 
+        DebugMessageFactory.printInfoMessage("INIT CHAT");
         for(OtherPlayer op : playScreen.game.otherPlayers.values()){
+            DebugMessageFactory.printInfoMessage("OP: "+op.name);
             playScreen.chatFactory.getMessagesMap().put(op.name, new TreeMap<Integer, ChatMessage>());
             playScreen.chatWindowBig.updateMessages();
         }

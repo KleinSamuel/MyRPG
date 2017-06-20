@@ -102,7 +102,6 @@ public class ChatWindowBig {
         listChat.setTouchable(null);
         listChat.setSelected(null);
 
-        DebugMessageFactory.printInfoMessage("CREATE SCROLL PANE");
         scrollPaneChat = new ScrollPane(listChat, skin);
         scrollPaneChat.setScrollingDisabled(false, false);
         scrollPaneChat.setupFadeScrollBars(1.0f, 1.0f);
@@ -123,8 +122,8 @@ public class ChatWindowBig {
 
         table.add(table2);
 
-        Table.debugTableColor = Color.BLACK;
-        table.debug();
+        /*Table.debugTableColor = Color.BLACK;
+        table.debug();*/
 
         stage.getRoot().addListener(new ClickListener(){
             @Override
