@@ -299,6 +299,9 @@ public class Player {
         content.CURRENT_MANA = content.MAX_MANA;
         content.VALUE_ATTACK = (int)(multiplier.MULTIPLIER_ATTACK * CharacterFactory.getDamageForLevel(content.LEVEL));
         content.VALUE_DEFENSE = CharacterFactory.getDefenseForLevel(content.LEVEL);
+
+        playScreen.game.updateServer_Level(this);
+        playScreen.game.updateServer_Health(this);
     }
 
     public void checkIfInAttackRange(){
@@ -353,24 +356,37 @@ public class Player {
     TODO add player death
      */
     public void getDamage(int fromId, int amount){
+
+        /* get direction of hitter */
+        NPC hitter = playScreen.game.npcs.get(fromId);
+
+        if(hitter == null){
+            return;
+        }
+
+        boolean left = true;
+        if(hitter.data.x < content.x || hitter.data.y > content.y){
+            left = false;
+        }
+
+        Vector3 hitterArrayPos = Utils.getArrayCoordinates(hitter.data.x, hitter.data.y);
+        Vector3 playerArrayPos = Utils.getArrayCoordinates(content.x, content.y);
+
+        if(Math.abs(hitterArrayPos.x - playerArrayPos.x) > 1 || Math.abs(hitterArrayPos.y - playerArrayPos.y) > 1){
+            return;
+        }
+
         if(content.CURRENT_HEALTH < amount){
             content.CURRENT_HEALTH = 0;
         }else {
             content.CURRENT_HEALTH -= amount;
         }
 
-        /* get direction of hitter */
-        NPC hitter = playScreen.game.npcs.get(fromId);
-        boolean left = true;
-        if(hitter != null){
-            if(hitter.data.x < content.x || hitter.data.y > content.y){
-                left = false;
-            }
-        }
-
         playScreen.animations.add(new EffectAnimation(AnimationFactory.getSpriteSheet(AnimationEnum.SLASH_SINGLE), 150, content.x, content.y));
         playScreen.animations.add(new DamageAnimation(left, false, amount, content.x, content.y));
         playScreen.hit_enemy.play();
+
+        playScreen.game.updateServer_Health(this);
     }
 
     public boolean checkIfPointIsEndpointOfCurrentPath(Vector3 v){
@@ -429,10 +445,10 @@ public class Player {
     }
 
     public void drawLevel(SpriteBatch batch){
-        Utils.testFont.getData().setScale(0.3f, 0.2f);
-        Utils.testFont.setColor(Color.BLACK);
-        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.testFont, "Lvl. "+content.LEVEL);
-        Utils.testFont.draw(batch, "Lvl. "+content.LEVEL, content.x+Utils.TILEWIDTH/2-dims.x/2, content.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+10);
+        Utils.font10.getData().setScale(0.4f, 0.4f);
+        Utils.font10.setColor(Color.BLACK);
+        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.font10, "Lvl. "+content.LEVEL);
+        Utils.font10.draw(batch, "Lvl. "+content.LEVEL, content.x+Utils.TILEWIDTH/2-dims.x/2, content.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+10);
     }
 
     private float HEALTHBAR_PADDING = 0.5f;

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import com.kleinsamuel.game.model.Assets;
+import com.kleinsamuel.game.model.entities.Player;
 import com.kleinsamuel.game.sprites.SpriteSheet;
 import com.kleinsamuel.game.util.Utils;
 
@@ -16,6 +17,8 @@ import com.kleinsamuel.game.util.Utils;
 public class NPC {
 
     public NPCData data;
+
+    private boolean IN_PLAYER_RANGE;
 
     public final int OBSERVABLE_RANGE = 2;
     public final int OBSERVABLE_FACTOR = 1;
@@ -167,7 +170,14 @@ public class NPC {
         }
     }
 
-    public void update(){
+    public void update(Player player){
+
+        if(!Utils.inRange(player.content.x, player.content.y, data.x, data.y)){
+            IN_PLAYER_RANGE = false;
+            return;
+        }else{
+            IN_PLAYER_RANGE = true;
+        }
 
         if(data.moveTo != null) {
             Vector3 p = walkToPoint(data.moveTo);
@@ -178,23 +188,22 @@ public class NPC {
             }
             move();
         }
-
         setNextTexture();
     }
 
     // TODO add specific NPC NAME
     public void drawName(SpriteBatch batch) {
-        Utils.testFont.getData().setScale(0.6f, 0.5f);
-        Utils.testFont.setColor(Color.BLACK);
-        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.testFont, data.name);
-        Utils.testFont.draw(batch, data.name, data.x+Utils.TILEWIDTH/2-dims.x/2, data.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+5);
+        Utils.font10.getData().setScale(0.5f, 0.5f);
+        Utils.font10.setColor(Color.BLACK);
+        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.font10, data.name);
+        Utils.font10.draw(batch, data.name, data.x+Utils.TILEWIDTH/2-dims.x/2, data.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+5);
     }
 
     public void drawLevel(SpriteBatch batch){
-        Utils.testFont.getData().setScale(0.4f, 0.3f);
-        Utils.testFont.setColor(Color.BLACK);
-        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.testFont, "Lvl. "+data.level);
-        Utils.testFont.draw(batch, "Lvl. "+data.level, data.x+Utils.TILEWIDTH/2-dims.x/2, data.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+10);
+        Utils.font10.getData().setScale(0.4f, 0.4f);
+        Utils.font10.setColor(Color.BLACK);
+        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.font10, "Lvl. "+data.level);
+        Utils.font10.draw(batch, "Lvl. "+data.level, data.x+Utils.TILEWIDTH/2-dims.x/2, data.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+10);
     }
 
     public void drawSmallHealthbar(SpriteBatch batch){
@@ -216,6 +225,10 @@ public class NPC {
 
     public void render(SpriteBatch batch){
 
+        if(!IN_PLAYER_RANGE){
+            return;
+        }
+
         if(xMove != 0 || yMove != 0){
             if(up){
                 offset = 0.3f;
@@ -235,6 +248,9 @@ public class NPC {
     }
 
     public void renderAfter(SpriteBatch batch){
+        if(!IN_PLAYER_RANGE){
+            return;
+        }
         drawSmallHealthbar(batch);
         drawName(batch);
         drawLevel(batch);

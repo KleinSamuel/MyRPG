@@ -1,9 +1,11 @@
 package com.kleinsamuel.game.model.entities.npcs;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
+import com.kleinsamuel.game.screens.PlayScreen;
 import com.kleinsamuel.game.sprites.SpriteSheet;
 import com.kleinsamuel.game.util.Utils;
 
@@ -69,6 +71,10 @@ public class InteractiveNPC {
             timestamp = currentTimestamp;
             currentTextureNum = increaseTextureNum();
             currentTexture = spriteSheet.getTextureRegion(0,  currentTextureNum);
+            Vector3 playerPos = Utils.getArrayCoordinates(PlayScreen.getPlayscreen().player.content.x, PlayScreen.getPlayscreen().player.content.y);
+            if(currentTextureNum == 1 && name.equals("MERCHANT") && Utils.inSoundRange(X/Utils.TILEWIDTH, Y/Utils.TILEHEIGHT, playerPos.x, playerPos.y)){
+                PlayScreen.getPlayscreen().coin_toss.play();
+            }
         }
     }
 
@@ -77,10 +83,10 @@ public class InteractiveNPC {
     }
 
     private void drawName(SpriteBatch batch){
-        Utils.font10.getData().setScale(1.0f, 1.0f);
-        Utils.font10.setColor(Color.BLACK);
-        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.testFont, name);
-        Utils.testFont.draw(batch, name, X+Utils.TILEWIDTH/2-dims.x/2, Y+Utils.TILEHEIGHT+10);
+        Utils.moneyFont.getData().setScale(0.5f, 0.5f);
+        Utils.moneyFont.setColor(Color.WHITE);
+        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.moneyFont, name);
+        Utils.moneyFont.draw(batch, name, X+WIDTH/2-dims.x/2, Y+HEIGHT+10);
     }
 
     public void render(SpriteBatch batch){

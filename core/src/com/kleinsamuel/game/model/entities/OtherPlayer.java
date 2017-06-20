@@ -15,6 +15,8 @@ import com.kleinsamuel.game.util.Utils;
 
 public class OtherPlayer {
 
+    private boolean IN_PLAYER_RANGE;
+
     public String name;
     private int level;
     public int entityX;
@@ -53,7 +55,14 @@ public class OtherPlayer {
         this.name = name;
     }
 
-    public void update(){
+    public void update(Player player){
+
+        if(!Utils.inRange(player.content.x, player.content.y, entityX, entityY)){
+            IN_PLAYER_RANGE = false;
+            return;
+        }else{
+            IN_PLAYER_RANGE = true;
+        }
 
         if(moveTo != null) {
             Vector3 p = walkToPoint(moveTo);
@@ -171,6 +180,14 @@ public class OtherPlayer {
         this.currentHealth = currentHealth;
     }
 
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
+    public void setMaxHealth(int maxHealth) {
+        this.maxHealth = maxHealth;
+    }
+
     public int getCurrentMana() {
         return currentMana;
     }
@@ -202,24 +219,30 @@ public class OtherPlayer {
     }
 
     public void drawName(SpriteBatch batch) {
-        Utils.testFont.getData().setScale(0.6f, 0.5f);
-        Utils.testFont.setColor(Color.BLACK);
-        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.testFont, name);
-        Utils.testFont.draw(batch, name, entityX+Utils.TILEWIDTH/2-dims.x/2, entityY+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+5);
+        Utils.font10.getData().setScale(0.5f, 0.5f);
+        Utils.font10.setColor(Color.BLACK);
+        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.font10, name);
+        Utils.font10.draw(batch, name, entityX+Utils.TILEWIDTH/2-dims.x/2, entityY+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+5);
     }
 
     public void drawLevel(SpriteBatch batch){
-        Utils.testFont.getData().setScale(0.4f, 0.3f);
-        Utils.testFont.setColor(Color.BLACK);
-        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.testFont, "Lvl. "+level);
-        Utils.testFont.draw(batch, "Lvl. "+level, entityX+Utils.TILEWIDTH/2-dims.x/2, entityY+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+10);
+        Utils.font10.getData().setScale(0.4f, 0.4f);
+        Utils.font10.setColor(Color.BLACK);
+        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.font10, "Lvl. "+level);
+        Utils.font10.draw(batch, "Lvl. "+level, entityX+Utils.TILEWIDTH/2-dims.x/2, entityY+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+10);
     }
 
     public void render(SpriteBatch batch){
+        if(!IN_PLAYER_RANGE){
+            return;
+        }
         batch.draw(currentTexture, entityX-5, entityY-4, Utils.TILEWIDTH+10, Utils.TILEHEIGHT+8);
     }
 
     public void renderAfter(SpriteBatch batch){
+        if(!IN_PLAYER_RANGE){
+            return;
+        }
         drawSmallHealthbar(batch);
         drawName(batch);
         drawLevel(batch);
