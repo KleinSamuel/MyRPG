@@ -38,10 +38,14 @@ import com.kleinsamuel.game.model.maps.InteractiveTile;
 import com.kleinsamuel.game.model.maps.MapFactory;
 import com.kleinsamuel.game.model.maps.MapSection;
 import com.kleinsamuel.game.model.maps.interactive.Interactive;
+import com.kleinsamuel.game.model.miscellaneous.chat.ChatFactory;
+import com.kleinsamuel.game.model.miscellaneous.chat.ChatMessage;
+import com.kleinsamuel.game.model.miscellaneous.chat.ChatWindowBig;
 import com.kleinsamuel.game.sprites.SpriteSheet;
 import com.kleinsamuel.game.util.DebugMessageFactory;
 import com.kleinsamuel.game.util.Utils;
 
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -66,6 +70,8 @@ public class PlayScreen implements Screen{
     public Bag bag;
     public Stats stats;
     public Lexicon lexicon;
+    public ChatWindowBig chatWindowBig;
+    public ChatFactory chatFactory;
 
     public MapSection currentMapSection;
 
@@ -80,10 +86,12 @@ public class PlayScreen implements Screen{
 
     public CopyOnWriteArrayList<Animation> animations;
 
-    public Sound button_click, drink_potion, level_up, hit_player, hit_enemy, coin_toss, cash_register, error_beep;
+    public Sound button_click, drink_potion, level_up, hit_player, hit_enemy, coin_toss, cash_register, error_beep, notification;
 
     public PlayScreen(GameClass game){
         this.game = game;
+
+        DebugMessageFactory.printInfoMessage("START PLAY");
 
         /* reset main menu screens */
         game.startScreen.isAlreadyCreated = false;
@@ -117,10 +125,13 @@ public class PlayScreen implements Screen{
         tilemarker = new Tilemarker();
         animations = new CopyOnWriteArrayList<Animation>();
 
+        chatFactory = new ChatFactory(this);
+
         bag = new Bag(this);
         hud = new HUD(this);
         stats = new Stats(this);
         lexicon = new Lexicon(this);
+        chatWindowBig = new ChatWindowBig(this);
 
         font = new BitmapFont();
 
@@ -132,6 +143,7 @@ public class PlayScreen implements Screen{
         coin_toss = Gdx.audio.newSound(Gdx.files.internal("sounds/coin_toss.wav"));
         cash_register = Gdx.audio.newSound(Gdx.files.internal("sounds/cha_ching.mp3"));
         error_beep = Gdx.audio.newSound(Gdx.files.internal("sounds/error_blop.wav"));
+        notification = Gdx.audio.newSound(Gdx.files.internal("sounds/notification.wav"));
 
     }
 
@@ -147,13 +159,13 @@ public class PlayScreen implements Screen{
 
     private void updateNPCs(){
         for(NPC npc : game.npcs.values()){
-            npc.update();
+            npc.update(player);
         }
     }
 
     private void updateOtherPlayers(){
         for(OtherPlayer op : game.otherPlayers.values()){
-            op.update();
+            op.update(player);
         }
     }
 
@@ -245,11 +257,15 @@ public class PlayScreen implements Screen{
             stats.render(hud.batch);
         }else if(lexicon.SHOW_LEXICON){
             lexicon.render(hud.batch);
+        }else if(chatWindowBig.SHOW_CHAT){
+            chatWindowBig.render(hud.batch);
         }
 
         for(InteractiveTile interactiveTile : currentMapSection.interactiveTiles){
             interactiveTile.interactive.render(hud.batch);
         }
+
+        renderAnimationsHud(hud.batch);
 
         if(popupWindow != null){
             popupWindow.render(hud.batch);
@@ -291,7 +307,17 @@ public class PlayScreen implements Screen{
 
     private void renderAnimations(SpriteBatch batch){
         for(Animation a : animations){
-            a.render(batch);
+            if(!a.isHUD) {
+                a.render(batch);
+            }
+        }
+    }
+
+    private void renderAnimationsHud(SpriteBatch batch){
+        for(Animation a : animations){
+            if(a.isHUD) {
+                a.render(batch);
+            }
         }
     }
 
@@ -358,6 +384,8 @@ public class PlayScreen implements Screen{
 
     public void addOtherPlayer(String id, String name, int level, int entityX, int entityY, int currentHealth, int maxHealth){
         game.otherPlayers.put(id, new OtherPlayer(new SpriteSheet(Assets.manager.get(Assets.chara_24, Texture.class), 4, 3), name, level, entityX, entityY, currentHealth, maxHealth));
+        chatFactory.getMessagesMap().put(name, new TreeMap<Integer, ChatMessage>());
+        chatWindowBig.updateMessages();
     }
 
     public void setOtherPlayerPoint(String id, int x, int y){
@@ -366,7 +394,24 @@ public class PlayScreen implements Screen{
         }
     }
 
+    public void playerLevelUp(String id, int level) {
+        OtherPlayer op = game.otherPlayers.get(id);
+        if(op != null){
+            op.setLevel(level);
+        }
+    }
+
+    public void playerHealthUpdate(String id, int currentHealth, int maxHealth){
+        OtherPlayer op = game.otherPlayers.get(id);
+        if(op != null){
+            op.setCurrentHealth(currentHealth);
+            op.setMaxHealth(maxHealth);
+        }
+    }
+
     public void removeOtherPlayer(String id){
+        chatFactory.getMessagesMap().remove(game.otherPlayers.get(id).name);
+        chatWindowBig.updateMessages();
         game.otherPlayers.remove(id);
     }
 
@@ -492,5 +537,4 @@ public class PlayScreen implements Screen{
         Assets.dispose();
         player.content.writeToFile();
     }
-
 }

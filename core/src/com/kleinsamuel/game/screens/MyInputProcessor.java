@@ -1,9 +1,12 @@
 package com.kleinsamuel.game.screens;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector3;
 import com.kleinsamuel.game.hud.PopupWindow;
+import com.kleinsamuel.game.model.animations.InfoAnimation;
 import com.kleinsamuel.game.model.animations.ScreenSwitchAnimation;
+import com.kleinsamuel.game.model.items.ItemFactory;
 import com.kleinsamuel.game.model.maps.InteractiveTile;
 import com.kleinsamuel.game.util.DebugMessageFactory;
 import com.kleinsamuel.game.util.Utils;
@@ -33,11 +36,6 @@ public class MyInputProcessor implements InputProcessor {
     }
 
     public boolean touchDown (int x, int y, int pointer, int button) {
-
-        if(playScreen.bag.SHOW_ITEM_INFO){
-            //playScreen.bag.itemInfoWindow.setUseButtonPressed();
-        }
-
         return false;
     }
 
@@ -96,6 +94,13 @@ public class MyInputProcessor implements InputProcessor {
         }else if(playScreen.lexicon.SHOW_LEXICON){
             playScreen.lexicon.handleClick(hudCamUnprojected_scaledX, hudCamUnprojected_scaledY);
             return true;
+        }else if(playScreen.chatWindowBig.SHOW_CHAT){
+            playScreen.chatWindowBig.handleClick(hudCamUnprojected_scaledX, hudCamUnprojected_scaledY);
+            return true;
+        }
+
+        if(playScreen.hud.chatWindowSmall.handleClickUp(hudCamUnprojected_scaledX, hudCamUnprojected_scaledY)){
+            return true;
         }
 
         if(playScreen.hud.clickOnSettings((int)hudCamUnprojected_scaledX, (int)hudCamUnprojected_scaledY)){
@@ -143,6 +148,20 @@ public class MyInputProcessor implements InputProcessor {
             playScreen.stats.SHOW_STATS = false;
             playScreen.lexicon.SHOW_LEXICON = false;
             playScreen.bag.SHOW_BAG = true;
+            return true;
+        }
+        else if(playScreen.hud.clickOnPotionRed(hudCamUnprojected_scaledX, hudCamUnprojected_scaledY)){
+            DebugMessageFactory.printInfoMessage("CLICK ON POTION RED");
+            if(ItemFactory.useConsumable(1001, playScreen.player)){
+                playScreen.button_click.play();
+            }
+            return true;
+        }
+        else if(playScreen.hud.clickOnPotionBlue(hudCamUnprojected_scaledX, hudCamUnprojected_scaledY)){
+            DebugMessageFactory.printInfoMessage("CLICK ON POTION BLUE");
+            if(ItemFactory.useConsumable(1002, playScreen.player)) {
+                playScreen.button_click.play();
+            }
             return true;
         }
 
