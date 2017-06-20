@@ -5,14 +5,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.kleinsamuel.game.model.Assets;
-import com.kleinsamuel.game.model.items.Item;
 import com.kleinsamuel.game.model.items.ItemFactory;
 import com.kleinsamuel.game.screens.PlayScreen;
 import com.kleinsamuel.game.util.DebugMessageFactory;
 import com.kleinsamuel.game.util.Utils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.TreeMap;
@@ -316,7 +314,6 @@ public class MerchantInteraction extends Interactive{
         String s = ""+playScreen.player.content.MONEY;
         Vector3 dims = Utils.getWidthAndHeightOfString(Utils.basicFont, s);
         Utils.basicFont.draw(batch, s, MONEY_SKULL_BAR_X+25, MONEY_SKULL_BAR_Y+15);
-
     }
 
     @Override

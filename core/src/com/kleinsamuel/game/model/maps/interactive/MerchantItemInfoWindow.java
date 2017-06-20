@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.kleinsamuel.game.hud.bag.Bag;
 import com.kleinsamuel.game.hud.bag.Equipment;
 import com.kleinsamuel.game.model.Assets;
+import com.kleinsamuel.game.model.animations.InfoAnimation;
 import com.kleinsamuel.game.model.items.ItemFactory;
 import com.kleinsamuel.game.screens.PlayScreen;
 import com.kleinsamuel.game.util.DebugMessageFactory;
@@ -86,7 +87,7 @@ public class MerchantItemInfoWindow {
                 if (playScreen.player.content.MONEY >= price) {
                 /* bag is full */
                     if (playScreen.player.content.BAG_SIZE <= playScreen.player.content.getCurrentBagSize()) {
-                        DebugMessageFactory.printInfoMessage("BAG IS FULL!");
+                        playScreen.animations.add(new InfoAnimation("YOUR BAG IS FULL!"));
                         playScreen.error_beep.play();
                         return false;
                     }
@@ -96,6 +97,7 @@ public class MerchantItemInfoWindow {
                     playScreen.player.content.putInBag(itemId);
                     return true;
                 }
+                playScreen.animations.add(new InfoAnimation("YOU DONT HAVE ENOUGH GOLD!"));
                 playScreen.error_beep.play();
             }else{
                 playScreen.button_click.play();
