@@ -72,6 +72,8 @@ public class Assets {
     public static final String use_button = "buttons/use_button.png";
     public static final String buy_button = "buttons/buy_button.png";
     public static final String sell_button = "buttons/sell_button.png";
+    public static final String potion_red_button = "buttons/potion_red_button.png";
+    public static final String potion_blue_button = "buttons/potion_blue_button.png";
 
     /* lexicon */
     public static final String lexicon_background = "lexicon/uf_lexicon_background_filled.png";
@@ -84,6 +86,10 @@ public class Assets {
     public static final String merchant_background_buy = "merchant/merchant_background_buy.png";
     public static final String merchant_background_sell = "merchant/merchant_background_sell.png";
 
+    public static final String chat_background = "clean_background.png";
+
+    public static final String notification_bullet = "ui/notification_bullet.png";
+
     /* popup */
     public static final String popup_background = "popup_background.png";
 
@@ -94,6 +100,7 @@ public class Assets {
 
     /* consumables */
     public static final String potion_red = "items/potions/potion_red.png";
+    public static final String potion_blue = "items/potions/potion_blue.png";
 
     /* equipment */
     public static final String armor_blood_torso = "items/equipment/torso/armor_blood_torso.png";
@@ -268,10 +275,16 @@ public class Assets {
         manager.load(use_button, Texture.class);
         manager.load(buy_button, Texture.class);
         manager.load(sell_button, Texture.class);
+        manager.load(potion_red_button, Texture.class);
+        manager.load(potion_blue_button, Texture.class);
 
         manager.load(lexicon_background, Texture.class);
 
         manager.load(stats_background, Texture.class);
+
+        manager.load(chat_background, Texture.class);
+
+        manager.load(notification_bullet, Texture.class);
 
         manager.load(merchant_background_buy, Texture.class);
         manager.load(merchant_background_sell, Texture.class);
@@ -298,6 +311,7 @@ public class Assets {
 
         /* consumables */
         manager.load(potion_red, Texture.class);
+        manager.load(potion_blue, Texture.class);
 
         /* equipment */
         manager.load(armor_blood_torso, Texture.class);
