@@ -3,7 +3,11 @@ package com.kleinsamuel.game.hud.bag;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector3;
 import com.kleinsamuel.game.model.Assets;
+import com.kleinsamuel.game.model.animations.InfoAnimation;
+import com.kleinsamuel.game.model.items.Item;
+import com.kleinsamuel.game.model.items.ItemData;
 import com.kleinsamuel.game.model.items.ItemFactory;
 import com.kleinsamuel.game.screens.PlayScreen;
 import com.kleinsamuel.game.util.DebugMessageFactory;
@@ -130,9 +134,22 @@ public class ItemInfoWindow {
             playScreen.button_click.play();
         }
         if(checkIfClickedOnDrop(screenX, screenY)){
-            playScreen.player.content.removeFromBag(itemId);
-            Bag.SHOW_ITEM_INFO = false;
-            playScreen.button_click.play();
+
+            Vector3 playerPos = Utils.getArrayCoordinates(playScreen.player.content.x, playScreen.player.content.y);
+            Vector3 freeTile = Utils.getArrayCoordinatesOfAdjacentFreeTile(playScreen.currentMapSection, (int)playerPos.x, (int)playerPos.y);
+
+            if(freeTile != null) {
+                Item dropped = new Item(new ItemData(0, itemId, (int)freeTile.x*Utils.TILEWIDTH, (int)freeTile.y*Utils.TILEHEIGHT, 1, ""), Utils.TILEWIDTH, Utils.TILEHEIGHT);
+                playScreen.game.items.add(dropped);
+                playScreen.player.content.removeFromBag(itemId);
+                playScreen.game.itemDropped(dropped);
+                Bag.SHOW_ITEM_INFO = false;
+                playScreen.button_click.play();
+            }else{
+                playScreen.animations.add(new InfoAnimation("NO PLACE TO DROP THIS ITEM!"));
+                playScreen.error_beep.play();
+            }
+
             return;
         }
     }
