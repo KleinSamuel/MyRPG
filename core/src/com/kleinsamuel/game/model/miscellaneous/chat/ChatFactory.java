@@ -1,7 +1,9 @@
 package com.kleinsamuel.game.model.miscellaneous.chat;
 
+import com.kleinsamuel.game.model.entities.OtherPlayer;
 import com.kleinsamuel.game.screens.PlayScreen;
 import com.kleinsamuel.game.util.DebugMessageFactory;
+import com.kleinsamuel.game.util.Utils;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -25,8 +27,10 @@ public class ChatFactory {
         messagesMap.put("global", new TreeMap<Integer, ChatMessage>());
         messagesMap.put("local", new TreeMap<Integer, ChatMessage>());
 
-        addMessageOutgoing("global", "GLOBAL GOD", "Hello World!");
-        addMessageOutgoing("local", "LOCAL GOD", "Hello World!");
+        for(OtherPlayer op : playScreen.game.otherPlayers.values()){
+            playScreen.chatFactory.getMessagesMap().put(op.name, new TreeMap<Integer, ChatMessage>());
+            playScreen.chatWindowBig.updateMessages();
+        }
     }
 
     public void addMessageIncoming(String identifier, String sender, String message){
