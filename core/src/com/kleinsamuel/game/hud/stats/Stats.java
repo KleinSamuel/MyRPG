@@ -4,7 +4,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Align;
 import com.kleinsamuel.game.model.Assets;
+import com.kleinsamuel.game.model.data.CharacterFactory;
 import com.kleinsamuel.game.screens.PlayScreen;
 import com.kleinsamuel.game.util.DebugMessageFactory;
 import com.kleinsamuel.game.util.Utils;
@@ -83,6 +85,11 @@ public class Stats {
     private float Y_1_CRTS = Y_1_HP-DIST*8;
     private float X_2_CRTS = X_2_HP;
     private float Y_2_CRTS = Y_2_HP-DIST*8;
+
+    private float MIDDLE_X = 320 * Utils.FACTOR;
+    private float MIDDLE_Y = 82 * Utils.FACTOR;
+    private float MIDDLE_WIDTH = 390 * Utils.FACTOR;
+    private float MIDDLE_HEIGHT = 270 * Utils.FACTOR;
 
     private int clickedIdentifier = -1;
     private float clickedPadding = 0;
@@ -300,6 +307,43 @@ public class Stats {
         Utils.testFont.draw(batch, "CRTC", LEFT_X_1+clickedPadding, LEFT_Y_1+LEFT_HEIGHT-(LEFT_STRING_HEIGHT-LEFT_PADDING)*8);
         Utils.testFont.getData().setScale(1.0f, 1.0f);
         Utils.testFont.draw(batch, "x "+playScreen.player.multiplier.MULTIPLIER_CRIT_CHANCE, LEFT_X_1+LEFT_PADDING_RIGHT, LEFT_Y_1-3+LEFT_HEIGHT-(LEFT_STRING_HEIGHT-LEFT_PADDING)*8);
+
+        /* draw description */
+        //batch.draw(Assets.manager.get(Assets.rectangle_light_gray, Texture.class), MIDDLE_X, MIDDLE_Y, MIDDLE_WIDTH, MIDDLE_HEIGHT);
+
+        float middle = MIDDLE_X+(MIDDLE_WIDTH/2);
+
+        Utils.font10.getData().setScale(1.7f, 1.7f);
+        Utils.font10.setColor(Color.BLACK);
+        String headline = StatsFactory.getHeadline(clickedIdentifier);
+        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.font10, headline);
+        Utils.font10.draw(batch, headline, middle-(dims.x/2), MIDDLE_Y+MIDDLE_HEIGHT);
+
+        Utils.font10.getData().setScale(1.2f, 1.2f);
+        Utils.font10.setColor(Color.BLACK);
+        String description = StatsFactory.getDescription(clickedIdentifier);
+        dims = Utils.getWidthAndHeightOfString(Utils.font10, description);
+        Utils.font10.draw(batch, description, MIDDLE_X, MIDDLE_Y+MIDDLE_HEIGHT-30, MIDDLE_WIDTH, Align.center, true);
+
+        if(clickedIdentifier == 0){
+            Utils.font10.getData().setScale(1.2f, 1.2f);
+            Utils.font10.setColor(Color.BLACK);
+            String s = "Currently: "+playScreen.player.content.CURRENT_HEALTH+" / "+playScreen.player.content.MAX_HEALTH;
+            dims = Utils.getWidthAndHeightOfString(Utils.font10, s);
+            Utils.font10.draw(batch, s, MIDDLE_X, MIDDLE_Y+MIDDLE_HEIGHT-120, MIDDLE_WIDTH, Align.center, true);
+        }else if(clickedIdentifier == 1){
+            Utils.font10.getData().setScale(1.2f, 1.2f);
+            Utils.font10.setColor(Color.BLACK);
+            String s = "Currently: "+playScreen.player.content.CURRENT_MANA+" / "+playScreen.player.content.CURRENT_HEALTH;
+            dims = Utils.getWidthAndHeightOfString(Utils.font10, s);
+            Utils.font10.draw(batch, s, MIDDLE_X, MIDDLE_Y+MIDDLE_HEIGHT-120, MIDDLE_WIDTH, Align.center, true);
+        }else if(clickedIdentifier == 2){
+            Utils.font10.getData().setScale(1.2f, 1.2f);
+            Utils.font10.setColor(Color.BLACK);
+            String s = "Currently: "+playScreen.player.content.CURRENT_EXPERIENCE+" / "+ CharacterFactory.getNeededXpForLevel(playScreen.player.content.LEVEL);
+            dims = Utils.getWidthAndHeightOfString(Utils.font10, s);
+            Utils.font10.draw(batch, s, MIDDLE_X, MIDDLE_Y+MIDDLE_HEIGHT-120, MIDDLE_WIDTH, Align.center, true);
+        }
 
         playScreen.hud.drawMoneyString(batch);
     }
