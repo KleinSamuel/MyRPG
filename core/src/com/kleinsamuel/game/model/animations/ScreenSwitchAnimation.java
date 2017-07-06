@@ -86,7 +86,7 @@ public class ScreenSwitchAnimation extends Animation{
 
         toBeam.content.x = beamPosition.arrayX * Utils.TILEWIDTH;
         toBeam.content.y = beamPosition.arrayY * Utils.TILEHEIGHT;
-        toBeam.content.mapIdentifier = toBeam.playScreen.currentMapSection.identifier;
+        toBeam.content.mapIdentifier = MapFactory.parseIdentifierFromDetailToSmall(toBeam.playScreen.currentMapSection.identifier);
 
         toBeam.playScreen.game.playerMovedToAnotherSection(toBeam);
     }
