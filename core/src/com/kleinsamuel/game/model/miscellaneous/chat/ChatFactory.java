@@ -83,13 +83,11 @@ public class ChatFactory {
 
     public TreeMap<Integer, ChatMessage> getLastMessages(String identifier, int amount){
 
-        if(messagesMap.get(identifier).size() <= amount){
-            return messagesMap.get(identifier);
-        }
-
         TreeMap<Integer, ChatMessage> out = new TreeMap<Integer, ChatMessage>();
-        for(int i = amount-1; i >= 0; i--){
-            out.put(i, messagesMap.get(identifier).get(messagesMap.get(identifier).size()-1-i));
+        for(int i = 0; i < amount; i++){
+            if(messagesMap.get(identifier).size()-1-i >= 0){
+                out.put(i, messagesMap.get(identifier).get(messagesMap.get(identifier).size()-1-i));
+            }
         }
         return out;
     }

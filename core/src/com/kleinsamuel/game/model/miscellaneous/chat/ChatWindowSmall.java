@@ -1,6 +1,7 @@
 package com.kleinsamuel.game.model.miscellaneous.chat;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -9,7 +10,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.kleinsamuel.game.model.Assets;
 import com.kleinsamuel.game.screens.PlayScreen;
+import com.kleinsamuel.game.util.DebugMessageFactory;
 import com.kleinsamuel.game.util.Utils;
 
 import java.util.HashMap;
@@ -21,6 +24,8 @@ import java.util.TreeMap;
  */
 
 public class ChatWindowSmall {
+
+    public boolean SHOW_CHAT_SMALL = true;
 
     private PlayScreen playScreen;
 
@@ -49,11 +54,14 @@ public class ChatWindowSmall {
         this.playScreen = playScreen;
         positions = new HashMap<Integer, Vector3>();
 
+        SHOW_CHAT_SMALL = playScreen.player.content.SHOW_SMALL_CHAT;
+
         handleNewMessages();
         updatePositions(0);
     }
 
     public void handleNewMessages(){
+        DebugMessageFactory.printInfoMessage("HANDLE NEW MESSAGES!");
         lastMessages = playScreen.chatFactory.getLastMessages("global", 7);
         currentYOffset = 0;
         updatePositions(currentYOffset);
@@ -76,6 +84,9 @@ public class ChatWindowSmall {
     }
 
     public boolean handleClickUp(int x, int y){
+        if(!SHOW_CHAT_SMALL){
+            return false;
+        }
         if(x >= chat_window_x && x <= chat_window_x+chat_window_width && y >= chat_window_y && y <= chat_window_y+chat_window_height){
             playScreen.chatWindowBig.SHOW_CHAT = true;
             playScreen.chatWindowBig.onCreate();
@@ -86,6 +97,12 @@ public class ChatWindowSmall {
     }
 
     public void render(SpriteBatch batch){
+
+        batch.draw(Assets.manager.get(Assets.rectangle_black, Texture.class), chat_window_x, chat_window_y, chat_window_width, 1);
+        batch.draw(Assets.manager.get(Assets.rectangle_black, Texture.class), chat_window_x, chat_window_y, 1, chat_window_height);
+        batch.draw(Assets.manager.get(Assets.rectangle_black, Texture.class), chat_window_x, chat_window_y+chat_window_height, chat_window_width, 1);
+        batch.draw(Assets.manager.get(Assets.rectangle_black, Texture.class), chat_window_x+chat_window_width, chat_window_y, 1, chat_window_height);
+
         for (Map.Entry<Integer, ChatMessage> entry : lastMessages.entrySet()){
             Vector3 pos = positions.get(entry.getKey());
             if(pos.y >= chat_window_y && pos.y <= chat_window_y+chat_window_height){
