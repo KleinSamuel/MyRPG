@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -18,6 +19,7 @@ import com.kleinsamuel.game.hud.PopupWindow;
 import com.kleinsamuel.game.hud.Tilemarker;
 import com.kleinsamuel.game.hud.bag.Bag;
 import com.kleinsamuel.game.hud.lexicon.Lexicon;
+import com.kleinsamuel.game.hud.settings.SettingsHUD;
 import com.kleinsamuel.game.hud.stats.Stats;
 import com.kleinsamuel.game.model.Assets;
 import com.kleinsamuel.game.model.animations.Animation;
@@ -28,6 +30,7 @@ import com.kleinsamuel.game.model.animations.EffectAnimation;
 import com.kleinsamuel.game.model.data.CharacterFactory;
 import com.kleinsamuel.game.model.entities.OtherPlayer;
 import com.kleinsamuel.game.model.entities.Player;
+import com.kleinsamuel.game.model.entities.PlayerFactory;
 import com.kleinsamuel.game.model.entities.npcs.InteractiveNPC;
 import com.kleinsamuel.game.model.entities.npcs.NPC;
 import com.kleinsamuel.game.model.entities.npcs.NPCData;
@@ -45,6 +48,7 @@ import com.kleinsamuel.game.sprites.SpriteSheet;
 import com.kleinsamuel.game.util.DebugMessageFactory;
 import com.kleinsamuel.game.util.Utils;
 
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -70,6 +74,7 @@ public class PlayScreen implements Screen{
     public Bag bag;
     public Stats stats;
     public Lexicon lexicon;
+    public SettingsHUD settingsHUD;
     public ChatWindowBig chatWindowBig;
     public ChatFactory chatFactory;
 
@@ -85,6 +90,12 @@ public class PlayScreen implements Screen{
     public static boolean ACCEPT_INPUT = true;
 
     public CopyOnWriteArrayList<Animation> animations;
+
+    /* TODO outsource code down below */
+
+    public BitmapFont nameFont;
+    private FreeTypeFontGenerator generator;
+    private FreeTypeFontGenerator.FreeTypeFontParameter parameter;
 
     public Sound button_click, drink_potion, level_up, hit_player, hit_enemy, coin_toss, cash_register, error_beep, notification;
 
@@ -109,13 +120,14 @@ public class PlayScreen implements Screen{
         gameCam.position.set(500, 500, 0);
         gameCam.zoom = Utils.ZOOM_FACTOR;
 
-        player = new Player(this, new SpriteSheet(Assets.manager.get(Assets.chara_24, Texture.class), 4, 3));
+        player = new Player(this);
         if(player.content.ID == -1) {
             player.content.ID = 1;
-            player.content.NAME = game.userName;
         }
 
-        currentMapSection = MapFactory.getMapSectionForIdentifier(player.content.mapIdentifier);
+        game.setFirstStartup(player.content.NAME, player.content.raceIdentifier);
+
+        currentMapSection = MapFactory.getMapSectionForIdentifier(MapFactory.parseIdentifierFromSmallToDetail(player.content.mapIdentifier));
         game.items.addAll(currentMapSection.items);
 
         game.sendInitialInfo(player);
@@ -129,9 +141,17 @@ public class PlayScreen implements Screen{
         hud = new HUD(this);
         stats = new Stats(this);
         lexicon = new Lexicon(this);
+        settingsHUD = new SettingsHUD(this);
         chatWindowBig = new ChatWindowBig(this);
 
         font = new BitmapFont();
+
+        generator = new FreeTypeFontGenerator(Gdx.files.internal("font/editundo.ttf"));
+        parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+
+        parameter.size = 14;
+        nameFont = generator.generateFont(parameter);
+        nameFont.setUseIntegerPositions(false);
 
         button_click = Gdx.audio.newSound(Gdx.files.internal("sounds/button_click_01.wav"));
         drink_potion = Gdx.audio.newSound(Gdx.files.internal("sounds/drink_sound_48k.wav"));
@@ -257,6 +277,8 @@ public class PlayScreen implements Screen{
             lexicon.render(hud.batch);
         }else if(chatWindowBig.SHOW_CHAT){
             chatWindowBig.render(hud.batch);
+        }else if(settingsHUD.SHOW_SETTINGS){
+            settingsHUD.render(hud.batch);
         }
 
         for(InteractiveTile interactiveTile : currentMapSection.interactiveTiles){
@@ -380,18 +402,12 @@ public class PlayScreen implements Screen{
         }
     }
 
-    public void addOtherPlayer(String id, String name, int level, int entityX, int entityY, int currentHealth, int maxHealth){
-        game.otherPlayers.put(id, new OtherPlayer(new SpriteSheet(Assets.manager.get(Assets.chara_24, Texture.class), 4, 3), name, level, entityX, entityY, currentHealth, maxHealth));
-
-        DebugMessageFactory.printInfoMessage("ADD OTHER PLAYER: "+name);
+    public void addOtherPlayer(String id, String name, int level, String race, int entityX, int entityY, int currentHealth, int maxHealth){
+        game.otherPlayers.put(id, new OtherPlayer(new SpriteSheet(Assets.manager.get(PlayerFactory.getResourceStringForPlayerSprite(race), Texture.class), 4, 3), name, level, entityX, entityY, currentHealth, maxHealth));
 
         if(chatFactory != null && chatWindowBig != null) {
             chatFactory.getMessagesMap().put(name, new TreeMap<Integer, ChatMessage>());
             chatWindowBig.updateMessages();
-            DebugMessageFactory.printInfoMessage("NOT NULL");
-        }else{
-            DebugMessageFactory.printInfoMessage("FACTORY NULL ? "+(chatFactory==null));
-            DebugMessageFactory.printInfoMessage("WINDOW NULL? "+(chatWindowBig==null));
         }
     }
 
@@ -417,9 +433,11 @@ public class PlayScreen implements Screen{
     }
 
     public void removeOtherPlayer(String id){
-        chatFactory.getMessagesMap().remove(game.otherPlayers.get(id).name);
-        chatWindowBig.updateMessages();
-        game.otherPlayers.remove(id);
+        if(game.otherPlayers.containsKey(id)) {
+            chatFactory.getMessagesMap().remove(game.otherPlayers.get(id).name);
+            chatWindowBig.updateMessages();
+            game.otherPlayers.remove(id);
+        }
     }
 
     /*
@@ -431,7 +449,7 @@ public class PlayScreen implements Screen{
             game.npcs = new ConcurrentHashMap<Integer, NPC>();
         }
 
-        if (!mapIdentifier.equals(MapFactory.parseIdentifierFromDetailToSmall(player.content.mapIdentifier))) {
+        if (!mapIdentifier.equals(player.content.mapIdentifier)) {
             return;
         }
 
@@ -440,7 +458,7 @@ public class PlayScreen implements Screen{
         if (game.npcs.containsKey(id)) {
             game.npcs.get(id).data = data;
         } else {
-            game.npcs.put(id, new NPC(new SpriteSheet(Assets.manager.get(NPCFactory.getResourceStringForId(npc_key), Texture.class), 1, 4), data));
+            game.npcs.put(id, new NPC(this, new SpriteSheet(Assets.manager.get(NPCFactory.getResourceStringForId(npc_key), Texture.class), 1, 4), data));
         }
     }
 

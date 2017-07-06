@@ -97,6 +97,9 @@ public class MyInputProcessor implements InputProcessor {
         }else if(playScreen.chatWindowBig.SHOW_CHAT){
             playScreen.chatWindowBig.handleClick(hudCamUnprojected_scaledX, hudCamUnprojected_scaledY);
             return true;
+        }else if(playScreen.settingsHUD.SHOW_SETTINGS){
+            playScreen.settingsHUD.handleClick(hudCamUnprojected_scaledX, hudCamUnprojected_scaledY);
+            return true;
         }
 
         if(playScreen.hud.chatWindowSmall.handleClickUp(hudCamUnprojected_scaledX, hudCamUnprojected_scaledY)){
@@ -106,7 +109,7 @@ public class MyInputProcessor implements InputProcessor {
         if(playScreen.hud.clickOnSettings((int)hudCamUnprojected_scaledX, (int)hudCamUnprojected_scaledY)){
             DebugMessageFactory.printNormalMessage("CLICK ON SETTINGS");
             playScreen.button_click.play();
-            //playScreen.popupWindow = new PopupWindow("this is a motherfucking long test text to see if line wrapping works in this motherfucking popup window to display some text to peaople. Also this is a tesst to see how breaking works and if it breaks up words properly or just fucks them up like i do your mom.");
+            playScreen.settingsHUD.SHOW_SETTINGS = true;
             return true;
         }
         else if(playScreen.hud.clickOnSocial((int)hudCamUnprojected_scaledX, (int)hudCamUnprojected_scaledY)){
