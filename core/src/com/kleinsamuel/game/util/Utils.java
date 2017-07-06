@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -43,14 +44,21 @@ public class Utils {
 
     public static FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("font/editundo.ttf"));
     public static FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-    public static BitmapFont font10, moneyFont, chatFont;
+    public static BitmapFont unscaled, font10, moneyFont, chatFont;
 
     static {
 
+        parameter.size = 7;
+        unscaled = generator.generateFont(parameter);
+        unscaled.setUseIntegerPositions(false);
+
         parameter.size = 14;
-        parameter.gamma = 10;
-        parameter.mono = true;
+        //parameter.gamma = 10;
+        //parameter.hinting = FreeTypeFontGenerator.Hinting.AutoFull;
+        //parameter.mono = true;
         parameter.spaceX = 1;
+        //parameter.minFilter = Texture.TextureFilter.MipMapLinearNearest;
+        //parameter.magFilter = Texture.TextureFilter.MipMapLinearNearest;
         font10 = generator.generateFont(parameter);
         font10.setUseIntegerPositions(false);
 
