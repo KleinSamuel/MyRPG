@@ -1,12 +1,16 @@
 package com.kleinsamuel.game.model.entities.npcs;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Vector3;
 import com.kleinsamuel.game.model.Assets;
 import com.kleinsamuel.game.model.entities.Player;
+import com.kleinsamuel.game.screens.PlayScreen;
 import com.kleinsamuel.game.sprites.SpriteSheet;
 import com.kleinsamuel.game.util.Utils;
 
@@ -15,6 +19,8 @@ import com.kleinsamuel.game.util.Utils;
  */
 
 public class NPC {
+
+    private PlayScreen playScreen;
 
     public NPCData data;
 
@@ -46,7 +52,9 @@ public class NPC {
     private float HEALTHBAR_PADDING = 0.5f;
     private float HEALTHBAR_HEIGHT = 3;
 
-    public NPC(SpriteSheet spriteSheet, NPCData data){
+    public NPC(PlayScreen playScreen, SpriteSheet spriteSheet, NPCData data){
+
+        this.playScreen = playScreen;
 
         this.spriteSheet =  spriteSheet;
         this.currentTexture = spriteSheet.getTextureRegion(0, 0);
@@ -54,8 +62,11 @@ public class NPC {
 
         this.xMove = 0;
         this.yMove = 0;
-        this.WIDTH = Utils.TILEWIDTH;
-        this.HEIGHT = Utils.TILEHEIGHT;
+
+        Vector3 widthAndHeight = NPCFactory.getWidthAndHeight(data.npc_key);
+        this.WIDTH = (int)widthAndHeight.x;
+        this.HEIGHT = (int)widthAndHeight.y;
+
         this.animationSpeed = 500;
         currentTextureNum = 0;
         timestamp = System.currentTimeMillis();
@@ -193,17 +204,17 @@ public class NPC {
 
     // TODO add specific NPC NAME
     public void drawName(SpriteBatch batch) {
-        Utils.font10.getData().setScale(0.5f, 0.5f);
-        Utils.font10.setColor(Color.BLACK);
-        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.font10, data.name);
-        Utils.font10.draw(batch, data.name, data.x+Utils.TILEWIDTH/2-dims.x/2, data.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+5);
+        playScreen.nameFont.getData().setScale(0.5f, 0.5f);
+        playScreen.nameFont.setColor(Color.BLACK);
+        Vector3 dims = Utils.getWidthAndHeightOfString(playScreen.nameFont, data.name);
+        playScreen.nameFont.draw(batch, data.name, data.x+Utils.TILEWIDTH/2-dims.x/2, data.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+5);
     }
 
     public void drawLevel(SpriteBatch batch){
-        Utils.font10.getData().setScale(0.4f, 0.4f);
-        Utils.font10.setColor(Color.BLACK);
-        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.font10, "Lvl. "+data.level);
-        Utils.font10.draw(batch, "Lvl. "+data.level, data.x+Utils.TILEWIDTH/2-dims.x/2, data.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+10);
+        playScreen.nameFont.getData().setScale(0.4f, 0.4f);
+        playScreen.nameFont.setColor(Color.BLACK);
+        Vector3 dims = Utils.getWidthAndHeightOfString(playScreen.nameFont, "Lvl. "+data.level);
+        playScreen.nameFont.draw(batch, "Lvl. "+data.level, data.x+Utils.TILEWIDTH/2-dims.x/2, data.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+10);
     }
 
     public void drawSmallHealthbar(SpriteBatch batch){

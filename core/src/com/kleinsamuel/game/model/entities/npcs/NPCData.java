@@ -25,8 +25,7 @@ public class NPCData {
         this.id = id;
         this.npc_key = npc_key;
 
-        String randomRoachName = Utils.turkroachNames.get(Utils.random.nextInt(Utils.turkroachNames.size()));
-        this.name = randomRoachName;
+        this.name = NPCFactory.npcs.get(npc_key).toString();
 
         this.x = x;
         this.y = y;
