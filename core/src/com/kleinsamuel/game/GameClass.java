@@ -29,7 +29,7 @@ import io.socket.emitter.Emitter;
 
 public class GameClass extends Game {
 
-	private String serverName = "87.160.57.158";
+	private String serverName = "87.160.53.241";
 	private String port = "8081";
 	private IO.Options socketOptions;
 
@@ -50,6 +50,8 @@ public class GameClass extends Game {
 	public StartScreen startScreen;
 	public PlayScreen playScreen;
 	public GameClass game;
+
+	public UserContent tempContent;
 
 	public Music main_menu_music;
 	public Sound button_click;
@@ -124,6 +126,17 @@ public class GameClass extends Game {
 		}
 	}
 
+	public void setFirstStartup(String username, String race){
+		JSONObject data = new JSONObject();
+		try {
+			data.put("username", username);
+			data.put("race", race);
+			socket.emit("setFirstStartup", data);
+		} catch (JSONException e){
+			DebugMessageFactory.printErrorMessage("ERROR SENDING FIRST STARTUP DATA!");
+		}
+	}
+
 	public void registerPlayer(String username, String password){
 
 		signInSuccessfull = false;
@@ -162,13 +175,13 @@ public class GameClass extends Game {
 	public void playerMovedPoint(Player p){
 		JSONObject data = new JSONObject();
 		try {
+			data.put("name", p.content.NAME);
 			data.put("x", p.moveTo.x);
 			data.put("y", p.moveTo.y);
 			data.put("currentX", p.content.x);
 			data.put("currentY", p.content.y);
 
 			socket.emit("playerMovedPoint", data);
-
 		} catch (JSONException e){
 			DebugMessageFactory.printErrorMessage("SOCKET:IO ERROR SENDING PLAYER MOVED POINT DATA");
 		}
@@ -181,12 +194,10 @@ public class GameClass extends Game {
 
 		JSONObject data = new JSONObject();
 		try {
-			data.put("mapIdentifier", MapFactory.parseIdentifierFromDetailToSmall(p.content.mapIdentifier));
+			data.put("name", p.content.NAME);
+			data.put("mapIdentifier", p.content.mapIdentifier);
 			data.put("x", p.content.x);
 			data.put("y", p.content.y);
-
-			DebugMessageFactory.printInfoMessage("SEND UPDATE FOR SECTION CHANGE");
-
 			socket.emit("playerMovedToAnotherSection", data);
 		} catch (JSONException e){
 			DebugMessageFactory.printErrorMessage("ERROR SENDING PLAYER MOVED TO ANOTHER SECTION UPDATE");
@@ -222,6 +233,7 @@ public class GameClass extends Game {
 	public void updateServer_Level(Player p){
 		JSONObject data = new JSONObject();
 		try {
+			data.put("name", p.content.NAME);
 			data.put("level", p.content.LEVEL);
 			socket.emit("levelUpdate", data);
 		} catch (JSONException e){
@@ -296,7 +308,8 @@ public class GameClass extends Game {
 			data.put("name", p.content.NAME);
 			data.put("x", p.content.x);
 			data.put("y", p.content.y);
-			data.put("mapIdentifier", MapFactory.parseIdentifierFromDetailToSmall(p.content.mapIdentifier));
+			data.put("mapIdentifier", p.content.mapIdentifier);
+            data.put("race", p.content.raceIdentifier);
 			data.put("level", p.content.LEVEL);
 			data.put("currHealth", p.content.CURRENT_HEALTH);
 			data.put("maxHealth", p.content.MAX_HEALTH);
@@ -342,7 +355,6 @@ public class GameClass extends Game {
 			@Override
 			public void call(Object... args) {
 				CONNECTED = false;
-				DebugMessageFactory.printInfoMessage("SET START SCREEN!");
 				if(playScreen != null) playScreen.hide();
 				if(!main_menu_music.isPlaying()){
 					main_menu_music.play();
@@ -372,8 +384,30 @@ public class GameClass extends Game {
 				JSONObject data = (JSONObject) args[0];
 				try {
 					boolean status = data.getBoolean("status");
+					boolean firstStartup = data.getString("first_startup").equals("YES");
 					LOG_IN_ANSWER = true;
 					LOG_IN_SUCCESS = status;
+					IS_FIRST_STARTUP = firstStartup;
+
+					String name = data.getString("name");
+					String mapIdentifier = data.getString("mapIdentifier");
+					int x = data.getInt("x");
+					int y = data.getInt("y");
+					String raceIdentifier = data.getString("raceIdentifier");
+					int level = data.getInt("level");
+					int money = data.getInt("money");
+					int skulls = data.getInt("skulls");
+
+					tempContent = new UserContent();
+					tempContent.NAME = name;
+					tempContent.mapIdentifier = mapIdentifier;
+					tempContent.x = x;
+					tempContent.y = y;
+					tempContent.raceIdentifier = raceIdentifier;
+					tempContent.LEVEL = level;
+					tempContent.MONEY = money;
+					tempContent.SKULLS = skulls;
+
 					DebugMessageFactory.printInfoMessage("Received STATUS: ["+status+"]");
 				} catch (JSONException e) {
 					e.printStackTrace();
@@ -389,7 +423,8 @@ public class GameClass extends Game {
                     String id = data.getString("id");
                     String name = data.getString("name");
 					int level = data.getInt("level");
-					String mapIdentifier = MapFactory.parseIdentifierFromSmallToDetail(data.getString("mapIdentifier"));
+					String mapIdentifier = data.getString("mapIdentifier");
+                    String race = data.getString("race");
                     int entityX = data.getInt("x");
                     int entityY = data.getInt("y");
                     int currentHealth = data.getInt("currHealth");
@@ -397,8 +432,8 @@ public class GameClass extends Game {
 
                     if(playScreen != null) {
 						if (mapIdentifier.equals(playScreen.player.content.mapIdentifier)) {
-							playScreen.addOtherPlayer(id, name, level, entityX, entityY, currentHealth, maxHealth);
-							DebugMessageFactory.printInfoMessage("INIT NEW PLAYER IN SAME SECTION");
+							playScreen.addOtherPlayer(id, name, level, race, entityX, entityY, currentHealth, maxHealth);
+							DebugMessageFactory.printInfoMessage("ADD OTHER PLAYER INIT");
 						}
 					}
                 } catch (JSONException e) {
@@ -468,6 +503,8 @@ public class GameClass extends Game {
 			@Override
 			public void call(Object... args) {
 
+				DebugMessageFactory.printInfoMessage("GET PLAYERS!");
+
 				JSONArray objects = (JSONArray) args[0];
 				try {
 
@@ -481,15 +518,21 @@ public class GameClass extends Game {
 
 						String name = objects.getJSONObject(i).getString("name");
                         int level = objects.getJSONObject(i).getInt("level");
-						String mapIdentifier = MapFactory.parseIdentifierFromSmallToDetail(objects.getJSONObject(i).getString("mapIdentifier"));
+						String mapIdentifier = objects.getJSONObject(i).getString("mapIdentifier");
+                        String race = objects.getJSONObject(i).getString("race");
 						int entityX = objects.getJSONObject(i).getInt("x");
 						int entityY = objects.getJSONObject(i).getInt("y");
                         int currentHealth = objects.getJSONObject(i).getInt("currHealth");
                         int maxHealth = objects.getJSONObject(i).getInt("maxHealth");
 
+						DebugMessageFactory.printInfoMessage("OTHER PLAYER: ");
+						DebugMessageFactory.printInfoMessage("\tNAME: "+name);
+						DebugMessageFactory.printInfoMessage("\tmap: "+mapIdentifier);
+						DebugMessageFactory.printInfoMessage("\tRACE: "+race);
+
 						if(playScreen != null) {
 							if(mapIdentifier.equals(playScreen.player.content.mapIdentifier)) {
-								playScreen.addOtherPlayer(id, name, level, entityX, entityY, currentHealth, maxHealth);
+								playScreen.addOtherPlayer(id, name, level, race, entityX, entityY, currentHealth, maxHealth);
 							}
 						}
 					}
@@ -544,7 +587,8 @@ public class GameClass extends Game {
 					String id = data.getString("id");
 					String name = data.getString("name");
                     int level = data.getInt("level");
-					String mapIdentifier = MapFactory.parseIdentifierFromSmallToDetail(data.getString("mapIdentifier"));
+					String mapIdentifier = data.getString("mapIdentifier");
+                    String race = data.getString("race");
 					int entityX = data.getInt("x");
 					int entityY = data.getInt("y");
                     int currentHealth = data.getInt("currHealth");
@@ -552,14 +596,16 @@ public class GameClass extends Game {
 
 					if(playScreen != null){
 						if(mapIdentifier.equals(playScreen.player.content.mapIdentifier)) {
-							playScreen.addOtherPlayer(id, name, level, entityX, entityY, currentHealth, maxHealth);
+							DebugMessageFactory.printInfoMessage("ADD OTHER PLAYER!");
+							playScreen.addOtherPlayer(id, name, level, race, entityX, entityY, currentHealth, maxHealth);
 						}else{
+							DebugMessageFactory.printInfoMessage("REMOVE OTHER PLAYER!");
 							playScreen.removeOtherPlayer(id);
 						}
 					}
 
 				} catch(JSONException e){
-
+					e.printStackTrace();
 				}
 			}
 		});
@@ -580,11 +626,8 @@ public class GameClass extends Game {
 		}).on("getNPCs", new Emitter.Listener() {
 			@Override
 			public void call(Object... args) {
-
 				JSONArray objects = (JSONArray) args[0];
-
 				try {
-
 					for(int i = 0; i < objects.length(); i++) {
 
 						int id = objects.getJSONObject(i).getInt("id");
@@ -601,7 +644,6 @@ public class GameClass extends Game {
 							playScreen.addNPC(id, npc_key, level, x, y, mapIdentifier, speed, current_health, max_health);
                         }
 					}
-
 				} catch(JSONException e){
 					DebugMessageFactory.printErrorMessage("ERROR HANDLING GET NPCS");
 					e.printStackTrace();
