@@ -1,10 +1,13 @@
 package com.kleinsamuel.game.model.entities;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.math.Vector3;
 import com.kleinsamuel.game.model.Assets;
 import com.kleinsamuel.game.model.animations.AnimationEnum;
@@ -27,6 +30,7 @@ import com.kleinsamuel.game.sprites.SpriteSheet;
 import com.kleinsamuel.game.util.DebugMessageFactory;
 import com.kleinsamuel.game.util.Utils;
 
+import java.awt.Font;
 import java.util.LinkedList;
 
 /**
@@ -64,7 +68,11 @@ public class Player {
     private Sound walkingSound;
     private boolean isWalkingSound = false;
 
-    public Player(PlayScreen playScreen, SpriteSheet spriteSheet){
+    private BitmapFont nameFont;
+    private FreeTypeFontGenerator generator;
+    private FreeTypeFontGenerator.FreeTypeFontParameter parameter;
+
+    public Player(PlayScreen playScreen){
 
         pathToWalk = new Path();
         xMove = 0;
@@ -72,8 +80,14 @@ public class Player {
         pathFinder = new AStarPathFinder(this);
 
         this.playScreen = playScreen;
-        this.spriteSheet = spriteSheet;
-        this.currentTexture = spriteSheet.getTextureRegion(0, 1);
+
+        generator = new FreeTypeFontGenerator(Gdx.files.internal("font/editundo.ttf"));
+        parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+
+        parameter.size = 14;
+        nameFont = generator.generateFont(parameter);
+        nameFont.setUseIntegerPositions(false);
+        nameFont.getData().setScale(0.5f, 0.5f);
 
         loadContent();
         loadMultiplier();
@@ -82,9 +96,25 @@ public class Player {
 
         if(content.ID == -1){
             DebugMessageFactory.printInfoMessage("FIRST STARTUP!");
+            playScreen.game.tempContent.raceIdentifier = PlayerFactory.getRaceName(playScreen.game.startScreen.raceChooseScreen.clickIdentifier);
+
+            if(playScreen.game.tempContent != null){
+                content.mapIdentifier = playScreen.game.tempContent.mapIdentifier;
+                content.NAME = playScreen.game.tempContent.NAME;
+                content.x = playScreen.game.tempContent.x;
+                content.y = playScreen.game.tempContent.y;
+                content.raceIdentifier = playScreen.game.tempContent.raceIdentifier;
+                content.LEVEL = playScreen.game.tempContent.LEVEL;
+                content.MONEY = playScreen.game.tempContent.MONEY;
+                content.SKULLS = playScreen.game.tempContent.SKULLS;
+            }
         }else{
             DebugMessageFactory.printInfoMessage("NOT FIRST STARTUP!");
         }
+
+        this.spriteSheet = new SpriteSheet(Assets.manager.get(PlayerFactory.getResourceStringForPlayerSprite(content.raceIdentifier), Texture.class), 4, 3);
+        this.currentTexture = spriteSheet.getTextureRegion(0, 1);
+
     }
 
     private void loadContent() {
@@ -438,17 +468,18 @@ public class Player {
     }
 
     public void drawName(SpriteBatch batch) {
-        Utils.font10.getData().setScale(0.5f, 0.5f);
-        Utils.font10.setColor(Color.BLACK);
-        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.font10, content.NAME);
-        Utils.font10.draw(batch, content.NAME, content.x+Utils.TILEWIDTH/2-dims.x/2, content.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+5);
+        nameFont.getData().setScale(0.5f, 0.5f);
+        nameFont.setColor(Color.BLACK);
+
+        Vector3 dims = Utils.getWidthAndHeightOfString(nameFont, content.NAME);
+        nameFont.draw(batch, content.NAME, content.x+Utils.TILEWIDTH/2-dims.x/2, content.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+5);
     }
 
     public void drawLevel(SpriteBatch batch){
-        Utils.font10.getData().setScale(0.4f, 0.4f);
-        Utils.font10.setColor(Color.BLACK);
-        Vector3 dims = Utils.getWidthAndHeightOfString(Utils.font10, "Lvl. "+content.LEVEL);
-        Utils.font10.draw(batch, "Lvl. "+content.LEVEL, content.x+Utils.TILEWIDTH/2-dims.x/2, content.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+10);
+        nameFont.getData().setScale(0.4f, 0.4f);
+        nameFont.setColor(Color.BLACK);
+        Vector3 dims = Utils.getWidthAndHeightOfString(nameFont, "Lvl. "+content.LEVEL);
+        nameFont.draw(batch, "Lvl. "+content.LEVEL, content.x+Utils.TILEWIDTH/2-dims.x/2, content.y+Utils.TILEHEIGHT+HEALTHBAR_HEIGHT+10);
     }
 
     private float HEALTHBAR_PADDING = 0.5f;
