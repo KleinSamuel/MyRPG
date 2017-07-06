@@ -62,7 +62,7 @@ public class MapSection {
             }
         }
 
-        DebugMessageFactory.printInfoMessage("RECTANGLES NPC:");
+        DebugMessageFactory.printInfoMessage("RECTANGLES NPC for map: "+identifier);
         MapLayer npcLayer = map.getLayers().get("objects_npcs");
         if(npcLayer != null) {
             for (MapObject mo : map.getLayers().get("objects_npcs").getObjects()) {
