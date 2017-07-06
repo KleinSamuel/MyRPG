@@ -27,6 +27,8 @@ public class UserContent {
 
     public String mapIdentifier;
 
+    public String raceIdentifier;
+
     public long VALUE_ATTACK;
     public long VALUE_ATTACK_SPEED;
     public long VALUE_DEFENSE;
@@ -58,6 +60,8 @@ public class UserContent {
      */
     private HashMap<Integer, Integer> equippedItems;
 
+    /* show small chat */
+    public boolean SHOW_SMALL_CHAT = true;
 
     public UserContent() {
         this.bag = new HashMap();
@@ -78,6 +82,7 @@ public class UserContent {
         sb.append("x:"+(int)arrayPos.x+"\n");
         sb.append("y:"+(int)arrayPos.y+"\n");
         sb.append("map:"+mapIdentifier+"\n");
+        sb.append("race:"+raceIdentifier+"\n");
         sb.append("stat_attack:"+VALUE_ATTACK+"\n");
         sb.append("stat_attack_speed:"+VALUE_ATTACK_SPEED+"\n");
         sb.append("stat_defense:"+VALUE_DEFENSE+"\n");
@@ -91,6 +96,7 @@ public class UserContent {
         sb.append("currentmana:"+ CURRENT_MANA +"\n");
         sb.append("MONEY:"+ MONEY +"\n");
         sb.append("SKULLS:"+SKULLS +"\n");
+        sb.append("show_chat:"+SHOW_SMALL_CHAT +"\n");
         sb.append("BAG_SIZE:"+ BAG_SIZE +"\n");
         sb.append("bag_content:");
         for(Map.Entry<Integer, Integer> e : bag.entrySet()) {
@@ -145,7 +151,9 @@ public class UserContent {
                 uc.y = Integer.parseInt(lineArray[1])*Utils.TILEHEIGHT;
             } else if (lineArray[0].equals("map")) {
                 uc.mapIdentifier = lineArray[1];
-            } else if (lineArray[0].equals("stat_attack")) {
+            } else if (lineArray[0].equals("race")) {
+                uc.raceIdentifier = lineArray[1];
+            }else if (lineArray[0].equals("stat_attack")) {
                 uc.VALUE_ATTACK = Long.parseLong(lineArray[1]);
             } else if (lineArray[0].equals("stat_attack_speed")) {
                 uc.VALUE_ATTACK_SPEED = Long.parseLong(lineArray[1]);
@@ -171,6 +179,8 @@ public class UserContent {
                 uc.MONEY = Integer.parseInt(lineArray[1]);
             } else if (lineArray[0].equals("SKULLS")) {
                 uc.SKULLS = Integer.parseInt(lineArray[1]);
+            } else if (lineArray[0].equals("show_chat")) {
+                uc.SHOW_SMALL_CHAT = Boolean.parseBoolean(lineArray[1]);
             } else if (lineArray[0].equals("BAG_SIZE")) {
                 uc.BAG_SIZE = Integer.parseInt(lineArray[1]);
             } else if (lineArray[0].equals("bag_content")) {
@@ -223,7 +233,8 @@ public class UserContent {
         uc.ID = -1;
         uc.x = 5*Utils.TILEWIDTH;
         uc.y = 17*Utils.TILEHEIGHT;
-        uc.mapIdentifier = MapFactory.START_HOUSE;
+        uc.mapIdentifier = MapFactory.parseIdentifierFromDetailToSmall(MapFactory.START_HOUSE);
+        uc.raceIdentifier = "human";
         uc.VALUE_ATTACK = 1;
         uc.VALUE_ATTACK_SPEED = 1000;
         uc.VALUE_DEFENSE = 0;
@@ -235,6 +246,7 @@ public class UserContent {
         uc.CURRENT_MANA = 10;
         uc.MONEY = 12345678;
         uc.SKULLS = 31;
+        uc.SHOW_SMALL_CHAT = true;
         uc.LEVEL = 1;
         uc.CURRENT_EXPERIENCE = 40;
         uc.NAME = "unknown";
