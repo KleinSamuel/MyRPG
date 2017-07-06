@@ -43,13 +43,58 @@ public class Assets {
     public static final String lexicon_button = "hud/ency_button.png";
     public static final String shop_button = "hud/shop_button.png";
 
-    /* NPCs */
-    public static final String bug_small = "npcs/bug_small.png";
-    public static final String bird_crow = "npcs/bird_crow.png";
-    public static final String elemental_water = "npcs/elemental_water.png";
+    public static final String tick_box_unticked = "tick_box_unticked.png";
+    public static final String tick_box_ticked = "tick_box_ticked.png";
+
+    /* NPC ANIMALS */
+    public static final String bug_small_green = "npcs/animals/uf_bug_small_green.png";
+    public static final String bug_small_purple = "npcs/animals/uf_bug_small_purple.png";
+    public static final String bug_small_red = "npcs/animals/uf_bug_small_red.png";
+    public static final String bug_big_green = "npcs/animals/uf_bug_big_green.png";
+    public static final String bug_big_purple = "npcs/animals/uf_bug_big_purple.png";
+    public static final String bug_big_red = "npcs/animals/uf_bug_big_red.png";
+
+    public static final String butterfly_small_red = "npcs/animals/uf_butterfly_small_red.png";
+    public static final String butterfly_small_black = "npcs/animals/uf_butterfly_small_black.png";
+    public static final String butterfly_small_white = "npcs/animals/uf_butterfly_small_white.png";
+
+    public static final String crow_small_black = "npcs/animals/uf_crow_small_black.png";
+    public static final String crow_small_brown = "npcs/animals/uf_crow_small_brown.png";
+    public static final String crow_small_white = "npcs/animals/uf_crow_small_white.png";
+
+    public static final String frog_small_blue = "npcs/animals/uf_frog_small_blue.png";
+    public static final String frog_small_brown = "npcs/animals/uf_frog_small_brown.png";
+    public static final String frog_small_green = "npcs/animals/uf_frog_small_green.png";
+
+    public static final String rat_small_black = "npcs/animals/uf_rat_small_black.png";
+    public static final String rat_small_brown = "npcs/animals/uf_rat_small_brown.png";
+    public static final String rat_small_grey = "npcs/animals/uf_rat_small_grey.png";
+    public static final String rat_small_white = "npcs/animals/uf_rat_small_white.png";
+    public static final String rat_big_black = "npcs/animals/uf_rat_big_black.png";
+    public static final String rat_big_brown = "npcs/animals/uf_rat_big_brown.png";
+    public static final String rat_big_grey = "npcs/animals/uf_rat_big_grey.png";
+    public static final String rat_big_white = "npcs/animals/uf_rat_big_white.png";
+
+    public static final String snake_small_green = "npcs/animals/uf_snake_small_green.png";
+    public static final String snake_big_green = "npcs/animals/uf_snake_big_green.png";
+
+    public static final String spider_small_black = "npcs/animals/uf_spider_small_black.png";
+    public static final String spider_small_brown = "npcs/animals/uf_spider_small_brown.png";
+    public static final String spider_small_purple = "npcs/animals/uf_spider_small_purple.png";
+    public static final String spider_big_black = "npcs/animals/uf_spider_big_black.png";
+    public static final String spider_big_brown = "npcs/animals/uf_spider_big_brown.png";
+    public static final String spider_big_purple = "npcs/animals/uf_spider_big_purple.png";
+
+    public static final String wolf_small_black = "npcs/animals/uf_wolf_small_black.png";
+    public static final String wolf_small_brown = "npcs/animals/uf_wolf_small_brown.png";
+    public static final String wolf_small_darkblack = "npcs/animals/uf_wolf_small_darkblack.png";
+    public static final String wolf_small_white = "npcs/animals/uf_wolf_small_white.png";
+
+    public static final String worm_small_brown = "npcs/animals/uf_worm_small_brown.png";
+    public static final String worm_big_brown = "npcs/animals/uf_worm_big_brown.png";
+    
     public static final String eloa_war = "npcs/eloa_war.png";
     public static final String musel = "npcs/musel24x24.png";
-    public static final String moth_black = "npcs/moth_black.png";
 
     /* bag */
     public static final String inventory_background = "bag/uf_inventory_background_2.png";
@@ -72,6 +117,7 @@ public class Assets {
     public static final String use_button = "buttons/use_button.png";
     public static final String buy_button = "buttons/buy_button.png";
     public static final String sell_button = "buttons/sell_button.png";
+    public static final String logout_button = "buttons/logout_button.png";
     public static final String potion_red_button = "buttons/potion_red_button.png";
     public static final String potion_blue_button = "buttons/potion_blue_button.png";
 
@@ -192,9 +238,13 @@ public class Assets {
     public static final String slash_x_asymmetrical = "animations/slash_x_asymmetrical.png";
 
     /* player sprites */
-    public static final String test = "player/goblin.png";
-    public static final String chara_23 = "player/chara23_battle_walk.png";
-    public static final String chara_24 = "player/chara24_battle_walk.png";
+    public static final String dwarf_basic = "player/dwarf/dwarf_basic.png";
+    public static final String elb_basic = "player/elb/elb_basic.png";
+    public static final String halfling_basic = "player/halfling/halfling_basic.png";
+    public static final String human_basic = "player/human/human_basic.png";
+    public static final String murony_basic = "player/murony/murony_basic.png";
+    public static final String orc_basic = "player/orc/orc_basic.png";
+    public static final String wiedergaenger_basic = "player/wiedergaenger/wiedergaenger_basic.png";
 
     /* player portraits */
     public static final String portrait_human = "portraits/human_portrait.png";
@@ -231,9 +281,13 @@ public class Assets {
         manager.load(rectangle_light_gray, Texture.class);
 
         /* player */
-        manager.load(chara_23, Texture.class);
-        manager.load(chara_24, Texture.class);
-        manager.load(test, Texture.class);
+        manager.load(dwarf_basic, Texture.class);
+        manager.load(elb_basic, Texture.class);
+        manager.load(halfling_basic, Texture.class);
+        manager.load(human_basic, Texture.class);
+        manager.load(murony_basic, Texture.class);
+        manager.load(orc_basic, Texture.class);
+        manager.load(wiedergaenger_basic, Texture.class);
 
         manager.load(portrait_human, Texture.class);
         manager.load(portrait_halfling, Texture.class);
@@ -275,8 +329,12 @@ public class Assets {
         manager.load(use_button, Texture.class);
         manager.load(buy_button, Texture.class);
         manager.load(sell_button, Texture.class);
+        manager.load(logout_button, Texture.class);
         manager.load(potion_red_button, Texture.class);
         manager.load(potion_blue_button, Texture.class);
+
+        manager.load(tick_box_unticked, Texture.class);
+        manager.load(tick_box_ticked, Texture.class);
 
         manager.load(lexicon_background, Texture.class);
 
@@ -297,10 +355,53 @@ public class Assets {
         manager.load(blue_bar, Texture.class);
         manager.load(green_bar, Texture.class);
 
-        manager.load(moth_black, Texture.class);
-        manager.load(bug_small, Texture.class);
-        manager.load(bird_crow, Texture.class);
-        manager.load(elemental_water, Texture.class);
+        /* NPC ANIMALS */
+        manager.load(bug_small_green, Texture.class);
+        manager.load(bug_small_purple, Texture.class);
+        manager.load(bug_small_red, Texture.class);
+        manager.load(bug_big_green, Texture.class);
+        manager.load(bug_big_purple, Texture.class);
+        manager.load(bug_big_red, Texture.class);
+
+        manager.load(butterfly_small_black, Texture.class);
+        manager.load(butterfly_small_red, Texture.class);
+        manager.load(butterfly_small_white, Texture.class);
+
+        manager.load(crow_small_black, Texture.class);
+        manager.load(crow_small_brown, Texture.class);
+        manager.load(crow_small_white, Texture.class);
+
+        manager.load(frog_small_green, Texture.class);
+        manager.load(frog_small_blue, Texture.class);
+        manager.load(frog_small_brown, Texture.class);
+
+        manager.load(rat_small_black, Texture.class);
+        manager.load(rat_small_brown, Texture.class);
+        manager.load(rat_small_grey, Texture.class);
+        manager.load(rat_small_white, Texture.class);
+        manager.load(rat_big_black, Texture.class);
+        manager.load(rat_big_brown, Texture.class);
+        manager.load(rat_big_grey, Texture.class);
+        manager.load(rat_big_white, Texture.class);
+
+        manager.load(snake_small_green, Texture.class);
+        manager.load(snake_big_green, Texture.class);
+
+        manager.load(spider_small_black, Texture.class);
+        manager.load(spider_small_brown, Texture.class);
+        manager.load(spider_small_purple, Texture.class);
+        manager.load(spider_big_black, Texture.class);
+        manager.load(spider_big_brown, Texture.class);
+        manager.load(spider_big_purple, Texture.class);
+
+        manager.load(wolf_small_black, Texture.class);
+        manager.load(wolf_small_brown, Texture.class);
+        manager.load(wolf_small_darkblack, Texture.class);
+        manager.load(wolf_small_white, Texture.class);
+
+        manager.load(worm_small_brown, Texture.class);
+        manager.load(worm_big_brown, Texture.class);
+
         manager.load(eloa_war, Texture.class);
         manager.load(musel, Texture.class);
 
