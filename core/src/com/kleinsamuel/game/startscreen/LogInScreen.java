@@ -122,8 +122,13 @@ public class LogInScreen implements Screen {
                         //startScreen.game.main_menu_music.stop();
                         //startScreen.game.setScreen(new PlayScreen(startScreen.game));
 
-                        startScreen.game.userName = usernameField.getText();
-                        startScreen.game.setScreen(startScreen.raceChooseScreen);
+                        if(startScreen.game.IS_FIRST_STARTUP){
+                            startScreen.game.userName = usernameField.getText();
+                            startScreen.game.setScreen(startScreen.raceChooseScreen);
+                        }else{
+                            startScreen.game.main_menu_music.stop();
+                            startScreen.game.setScreen(new PlayScreen(startScreen.game));
+                        }
 
                     } else {
                         dialog = new MessageDialog("LOG IN STATUS:", skin);

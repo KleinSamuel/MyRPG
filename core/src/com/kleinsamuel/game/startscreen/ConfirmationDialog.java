@@ -53,7 +53,6 @@ public class ConfirmationDialog {
 
     public int handleClick(float screenX, float screenY){
         if(screenX >= YES_X && screenX <= YES_X+YES_WIDTH && screenY >= YES_Y && screenY <= YES_Y+YES_HEIGHT){
-            DebugMessageFactory.printInfoMessage("YES CLICKED");
             startScreen.game.button_click.play();
             return 0;
         }

@@ -62,7 +62,7 @@ public class RaceChooseScreen implements Screen {
     private float MURONY_X = HUMAN_X;
     private float MURONY_Y = HUMAN_Y - (HUMAN_HEIGHT+PADDING_TOP)*6;
 
-    private int clickIdentifier = 0;
+    public int clickIdentifier = 0;
 
     public ConfirmationDialog confirmationDialog;
 
