@@ -173,7 +173,7 @@ public class HUD {
         batch.draw(Assets.manager.get(Assets.potion_red_button, Texture.class), potion_red_button_x, potion_red_button_y, button_width, button_height);
         batch.draw(Assets.manager.get(Assets.potion_blue_button, Texture.class), potion_blue_button_x, potion_blue_button_y, button_width, button_height);
 
-        if(chatWindowSmall != null){
+        if(chatWindowSmall != null && chatWindowSmall.SHOW_CHAT_SMALL){
             chatWindowSmall.render(batch);
         }
 
